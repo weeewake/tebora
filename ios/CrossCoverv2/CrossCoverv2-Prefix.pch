@@ -1,0 +1,26 @@
+//
+//  Prefix header
+//
+//  The contents of this file are implicitly included at the beginning of every source file.
+//
+
+#import <Availability.h>
+
+#ifndef __IPHONE_5_0
+#warning "This project uses features only available in iOS SDK 5.0 and later."
+#endif
+
+#define PATIENT_NAME @"patientName"
+#define PATIENT_MRN @"patientMRN"
+#define PATIENT_BED @"patientBed"
+#define ALERT_TYPE @"alertType"
+#define ALERT_DESCRIPTION @"alertDescription"
+#define ALERT_TIME_AGO @"alertTimeAgo"
+#define NURSE_PHONE @"nursePhone"
+#define ALERT_COMPLETE @"isComplete"
+#define MESSAGES @"messages"
+
+#ifdef __OBJC__
+    #import <UIKit/UIKit.h>
+    #import <Foundation/Foundation.h>
+#endif

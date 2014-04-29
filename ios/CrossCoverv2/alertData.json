@@ -1,0 +1,204 @@
+{
+  "alerts": [
+    {
+      "isComplete": "NO",
+      "alertType": "critical",
+      "alertDescription": "fever of 105F",
+      "patientBed": "Bed 402",
+      "patientName": "Bob Smith",
+      "patientMRN": "MRN 88447634",
+      "alertTimeAgo": "1 minute ago",
+      "nursePhone": "408-368-3532",
+      "messages": [
+        {
+          "sender": "Marie Andrews",
+          "message": "Bob's fever has been going up in the last 22 minutes"
+        },
+        {
+          "sender": "You",
+          "message": "Immediately apply a patch of cold water. I'm coming right over"
+        }
+      ]
+    },
+    {
+      "isComplete": "NO",
+      "alertType": "critical",
+      "alertDescription": "heart rate has dropped to 35",
+      "patientBed": "Bed 302",
+      "patientName": "Joseph Kim",
+      "patientMRN": "MRN 23447634",
+      "alertTimeAgo": "2 minutes ago",
+      "nursePhone": "408-368-3532",
+      "messages": [
+        {
+          "sender": "Marie Andrews",
+          "message": "Bob's fever has been going up in the last 22 minutes"
+        },
+        {
+          "sender": "You",
+          "message": "Immediately apply a patch of cold water. I'm coming right over"
+        }
+      ]
+    },
+    {
+      "isComplete": "NO",
+      "alertType": "vitals",
+      "alertDescription": "has a fever of 102F",
+      "patientBed": "Bed 403",
+      "patientName": "Jane Black",
+      "patientMRN": "MRN 44777634",
+      "alertTimeAgo": "12 minutes ago",
+      "nursePhone": "408-368-3532",
+      "messages": [
+        {
+          "sender": "Marie Andrews",
+          "message": "Bob's fever has been going up in the last 22 minutes"
+        },
+        {
+          "sender": "You",
+          "message": "Immediately apply a patch of cold water. I'm coming right over"
+        }
+      ]
+    },
+    {
+      "isComplete": "NO",
+      "alertType": "radiology",
+      "alertDescription": "need to confirm NG placement",
+      "patientBed": "Bed 314",
+      "patientName": "Gordon Black",
+      "patientMRN": "MRN 3398542",
+      "alertTimeAgo": "25 minutes ago",
+      "nursePhone": "408-368-3532",
+      "messages": [
+        {
+          "sender": "Marie Andrews",
+          "message": "Bob's fever has been going up in the last 22 minutes"
+        },
+        {
+          "sender": "You",
+          "message": "Immediately apply a patch of cold water. I'm coming right over"
+        }
+      ]
+    },
+    {
+      "isComplete": "NO",
+      "alertType": "labs",
+      "alertDescription": "has a HCT < 28",
+      "patientBed": "Bed 415",
+      "patientName": "Scott-Larsen Brown",
+      "patientMRN": "MRN 41847634",
+      "alertTimeAgo": "45 minutes ago",
+      "nursePhone": "408-368-3532",
+      "messages": [
+        {
+          "sender": "Marie Andrews",
+          "message": "Bob's fever has been going up in the last 22 minutes"
+        },
+        {
+          "sender": "You",
+          "message": "Immediately apply a patch of cold water. I'm coming right over"
+        }
+      ]
+    },
+    {
+      "isComplete": "NO",
+      "alertType": "prescription",
+      "alertDescription": "needs sleep medication.",
+      "patientBed": "Bed 305",
+      "patientName": "Gordon Leung",
+      "patientMRN": "MRN 22847774",
+      "alertTimeAgo": "52 minutes ago",
+      "nursePhone": "408-368-3532",
+      "messages": [
+        {
+          "sender": "Marie Andrews",
+          "message": "Bob's fever has been going up in the last 22 minutes"
+        },
+        {
+          "sender": "You",
+          "message": "Immediately apply a patch of cold water. I'm coming right over"
+        }
+      ]
+    },
+    {
+      "isComplete": "NO",
+      "alertType": "consult",
+      "alertDescription": "wants to speak with you",
+      "patientBed": "Bed 412",
+      "patientName": "Morgan Smith",
+      "patientMRN": "MRN 18347754",
+      "alertTimeAgo": "55 minutes ago",
+      "nursePhone": "408-368-3532",
+      "messages": [
+        {
+          "sender": "Marie Andrews",
+          "message": "Bob's fever has been going up in the last 22 minutes"
+        },
+        {
+          "sender": "You",
+          "message": "Immediately apply a patch of cold water. I'm coming right over"
+        }
+      ]
+    },
+    {
+      "isComplete": "NO",
+      "alertType": "io",
+      "alertDescription": "has UO < 50cc for 4 hours",
+      "patientBed": "Bed 407",
+      "patientName": "Phil Jones  -  ",
+      "patientMRN": "MRN 81647249",
+      "alertTimeAgo": "1 hour ago",
+      "nursePhone": "408-368-3532",
+      "messages": [
+        {
+          "sender": "Marie Andrews",
+          "message": "Bob's fever has been going up in the last 22 minutes"
+        },
+        {
+          "sender": "You",
+          "message": "Immediately apply a patch of cold water. I'm coming right over"
+        }
+      ]
+    },
+    {
+      "isComplete": "NO",
+      "alertType": "prescription",
+      "alertDescription": "needs diarrhoea medication.",
+      "patientBed": "Bed 303",
+      "patientName": "Joanne Brown",
+      "patientMRN": "MRN 66847774",
+      "alertTimeAgo": "52 minutes ago",
+      "nursePhone": "408-368-3532",
+      "messages": [
+        {
+          "sender": "Marie Andrews",
+          "message": "Bob's fever has been going up in the last 22 minutes"
+        },
+        {
+          "sender": "You",
+          "message": "Immediately apply a patch of cold water. I'm coming right over"
+        }
+      ]
+    },
+    {
+      "isComplete": "NO",
+      "alertType": "prescription",
+      "alertDescription": "needs pain medication.",
+      "patientBed": "Bed 305",
+      "patientName": "Mary Smith",
+      "patientMRN": "MRN 44847774",
+      "alertTimeAgo": "52 minutes ago",
+      "nursePhone": "408-368-3532",
+      "messages": [
+        {
+          "sender": "Marie Andrews",
+          "message": "Bob's fever has been going up in the last 22 minutes"
+        },
+        {
+          "sender": "You",
+          "message": "Immediately apply a patch of cold water. I'm coming right over"
+        }
+      ]
+    }
+  ]
+}

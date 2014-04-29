@@ -26,9 +26,25 @@
     return _allAlerts;
 }
 
+- (void)fireBaseTest
+{
+    // Create a reference to a Firebase location
+    Firebase* f = [[Firebase alloc] initWithUrl:@"https://myapp.firebaseIO-demo.com/"];
+
+    // Write data to Firebase
+    [f setValue:@"Do you have data? You'll love Firebase."];
+
+    // Read data and react to changes
+    [f observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
+        NSLog(@"%@ -> %@", snapshot.name, snapshot.value);
+    }];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+
+    [self fireBaseTest];
 
 	for (NSMutableDictionary *alertData in [CCAlertData allAlerts])
 	{

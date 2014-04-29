@@ -23,6 +23,12 @@
 		4766551318FB02E700D994B1 /* CrossCoverv2Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4766551218FB02E700D994B1 /* CrossCoverv2Tests.m */; };
 		4766552318FB321000D994B1 /* CCAlertDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4766552218FB321000D994B1 /* CCAlertDetailsViewController.m */; };
 		4777491F190887750000FCCE /* alertData.json in Resources */ = {isa = PBXBuildFile; fileRef = 4777491E190887750000FCCE /* alertData.json */; };
+		47A9E71F191067E100348E41 /* Firebase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47A9E71E191067E100348E41 /* Firebase.framework */; };
+		47A9E7211910682C00348E41 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 47A9E7201910682C00348E41 /* libicucore.dylib */; };
+		47A9E7231910683A00348E41 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 47A9E7221910683A00348E41 /* libc++.dylib */; };
+		47A9E7251910684600348E41 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47A9E7241910684600348E41 /* CFNetwork.framework */; };
+		47A9E7271910685200348E41 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47A9E7261910685200348E41 /* Security.framework */; };
+		47A9E7291910686000348E41 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47A9E7281910686000348E41 /* SystemConfiguration.framework */; };
 		47AF497F18FC28E20050EC0E /* CCAlert.m in Sources */ = {isa = PBXBuildFile; fileRef = 47AF497E18FC28E20050EC0E /* CCAlert.m */; };
 		47AF498218FC65380050EC0E /* CCAlertData.m in Sources */ = {isa = PBXBuildFile; fileRef = 47AF498118FC65380050EC0E /* CCAlertData.m */; };
 		47AF498F18FC9E830050EC0E /* consult.png in Resources */ = {isa = PBXBuildFile; fileRef = 47AF498318FC9E830050EC0E /* consult.png */; };
@@ -74,6 +80,12 @@
 		4766552118FB321000D994B1 /* CCAlertDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAlertDetailsViewController.h; sourceTree = "<group>"; };
 		4766552218FB321000D994B1 /* CCAlertDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCAlertDetailsViewController.m; sourceTree = "<group>"; };
 		4777491E190887750000FCCE /* alertData.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = alertData.json; sourceTree = "<group>"; };
+		47A9E71E191067E100348E41 /* Firebase.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Firebase.framework; sourceTree = "<group>"; };
+		47A9E7201910682C00348E41 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
+		47A9E7221910683A00348E41 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
+		47A9E7241910684600348E41 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		47A9E7261910685200348E41 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		47A9E7281910686000348E41 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		47AF497D18FC28E20050EC0E /* CCAlert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CCAlert.h; path = ../CCAlert.h; sourceTree = "<group>"; };
 		47AF497E18FC28E20050EC0E /* CCAlert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CCAlert.m; path = ../CCAlert.m; sourceTree = "<group>"; };
 		47AF498018FC65380050EC0E /* CCAlertData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAlertData.h; sourceTree = "<group>"; };
@@ -99,9 +111,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				47A9E7291910686000348E41 /* SystemConfiguration.framework in Frameworks */,
+				47A9E7271910685200348E41 /* Security.framework in Frameworks */,
+				47A9E7251910684600348E41 /* CFNetwork.framework in Frameworks */,
+				47A9E7231910683A00348E41 /* libc++.dylib in Frameworks */,
+				47A9E7211910682C00348E41 /* libicucore.dylib in Frameworks */,
 				476654EA18FB02E700D994B1 /* CoreGraphics.framework in Frameworks */,
 				476654EC18FB02E700D994B1 /* UIKit.framework in Frameworks */,
 				476654E818FB02E700D994B1 /* Foundation.framework in Frameworks */,
+				47A9E71F191067E100348E41 /* Firebase.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -140,6 +158,12 @@
 		476654E618FB02E700D994B1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				47A9E7281910686000348E41 /* SystemConfiguration.framework */,
+				47A9E7261910685200348E41 /* Security.framework */,
+				47A9E7241910684600348E41 /* CFNetwork.framework */,
+				47A9E7221910683A00348E41 /* libc++.dylib */,
+				47A9E7201910682C00348E41 /* libicucore.dylib */,
+				47A9E71E191067E100348E41 /* Firebase.framework */,
 				476654E718FB02E700D994B1 /* Foundation.framework */,
 				476654E918FB02E700D994B1 /* CoreGraphics.framework */,
 				476654EB18FB02E700D994B1 /* UIKit.framework */,
@@ -460,9 +484,14 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "CrossCoverv2/CrossCoverv2-Prefix.pch";
 				INFOPLIST_FILE = "CrossCoverv2/CrossCoverv2-Info.plist";
+				"OTHER_LDFLAGS[arch=*]" = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
@@ -476,9 +505,14 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "CrossCoverv2/CrossCoverv2-Prefix.pch";
 				INFOPLIST_FILE = "CrossCoverv2/CrossCoverv2-Info.plist";
+				"OTHER_LDFLAGS[arch=*]" = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;

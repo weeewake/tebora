@@ -6,34 +6,10 @@
       "id": "234",
       "channels": [
         {
-          "id": "51254",
-          "details": {
-            "status": "NEW",
-            "type": "critical",
-            "description": "fever of 105F",
-            "timestamp": "1 minute ago"
-          },
-          "patient": {
-            "name": "Bob Smith",
-            "mrn": "MRN 88447634",
-            "bed": "Bed 402",
-            "id": "123"
-          }
+          "id": "51254"
         },
         {
-          "id": "6252",
-          "details": {
-            "status": "NEW",
-            "type": "critical",
-            "description": "fever of 105F",
-            "timestamp": "1 minute ago"
-          },
-          "patient": {
-            "name": "Bob Smith",
-            "mrn": "MRN 88447634",
-            "bed": "Bed 402",
-            "id": "123"
-          }
+          "id": "6252"
         }
       ]
     },
@@ -43,34 +19,10 @@
       "id": "234",
       "channels": [
         {
-          "id": "51254",
-          "details": {
-            "status": "NEW",
-            "type": "critical",
-            "description": "fever of 105F",
-            "timestamp": "1 minute ago"
-          },
-          "patient": {
-            "name": "Bob Smith",
-            "mrn": "MRN 88447634",
-            "bed": "Bed 402",
-            "id": "123"
-          }
+          "id": "51254"
         },
         {
-          "id": "6252",
-          "details": {
-            "status": "NEW",
-            "type": "critical",
-            "description": "fever of 105F",
-            "timestamp": "1 minute ago"
-          },
-          "patient": {
-            "name": "Bob Smith",
-            "mrn": "MRN 88447634",
-            "bed": "Bed 402",
-            "id": "123"
-          }
+          "id": "6252"
         }
       ]
     }

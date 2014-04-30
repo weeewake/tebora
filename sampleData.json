@@ -1,40 +1,77 @@
 {
   "user": {
+    "doctor01": {
+      "name": "Doctor Debbie",
+      "phone": "123",
+      "id": "234",
+      "channels": [
+        {
+          "id": "51254",
+          "details": {
+            "status": "NEW",
+            "type": "critical",
+            "description": "fever of 105F",
+            "timestamp": "1 minute ago"
+          },
+          "patient": {
+            "name": "Bob Smith",
+            "mrn": "MRN 88447634",
+            "bed": "Bed 402",
+            "id": "123"
+          }
+        },
+        {
+          "id": "6252",
+          "details": {
+            "status": "NEW",
+            "type": "critical",
+            "description": "fever of 105F",
+            "timestamp": "1 minute ago"
+          },
+          "patient": {
+            "name": "Bob Smith",
+            "mrn": "MRN 88447634",
+            "bed": "Bed 402",
+            "id": "123"
+          }
+        }
+      ]
+    },
     "123": {
       "name": "Marie Andrews",
       "phone": "123",
       "id": "234",
-      "channels":  [
-      {
-        "id": "51254",
-        "details": {
-          "status": "NEW",
-          "type": "critical",
-          "description": "fever of 105F",
-          "timestamp": "1 minute ago"
+      "channels": [
+        {
+          "id": "51254",
+          "details": {
+            "status": "NEW",
+            "type": "critical",
+            "description": "fever of 105F",
+            "timestamp": "1 minute ago"
+          },
+          "patient": {
+            "name": "Bob Smith",
+            "mrn": "MRN 88447634",
+            "bed": "Bed 402",
+            "id": "123"
+          }
         },
-        "patient": {
-          "name": "Bob Smith",
-          "mrn": "MRN 88447634",
-          "bed": "Bed 402",
-          "id": "123"
+        {
+          "id": "6252",
+          "details": {
+            "status": "NEW",
+            "type": "critical",
+            "description": "fever of 105F",
+            "timestamp": "1 minute ago"
+          },
+          "patient": {
+            "name": "Bob Smith",
+            "mrn": "MRN 88447634",
+            "bed": "Bed 402",
+            "id": "123"
+          }
         }
-      },
-      {
-        "id": "6252",
-        "details": {
-          "status": "NEW",
-          "type": "critical",
-          "description": "fever of 105F",
-          "timestamp": "1 minute ago"
-        },
-        "patient": {
-          "name": "Bob Smith",
-          "mrn": "MRN 88447634",
-          "bed": "Bed 402",
-          "id": "123"
-        }
-      }
       ]
     }
   },
@@ -68,24 +105,24 @@
         }
       },
       "messages": [
-      {
-        "sender": {
-          "name": "Foo",
-          "phone": "123",
-          "id": "234"
+        {
+          "sender": {
+            "name": "Foo",
+            "phone": "123",
+            "id": "234"
+          },
+          "message": "Bob's fever has been going up in the last 22 minutes",
+          "timestamp": "12344444"
         },
-        "message": "Bob's fever has been going up in the last 22 minutes",
-        "timestamp": "12344444"
-      },
-      {
-        "sender": {
-          "name": "Foo",
-          "phone": "123",
-          "id": "234"
-        },
-        "message": "Bob's fever has been going up in the last 22 minutes",
-        "timestamp": "12344444"
-      }
+        {
+          "sender": {
+            "name": "Foo",
+            "phone": "123",
+            "id": "234"
+          },
+          "message": "Bob's fever has been going up in the last 22 minutes",
+          "timestamp": "12344444"
+        }
       ]
     }
   }

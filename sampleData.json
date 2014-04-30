@@ -30,8 +30,8 @@
   "channel": {
     "001": {
       "details": {
-        "status": "NEW",
-        "type": "critical",
+        "status": "OPEN",
+        "type": "CRITICAL",
         "description": "fever of 105F",
         "timestamp": "1 minute ago"
       },
@@ -79,8 +79,8 @@
     },
     "002": {
       "details": {
-        "status": "NEW",
-        "type": "critical",
+        "status": "RESOLVED",
+        "type": "CRITICAL",
         "description": "fever of 105F",
         "timestamp": "1 minute ago"
       },

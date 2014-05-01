@@ -1,16 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Cross Cover</title>
 
-    <!-- Bootstrap -->
-    <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-
-    <!-- Optional theme -->
     <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -19,235 +16,236 @@
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-    <script type="text/javascript" src="https://cdn.firebase.com/v0/firebase.js"></script>
-    <script type="text/javascript" src="https://cdn.firebase.com/v0/firebase-simple-login.js"></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.7.0/mustache.min.js"></script>
-    <script type="text/javascript" src="date-extensions.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.6.0/moment-with-langs.min.js"></script>
+    <script type="text/javascript" src="https://cdn.firebase.com/v0/firebase.js"></script>
+    <script type="text/javascript" src="https://cdn.firebase.com/v0/firebase-simple-login.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 
     <style>
-.panel-send-page {
-  background-color: #FBFBFB;
-}
-.panel-pending-pages {
-  background-color: #F9FFFF;
-}
-.panel-completed-pages {
-  background-color: #FEFFF4;
-}
-#inputPageMessage {
-  resize: vertical;
-  overflow: auto;
-}
-.page-message {
-  display: inline-block;
-  text-align: left;
-  font-size: 14px;
-}
-.seperator {
-  display: inline-block;
-  padding-left: 8px;
-}
-.page-time {
-  display: inline-block;
-  text-align: left;
-  font-size: 12px;
-  padding-left: 8px;
-  padding-right: 15px;
-}
-.page-type {
-  display: inline-block;
-  padding-left: 0px;
-  padding-right: 10px;
-}
-.panel .list-group-item {
-  line-height: 30px;
-}
-</style>
-<script type="text/javascript">
-  fbRef = new Firebase('https://tebora.firebaseio.com');
-  fbUser = null;
-  fbAuth = new FirebaseSimpleLogin(fbRef, function(error, user) {
-      if (error) {
-        // an error occurred while attempting login
-        console.log(error);
-        window.location.href = "index.html";
-      } else if (user) {
-        // user authenticated with Firebase
-        fbUser = user;
-        $('#username').text('' + user.email);
-        var userRef = fbRef.child('user/' + user.id);
-        var userNameRef = userRef.child('name');
-        userNameRef.on('value', function(snapshot) {
-          $('#username').text('' + snapshot.val());
-        });
-        var userChannelsRef = userRef.child('channels');
-        userChannelsRef.on('child_added', function(snapshot) {
-          var channelRef = fbRef.child('channel/' + snapshot.val().id);
-          channelRef.on('value', function(channelData) {
-            var details = channelData.val().details;
-            var existingPage = $('#channel_id_' + channelData.name());
-            if (existingPage != null) {
-              // if the status changed, remove the existing node
-              if (existingPage.find('page-status').text() != details.status) {
-                existingPage.remove();
-                existingPage = null;
-              } else {
-                // Same status, just update the data in the following code.
-              }
-            }
+    .panel-send-page {
+        background-color: #FBFBFB;
+    }
+    .panel-pending-pages {
+        background-color: #F9FFFF;
+    }
+    .panel-completed-pages {
+        background-color: #FEFFF4;
+    }
+    #inputPageMessage {
+        resize: vertical;
+        overflow: auto;
+    }
+    .page-message {
+        display: inline-block;
+        text-align: left;
+        font-size: 14px;
+    }
+    .seperator {
+        display: inline-block;
+        padding-left: 8px;
+    }
+    .page-time {
+        display: inline-block;
+        text-align: left;
+        font-size: 12px;
+        padding-left: 8px;
+        padding-right: 15px;
+    }
+    .page-type {
+        display: inline-block;
+        padding-left: 0px;
+        padding-right: 10px;
+    }
+    .panel .list-group-item {
+        line-height: 30px;
+    }
+    </style>
+    <script type="text/javascript">
+    fbRef = new Firebase('https://tebora.firebaseio.com');
+    fbUser = null;
+    fbAuth = new FirebaseSimpleLogin(fbRef, function(error, user) {
+        if (error) {
+            // an error occurred while attempting login
+            console.log(error);
+            window.location.href = "index.html";
+        } else if (user) {
+            // user authenticated with Firebase
+            fbUser = user;
+            $('#username').text('' + user.email);
+            var userRef = fbRef.child('user/' + user.id);
+            var userNameRef = userRef.child('name');
+            userNameRef.on('value', function(snapshot) {
+                $('#username').text('' + snapshot.val());
+            });
+            var userChannelsRef = userRef.child('channels');
+            userChannelsRef.on('child_added', function(snapshot) {
+                var channelRef = fbRef.child('channel/' + snapshot.val().id);
+                channelRef.on('value', function(channelData) {
+                    var details = channelData.val().details;
+                    var existingPage = $('#channel_id_' + channelData.name());
+                    if (existingPage != null) {
+                        // if the status changed, remove the existing node
+                        if (existingPage.find('page-status').text() != details.status) {
+                            existingPage.remove();
+                            existingPage = null;
+                        } else {
+                            // Same status, just update the data in the following code.
+                        }
+                    }
 
-            var patient = channelData.val().patient;
-            var data = {
-              status: details.status,
-              type: details.type,
-              patient: patient,
-              description: details.description,
-              time: new Date(details.timestamp * 1000).toRelativeTime()
-            };
-            var templateName = '#pendingTemplate';
-            var pageListName = '#pendinglist';
-            if (details.status == 'RESOLVED') {
-              templateName = '#completedTemplate';
-              pageListName = '#completedlist';
-            }
-            var rendered = Mustache.render($(templateName).html(), data);
-            var pageElement = existingPage;
-            if (pageElement == null) {
-              pageElement = $('<li></li>').addClass('list-group-item').attr('id', 'channel_id_' + channelData.name());
-            }
-            $(pageListName).append(pageElement.html(rendered));
-          });
-        });
-      } else {
-        // user is logged out
-        window.location.href = "index.html";
-      }
-  });
-</script>
+                    var patient = channelData.val().patient;
+                    var data = {
+                        status: details.status,
+                        type: details.type,
+                        patient: patient,
+                        description: details.description,
+                        unresolved: (details.status == 'OPEN'),
+                        time: moment.unix(details.timestamp).fromNow()
+                    };
+                    var pageListName = '#pendinglist';
+                    if (details.status == 'RESOLVED') {
+                        pageListName = '#completedlist';
+                    }
+                    var rendered = Mustache.render($('#pageTemplate').html(), data);
+                    var pageElement = existingPage;
+                    if (pageElement == null) {
+                        pageElement = $('<li></li>').addClass('list-group-item').attr('id', 'channel_id_' + channelData.name());
+                    }
+                    $(pageListName).append(pageElement.html(rendered));
+                });
+            });
+        } else {
+            // user is logged out
+            window.location.href = "index.html";
+        }
+    });
+    </script>
 </head>
+
 <body role="document">
-<div class="navbar navbar-default navbar-static-top" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="#">Cross Cover</a>
-    </div>
-    <div class="navbar-collapse collapse">
-      <ul class="nav navbar-nav navbar-right">
-        <li><a href="#" id="username"></a></li>
-        <li><button type="button" id="logout" class="btn btn-xs btn-default navbar-btn">Sign out</button></li>
-      </ul>
-    </div><!--/.nav-collapse -->
-  </div>
-</div>
-
-<div class="container" role="main">
-  <div class="panel panel-primary panel-send-page">
-    <div class="panel-body">
-      <form class="form-horizontal" role="form">
-        <div class="form-group">
-          <label for="inputPatientName" class="col-sm-2 control-label">Patient's Name</label>
-          <div class="col-sm-9">
-            <input type="text" class="form-control" id="inputPatientName" placeholder="Patient's Name"/>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="inputPatientMrn" class="col-sm-2 control-label">MRN</label>
-          <div class="col-sm-9">
-            <input type="text" class="form-control" id="inputPatientMrn" placeholder="Patient's MRN"/>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="inputPatientBed" class="col-sm-2 control-label">Bed</label>
-          <div class="col-sm-9">
-            <input type="text" class="form-control" id="inputPatientBed" placeholder="Patient's Bed"/>
-          </div>
-        </div>
-        <div class="form-group">
-          <div class="col-sm-offset-2 col-sm-9">
-            <div class="btn-group" data-toggle="buttons">
-              <label class="btn btn-sm btn-default" data-toggle="tooltip" title="Urgent">
-                <input type="radio" name="inputPageType" id="urgent">Urgent</input>
-              </label>
-              <label class="btn btn-sm btn-default" data-toggle="tooltip" title="Rx">
-                <input type="radio" name="inputPageType" id="rx">Rx</input>
-              </label>
-              <label class="btn btn-sm btn-default" data-toggle="tooltip" title="General">
-                <input type="radio" name="inputPageType" id="general">General</input>
-              </label>
+    <div class="navbar navbar-default navbar-static-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Cross Cover</a>
             </div>
-          </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="#" id="username"></a>
+                    </li>
+                    <li>
+                        <button type="button" id="logout" class="btn btn-xs btn-default navbar-btn">Sign out</button>
+                    </li>
+                </ul>
+            </div>
+            <!--/.nav-collapse -->
         </div>
-        <div class="form-group">
-          <label for="inputPageMessage" class="col-sm-2 control-label">Message</label>
-          <div class="col-sm-9">
-            <textarea class="form-control" id="inputPageMessage" rows="3"></textarea>
-          </div>
+    </div>
+
+    <div class="container" role="main">
+        <div class="panel panel-primary panel-send-page">
+            <div class="panel-body">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label for="inputPatientName" class="col-sm-2 control-label">Patient's Name</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="inputPatientName" placeholder="Patient's Name" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPatientMrn" class="col-sm-2 control-label">MRN</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="inputPatientMrn" placeholder="Patient's MRN" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPatientBed" class="col-sm-2 control-label">Bed</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="inputPatientBed" placeholder="Patient's Bed" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-9">
+                            <div class="btn-group" data-toggle="buttons">
+                                <label class="btn btn-sm btn-default" data-toggle="tooltip" title="Urgent">
+                                    <input type="radio" name="inputPageType" id="urgent">Urgent</input>
+                                </label>
+                                <label class="btn btn-sm btn-default" data-toggle="tooltip" title="Rx">
+                                    <input type="radio" name="inputPageType" id="rx">Rx</input>
+                                </label>
+                                <label class="btn btn-sm btn-default" data-toggle="tooltip" title="General">
+                                    <input type="radio" name="inputPageType" id="general">General</input>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPageMessage" class="col-sm-2 control-label">Message</label>
+                        <div class="col-sm-9">
+                            <textarea class="form-control" id="inputPageMessage" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-9">
+                            <button type="submit" class="btn btn-lg btn-primary" id="sendpage">Send a page</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
-        <div class="form-group">
-          <div class="col-sm-offset-2 col-sm-9">
-            <button type="submit" class="btn btn-lg btn-primary" id="sendpage">Send a page</button>
-          </div>
+
+        <script id="pageTemplate" type="text/x-tmpl-mustache">
+            <span class="page-resolution" style="display:none">{{status}}</span>
+            <span class="page-type page-type-alert">{{type}}</span>
+            <span class="page-message">{{patient.name}} <b>(MRN {{patient.mrn}}, Bed {{patient.bed}})</b> - {{description}}</span>
+            <span class="seperator">&middot;</span>
+            <span class="page-time">{{time}}</span>
+
+            {{#unresolved}}
+              <a href="#" role="button" class="btn btn-sm btn-default" data-toggle="tooltip"
+                 data-title="Click here to send the page again">Send Again</a>
+            {{/unresolved}}
+        </script>
+
+        <div class="panel panel-info panel-pending-pages">
+            <div class="panel-heading">
+                <h2 class="panel-title">Pending</h2>
+            </div>
+            <ul class="list-group" id="pendinglist"></ul>
         </div>
-      </form>
+
+        <div class="panel panel-success panel-completed-pages">
+            <div class="panel-heading">
+                <h2 class="panel-title">Completed</h2>
+            </div>
+            <ul class="list-group" id="completedlist"></ul>
+        </div>
     </div>
-  </div>
-
-  <script id="pendingTemplate" type="x-tmpl-mustache">
-    <span class="page-resolution" style="display:none">{{status}}</span>
-    <span class="page-type page-type-alert">{{type}}</span>
-    <span class="page-message">{{patient.name}} <b>(MRN {{patient.mrn}}, Bed {{patient.bed}})</b> - {{description}}</span>
-    <span class="seperator">&middot;</span>
-    <span class="page-time">{{time}}</span>
-    <a href="#" role="button" class="btn btn-sm btn-default" data-toggle="tooltip" data-title="Click here to send the page again">Send Again</a>
-  </script>
-
-  <script id="completedTemplate" type="x-tmpl-mustache">
-    <span class="page-resolution" style="display:none">{{status}}</span>
-    <span class="page-type page-type-test">{{type}}</span>
-    <span class="page-message">{{patient.name}} <b>(MRN {{patient.mrn}}, Bed {{patient.bed}})</b> - {{description}}</span>
-    <span class="seperator">&middot;</span>
-    <span class="page-time">{{time}}</span>
-  </script>
-
-  <div class="panel panel-info panel-pending-pages">
-    <div class="panel-heading">
-      <h2 class="panel-title">Pending</h2>
-    </div>
-    <ul class="list-group" id="pendinglist"></ul>
-  </div>
-
-  <div class="panel panel-success panel-completed-pages">
-    <div class="panel-heading">
-      <h2 class="panel-title">Completed</h2>
-    </div>
-    <ul class="list-group" id="completedlist"></ul>
-  </div>
-</div>
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-<!-- Include all compiled plugins (below), or include individual files as needed -->
-<!-- Latest compiled and minified JavaScript -->
-<script src="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-<script type="text/javascript">
-$(document).ready(function(){
-    $('.btn').tooltip({
-      placement: 'auto',
-      trigger: 'hover focus',
-      delay: { show: 500, hide: 100 },
-      container: 'body',
+    <script type="text/javascript">
+    $(document).ready(function() {
+        $('.btn').tooltip({
+            placement: 'auto',
+            trigger: 'hover focus',
+            delay: {
+                show: 500,
+                hide: 100
+            },
+            container: 'body',
+        });
+        $('#logout').click(function() {
+            fbAuth.logout();
+            window.location.href = "index.html";
+        });
     });
-    $('#logout').click(function() {
-        fbAuth.logout();
-        window.location.href = "index.html";
-    });
-});
-</script>
+    </script>
 </body>
+
 </html>

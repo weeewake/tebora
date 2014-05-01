@@ -3,8 +3,7 @@
     "1": {
       "name": "Doctor Jane",
       "phone": "530-942-9432",
-      "channels": [
-      ]
+      "channels": []
     },
     "3": {
       "name": "Nurse Luke",
@@ -24,6 +23,36 @@
         },
         {
           "id": "002"
+        },
+        {
+          "id": "003"
+        },
+        {
+          "id": "004"
+        },
+        {
+          "id": "005"
+        },
+        {
+          "id": "006"
+        },
+        {
+          "id": "007"
+        },
+        {
+          "id": "008"
+        },
+        {
+          "id": "009"
+        },
+        {
+          "id": "010"
+        },
+        {
+          "id": "011"
+        },
+        {
+          "id": "012"
         }
       ]
     },
@@ -42,11 +71,11 @@
       "details": {
         "status": "OPEN",
         "type": "CRITICAL",
-        "description": "fever of 105F",
+        "description": "Fever of 105F",
         "timestamp": "1398037384"
       },
       "patient": {
-        "name": "Patient One",
+        "name": "Bob Smith",
         "mrn": "MRN 88447634",
         "bed": "Bed 402",
         "id": "patient:342"
@@ -91,11 +120,501 @@
       "details": {
         "status": "RESOLVED",
         "type": "CRITICAL",
-        "description": "Heart rate over 180",
+        "description": "Heart rate has dropped to 35",
         "timestamp": "1398637384"
       },
       "patient": {
-        "name": "Patient Jill",
+        "name": "Joseph Kim",
+        "mrn": "MRN 93837634",
+        "bed": "Bed 326A",
+        "id": "patient:253"
+      },
+      "creator": {
+        "name": "Nurse Luke",
+        "phone": "510-934-9473",
+        "id": "3"
+      },
+      "participants": {
+        "3": {
+          "name": "Nurse Luke",
+          "phone": "510-934-9473"
+        },
+        "4": {
+          "name": "Doctor Debbie",
+          "phone": "408-247-9846"
+        }
+      },
+      "messages": [
+        {
+          "sender": {
+            "name": "Nurse Luke",
+            "phone": "510-934-9473",
+            "id": "3"
+          },
+          "message": "Jill's heart rate is over 180",
+          "timestamp": "1398640384"
+        },
+        {
+          "sender": {
+            "name": "Doctor Debbie",
+            "phone": "408-247-9846",
+            "id": "4"
+          },
+          "message": "I'll be right there!",
+          "timestamp": "1398647384"
+        }
+      ]
+    },
+    "003": {
+      "details": {
+        "status": "OPEN",
+        "type": "VITAL",
+        "description": "Has a fever of 102F",
+        "timestamp": "1398037384"
+      },
+      "patient": {
+        "name": "Jane Black",
+        "mrn": "MRN 88447634",
+        "bed": "Bed 402",
+        "id": "patient:342"
+      },
+      "creator": {
+        "name": "Nurse Marie",
+        "phone": "510-983-0283",
+        "id": "5"
+      },
+      "participants": {
+        "4": {
+          "name": "Doctor Debbie",
+          "phone": "408-247-9846"
+        },
+        "5": {
+          "name": "Nurse Marie",
+          "phone": "510-983-0283"
+        }
+      },
+      "messages": [
+        {
+          "sender": {
+            "name": "Nurse Marie",
+            "phone": "510-983-0283",
+            "id": "5"
+          },
+          "message": "Bob's fever has been going up in the last 22 minutes",
+          "timestamp": "1398037900"
+        },
+        {
+          "sender": {
+            "name": "Doctor Debbie",
+            "phone": "408-247-9846",
+            "id": "4"
+          },
+          "message": "I'm going to take a look at the patient",
+          "timestamp": "1398038384"
+        }
+      ]
+    },
+    "004": {
+      "details": {
+        "status": "RESOLVED",
+        "type": "RADIOLOGY",
+        "description": "Need to confirm NG Placement",
+        "timestamp": "1398637384"
+      },
+      "patient": {
+        "name": "Gordon Black",
+        "mrn": "MRN 93837634",
+        "bed": "Bed 326A",
+        "id": "patient:253"
+      },
+      "creator": {
+        "name": "Nurse Luke",
+        "phone": "510-934-9473",
+        "id": "3"
+      },
+      "participants": {
+        "3": {
+          "name": "Nurse Luke",
+          "phone": "510-934-9473"
+        },
+        "4": {
+          "name": "Doctor Debbie",
+          "phone": "408-247-9846"
+        }
+      },
+      "messages": [
+        {
+          "sender": {
+            "name": "Nurse Luke",
+            "phone": "510-934-9473",
+            "id": "3"
+          },
+          "message": "Jill's heart rate is over 180",
+          "timestamp": "1398640384"
+        },
+        {
+          "sender": {
+            "name": "Doctor Debbie",
+            "phone": "408-247-9846",
+            "id": "4"
+          },
+          "message": "I'll be right there!",
+          "timestamp": "1398647384"
+        }
+      ]
+    },
+    "005": {
+      "details": {
+        "status": "OPEN",
+        "type": "LAB",
+        "description": "Has HCT < 28",
+        "timestamp": "1398037384"
+      },
+      "patient": {
+        "name": "Scott Brown",
+        "mrn": "MRN 88447634",
+        "bed": "Bed 402",
+        "id": "patient:342"
+      },
+      "creator": {
+        "name": "Nurse Marie",
+        "phone": "510-983-0283",
+        "id": "5"
+      },
+      "participants": {
+        "4": {
+          "name": "Doctor Debbie",
+          "phone": "408-247-9846"
+        },
+        "5": {
+          "name": "Nurse Marie",
+          "phone": "510-983-0283"
+        }
+      },
+      "messages": [
+        {
+          "sender": {
+            "name": "Nurse Marie",
+            "phone": "510-983-0283",
+            "id": "5"
+          },
+          "message": "Bob's fever has been going up in the last 22 minutes",
+          "timestamp": "1398037900"
+        },
+        {
+          "sender": {
+            "name": "Doctor Debbie",
+            "phone": "408-247-9846",
+            "id": "4"
+          },
+          "message": "I'm going to take a look at the patient",
+          "timestamp": "1398038384"
+        }
+      ]
+    },
+    "006": {
+      "details": {
+        "status": "RESOLVED",
+        "type": "PRESCRIPTION",
+        "description": "Needs sleep medication",
+        "timestamp": "1398637384"
+      },
+      "patient": {
+        "name": "Gordon Leung",
+        "mrn": "MRN 93837634",
+        "bed": "Bed 326A",
+        "id": "patient:253"
+      },
+      "creator": {
+        "name": "Nurse Luke",
+        "phone": "510-934-9473",
+        "id": "3"
+      },
+      "participants": {
+        "3": {
+          "name": "Nurse Luke",
+          "phone": "510-934-9473"
+        },
+        "4": {
+          "name": "Doctor Debbie",
+          "phone": "408-247-9846"
+        }
+      },
+      "messages": [
+        {
+          "sender": {
+            "name": "Nurse Luke",
+            "phone": "510-934-9473",
+            "id": "3"
+          },
+          "message": "Jill's heart rate is over 180",
+          "timestamp": "1398640384"
+        },
+        {
+          "sender": {
+            "name": "Doctor Debbie",
+            "phone": "408-247-9846",
+            "id": "4"
+          },
+          "message": "I'll be right there!",
+          "timestamp": "1398647384"
+        }
+      ]
+    },
+    "007": {
+      "details": {
+        "status": "OPEN",
+        "type": "CONSULT",
+        "description": "Wants to speak with you",
+        "timestamp": "1398037384"
+      },
+      "patient": {
+        "name": "Morgan Smith",
+        "mrn": "MRN 88447634",
+        "bed": "Bed 402",
+        "id": "patient:342"
+      },
+      "creator": {
+        "name": "Nurse Marie",
+        "phone": "510-983-0283",
+        "id": "5"
+      },
+      "participants": {
+        "4": {
+          "name": "Doctor Debbie",
+          "phone": "408-247-9846"
+        },
+        "5": {
+          "name": "Nurse Marie",
+          "phone": "510-983-0283"
+        }
+      },
+      "messages": [
+        {
+          "sender": {
+            "name": "Nurse Marie",
+            "phone": "510-983-0283",
+            "id": "5"
+          },
+          "message": "Bob's fever has been going up in the last 22 minutes",
+          "timestamp": "1398037900"
+        },
+        {
+          "sender": {
+            "name": "Doctor Debbie",
+            "phone": "408-247-9846",
+            "id": "4"
+          },
+          "message": "I'm going to take a look at the patient",
+          "timestamp": "1398038384"
+        }
+      ]
+    },
+    "008": {
+      "details": {
+        "status": "RESOLVED",
+        "type": "IO",
+        "description": "Has UO < 50cc for 4 hours",
+        "timestamp": "1398637384"
+      },
+      "patient": {
+        "name": "Phil Jones",
+        "mrn": "MRN 93837634",
+        "bed": "Bed 326A",
+        "id": "patient:253"
+      },
+      "creator": {
+        "name": "Nurse Luke",
+        "phone": "510-934-9473",
+        "id": "3"
+      },
+      "participants": {
+        "3": {
+          "name": "Nurse Luke",
+          "phone": "510-934-9473"
+        },
+        "4": {
+          "name": "Doctor Debbie",
+          "phone": "408-247-9846"
+        }
+      },
+      "messages": [
+        {
+          "sender": {
+            "name": "Nurse Luke",
+            "phone": "510-934-9473",
+            "id": "3"
+          },
+          "message": "Jill's heart rate is over 180",
+          "timestamp": "1398640384"
+        },
+        {
+          "sender": {
+            "name": "Doctor Debbie",
+            "phone": "408-247-9846",
+            "id": "4"
+          },
+          "message": "I'll be right there!",
+          "timestamp": "1398647384"
+        }
+      ]
+    },
+    "009": {
+      "details": {
+        "status": "OPEN",
+        "type": "PRESCRIPTION",
+        "description": "Needs Diarrhoea Medication",
+        "timestamp": "1398037384"
+      },
+      "patient": {
+        "name": "Joanne Brown",
+        "mrn": "MRN 88447634",
+        "bed": "Bed 402",
+        "id": "patient:342"
+      },
+      "creator": {
+        "name": "Nurse Marie",
+        "phone": "510-983-0283",
+        "id": "5"
+      },
+      "participants": {
+        "4": {
+          "name": "Doctor Debbie",
+          "phone": "408-247-9846"
+        },
+        "5": {
+          "name": "Nurse Marie",
+          "phone": "510-983-0283"
+        }
+      },
+      "messages": [
+        {
+          "sender": {
+            "name": "Nurse Marie",
+            "phone": "510-983-0283",
+            "id": "5"
+          },
+          "message": "Bob's fever has been going up in the last 22 minutes",
+          "timestamp": "1398037900"
+        },
+        {
+          "sender": {
+            "name": "Doctor Debbie",
+            "phone": "408-247-9846",
+            "id": "4"
+          },
+          "message": "I'm going to take a look at the patient",
+          "timestamp": "1398038384"
+        }
+      ]
+    },
+    "010": {
+      "details": {
+        "status": "RESOLVED",
+        "type": "PRESCRIPTION",
+        "description": "Needs pain medication",
+        "timestamp": "1398637384"
+      },
+      "patient": {
+        "name": "Mary Smith",
+        "mrn": "MRN 93837634",
+        "bed": "Bed 326A",
+        "id": "patient:253"
+      },
+      "creator": {
+        "name": "Nurse Luke",
+        "phone": "510-934-9473",
+        "id": "3"
+      },
+      "participants": {
+        "3": {
+          "name": "Nurse Luke",
+          "phone": "510-934-9473"
+        },
+        "4": {
+          "name": "Doctor Debbie",
+          "phone": "408-247-9846"
+        }
+      },
+      "messages": [
+        {
+          "sender": {
+            "name": "Nurse Luke",
+            "phone": "510-934-9473",
+            "id": "3"
+          },
+          "message": "Jill's heart rate is over 180",
+          "timestamp": "1398640384"
+        },
+        {
+          "sender": {
+            "name": "Doctor Debbie",
+            "phone": "408-247-9846",
+            "id": "4"
+          },
+          "message": "I'll be right there!",
+          "timestamp": "1398647384"
+        }
+      ]
+    },
+    "011": {
+      "details": {
+        "status": "OPEN",
+        "type": "VITAL",
+        "description": "Has BP of 170",
+        "timestamp": "1398037384"
+      },
+      "patient": {
+        "name": "Sue Lee",
+        "mrn": "MRN 88447634",
+        "bed": "Bed 402",
+        "id": "patient:342"
+      },
+      "creator": {
+        "name": "Nurse Marie",
+        "phone": "510-983-0283",
+        "id": "5"
+      },
+      "participants": {
+        "4": {
+          "name": "Doctor Debbie",
+          "phone": "408-247-9846"
+        },
+        "5": {
+          "name": "Nurse Marie",
+          "phone": "510-983-0283"
+        }
+      },
+      "messages": [
+        {
+          "sender": {
+            "name": "Nurse Marie",
+            "phone": "510-983-0283",
+            "id": "5"
+          },
+          "message": "Bob's fever has been going up in the last 22 minutes",
+          "timestamp": "1398037900"
+        },
+        {
+          "sender": {
+            "name": "Doctor Debbie",
+            "phone": "408-247-9846",
+            "id": "4"
+          },
+          "message": "I'm going to take a look at the patient",
+          "timestamp": "1398038384"
+        }
+      ]
+    },
+    "012": {
+      "details": {
+        "status": "RESOLVED",
+        "type": "IO",
+        "description": "IO indicators are unstable",
+        "timestamp": "1398637384"
+      },
+      "patient": {
+        "name": "Mary Jones",
         "mrn": "MRN 93837634",
         "bed": "Bed 326A",
         "id": "patient:253"

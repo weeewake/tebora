@@ -1,9 +1,23 @@
 {
   "user": {
-    "doctor01": {
+    "1": {
+      "name": "Doctor Jane",
+      "phone": "530-942-9432",
+      "channels": [
+      ]
+    },
+    "3": {
+      "name": "Nurse Luke",
+      "phone": "510-934-9473",
+      "channels": [
+        {
+          "id": "002"
+        }
+      ]
+    },
+    "4": {
       "name": "Doctor Debbie",
-      "phone": "123",
-      "id": "234",
+      "phone": "408-247-9846",
       "channels": [
         {
           "id": "001"
@@ -13,16 +27,12 @@
         }
       ]
     },
-    "123": {
-      "name": "Marie Andrews",
-      "phone": "123",
-      "id": "234",
+    "5": {
+      "name": "Nurse Marie",
+      "phone": "510-983-0283",
       "channels": [
         {
-          "id": "51254"
-        },
-        {
-          "id": "6252"
+          "id": "001"
         }
       ]
     }
@@ -33,47 +43,47 @@
         "status": "OPEN",
         "type": "CRITICAL",
         "description": "fever of 105F",
-        "timestamp": "1 minute ago"
+        "timestamp": "1398037384"
       },
       "patient": {
-        "name": "Bob Smith",
+        "name": "Patient One",
         "mrn": "MRN 88447634",
         "bed": "Bed 402",
-        "id": "123"
+        "id": "patient:342"
       },
       "creator": {
-        "name": "Foo",
-        "phone": "123",
-        "id": "234"
+        "name": "Nurse Marie",
+        "phone": "510-983-0283",
+        "id": "5"
       },
       "participants": {
-        "123": {
-          "name": "Foo",
-          "phone": "123"
+        "4": {
+          "name": "Doctor Debbie",
+          "phone": "408-247-9846"
         },
-        "234": {
-          "name": "Foo",
-          "phone": "123"
+        "5": {
+          "name": "Nurse Marie",
+          "phone": "510-983-0283"
         }
       },
       "messages": [
         {
           "sender": {
-            "name": "Foo",
-            "phone": "123",
-            "id": "234"
+            "name": "Nurse Marie",
+            "phone": "510-983-0283",
+            "id": "5"
           },
           "message": "Bob's fever has been going up in the last 22 minutes",
-          "timestamp": "12344444"
+          "timestamp": "1398037900"
         },
         {
           "sender": {
-            "name": "Foo",
-            "phone": "123",
-            "id": "234"
+            "name": "Doctor Debbie",
+            "phone": "408-247-9846",
+            "id": "4"
           },
-          "message": "Bob's fever has been going up in the last 22 minutes",
-          "timestamp": "12344444"
+          "message": "I'm going to take a look at the patient",
+          "timestamp": "1398038384"
         }
       ]
     },
@@ -81,48 +91,48 @@
       "details": {
         "status": "RESOLVED",
         "type": "CRITICAL",
-        "description": "fever of 105F",
-        "timestamp": "1 minute ago"
+        "description": "Heart rate over 180",
+        "timestamp": "1398637384"
       },
       "patient": {
-        "name": "Bob Smith",
-        "mrn": "MRN 88447634",
-        "bed": "Bed 402",
-        "id": "123"
+        "name": "Patient Jill",
+        "mrn": "MRN 93837634",
+        "bed": "Bed 326A",
+        "id": "patient:253"
       },
       "creator": {
-        "name": "Foo",
-        "phone": "123",
-        "id": "234"
+        "name": "Nurse Luke",
+        "phone": "510-934-9473",
+        "id": "3"
       },
       "participants": {
-        "123": {
-          "name": "Foo",
-          "phone": "123"
+        "3": {
+          "name": "Nurse Luke",
+          "phone": "510-934-9473"
         },
-        "234": {
-          "name": "Foo",
-          "phone": "123"
+        "4": {
+          "name": "Doctor Debbie",
+          "phone": "408-247-9846"
         }
       },
       "messages": [
         {
           "sender": {
-            "name": "Foo",
-            "phone": "123",
-            "id": "234"
+            "name": "Nurse Luke",
+            "phone": "510-934-9473",
+            "id": "3"
           },
-          "message": "Bob's fever has been going up in the last 22 minutes",
-          "timestamp": "12344444"
+          "message": "Jill's heart rate is over 180",
+          "timestamp": "1398640384"
         },
         {
           "sender": {
-            "name": "Foo",
-            "phone": "123",
-            "id": "234"
+            "name": "Doctor Debbie",
+            "phone": "408-247-9846"
+            "id": "4"
           },
-          "message": "Bob's fever has been going up in the last 22 minutes",
-          "timestamp": "12344444"
+          "message": "I'll be right there!",
+          "timestamp": "1398647384"
         }
       ]
     }

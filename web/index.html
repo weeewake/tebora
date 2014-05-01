@@ -65,6 +65,21 @@ body {
   border-top-right-radius: 0;
 }
     </style>
+    <script type="text/javascript">
+  var fbRef = new Firebase('https://tebora.firebaseio.com');
+  auth = new FirebaseSimpleLogin(fbRef, function(error, user) {
+      if (error) {
+        // an error occurred while attempting login
+        console.log(error);
+      } else if (user) {
+        // user authenticated with Firebase
+        // alert('User ID: ' + user.id + ', Provider: ' + user.provider);
+        window.location.href = "app.html";
+      } else {
+        // user is logged out
+      }
+  });
+    </script>
     </head>
 
     <body>
@@ -80,20 +95,6 @@ body {
       </form>
       <script type="text/javascript">
 $('#submit').click(function login() {
-  var fbRef = new Firebase('https://tebora.firebaseio.com');
-  var auth = new FirebaseSimpleLogin(fbRef, function(error, user) {
-      if (error) {
-        // an error occurred while attempting login
-        console.log(error);
-      } else if (user) {
-        // user authenticated with Firebase
-        // alert('User ID: ' + user.id + ', Provider: ' + user.provider);
-        window.location.href = "app.html";
-      } else {
-        // user is logged out
-      }
-  });
-  auth.logout();  // logout any previous user
   auth.login('password', {
               email: $('#email').val(),
               password: $('#pwd').val(),

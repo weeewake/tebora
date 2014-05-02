@@ -1,4 +1,9 @@
 {
+  "oncall": {
+    "id": "1",
+    "name": "Doctor Jane",
+    "phone": "530-942-9432"
+  },
   "user": {
     "1": {
       "name": "Doctor Jane",

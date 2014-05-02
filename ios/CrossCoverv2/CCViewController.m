@@ -7,7 +7,6 @@
 //
 
 #import "CCViewController.h"
-#import "CCAlertData.h"
 #import "CCAlertDetailsViewController.h"
 
 @interface CCViewController ()
@@ -18,148 +17,111 @@
 
 #pragma mark - Initialization
 
-- (NSMutableArray *)allAlerts
-{
-    if(!_allAlerts) {
-        _allAlerts = [[NSMutableArray alloc] init];
-    }
-    return _allAlerts;
-}
-
-- (void)fireBaseTest
-{
-    // Create a reference to a Firebase location
-    Firebase* f = [[Firebase alloc] initWithUrl:@"https://myapp.firebaseIO-demo.com/"];
-
-    // Write data to Firebase
-    [f setValue:@"Do you have data? You'll love Firebase."];
-
-    // Read data and react to changes
-    [f observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
-        NSLog(@"%@ -> %@", snapshot.name, snapshot.value);
-    }];
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
-    [self fireBaseTest];
-
-	for (NSMutableDictionary *alertData in [CCAlertData allAlerts])
-	{
-		CCAlert *alert = [[CCAlert alloc] initWithData:alertData];
-		[self.allAlerts addObject:alert];
-	}
-
-    self.currentAlertTypeFilter = [@"home" mutableCopy];
+    self.userId = @"4";
+    [self loadAlertData];
+    
+    self.currentTypeFilter = [@"HOME" mutableCopy];
+    self.currentStatusFilter = [@"OPEN" mutableCopy];
+    
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
-    [self updateView];
 
-    self.segmentedControl = [[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObjects:@"Remaining", @"Completed", nil]];
+    self.segmentedControl = [[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObjects:@"Open", @"Resolved", nil]];
     [self.segmentedControl setSelectedSegmentIndex:0];
     [self.segmentedControl addTarget:self action:@selector(segmentedControlValueChanged:) forControlEvents: UIControlEventValueChanged];
     self.navigationItem.titleView = self.segmentedControl;
+
     [self.emptyTableView setHidden: YES];
+    [self updateView];
 }
+
+- (void) loadAlertData
+{
+    // Create a reference to this user's alerts (channels)
+    NSString *alertListURL = [NSString stringWithFormat:@"https://tebora.firebaseio.com/user/%@/channels", self.userId];
+    Firebase* f = [[Firebase alloc] initWithUrl:alertListURL];
+
+    // Read data and react to changes
+    [f observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
+        [self alertListChangedTo: snapshot.value];
+    }];
+}
+
+- (void) alertListChangedTo: (NSArray *)newAlertList
+{
+    self.alertList = [[NSMutableArray alloc] init];
+    for (NSDictionary *alert in newAlertList)
+	{
+        NSString *alertDetailsURL = [NSString stringWithFormat:@"https://tebora.firebaseio.com/channel/%@", alert[@"id"]];
+        Firebase* f = [[Firebase alloc] initWithUrl:alertDetailsURL];
+
+        [f observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
+            NSDictionary *changedAlert = [snapshot.value mutableCopy];
+
+            [changedAlert setValue:snapshot.name forKey:@"id"];
+            [changedAlert setValue:[NSString stringWithFormat:@"https://tebora.firebaseio.com/channel/%@/details/", snapshot.name] forKey:@"fireBaseURLForDetails"];
+            [changedAlert setValue:[NSString stringWithFormat:@"https://tebora.firebaseio.com/channel/%@/messages/", snapshot.name] forKey:@"fireBaseURLForMessages"];
+
+            NSLog(@"%@ -> %@", snapshot.name, snapshot.value);
+            NSInteger index = [self.alertList indexOfObjectPassingTest:^BOOL(NSDictionary *alert, NSUInteger idx, BOOL *stop) { return [alert[@"id"] isEqualToString:changedAlert[@"id"]];}];
+            if(index == NSNotFound)
+            {
+                [self.alertList addObject:changedAlert];
+            } else
+            {
+                self.alertList[index] = changedAlert;
+            }
+            [self updateView];
+        }];
+	}
+}
+
 
 - (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if([segue.destinationViewController isKindOfClass:[CCAlertDetailsViewController class]])
     {
         CCAlertDetailsViewController *alertDetailsVC = segue.destinationViewController;
-        NSIndexPath *indexPath = sender;
-        CCAlert *selectedAlert = self.currentlyVisibleAlerts[indexPath.row];
-        alertDetailsVC.alert = selectedAlert;
-        alertDetailsVC.delegate = self;
+        NSUInteger thisIndex = [self indexInAlertListForTableViewIndexPath:sender];
+        NSDictionary *thisAlert = self.alertList[thisIndex];
+        alertDetailsVC.alert = thisAlert;
     }
 }
 
 -(void)updateView
 {
-    // Update Table
-    NSString *completionStatus = @"ALL";
-    NSString *alertType = self.currentAlertTypeFilter;
+    [self setTitle:[self.currentTypeFilter capitalizedString]];
 
-    if([self.segmentedControl selectedSegmentIndex] == 0) {
-        completionStatus = @"NO";
-    }
-    else {
-        completionStatus = @"YES";
-    }
-
-    self.currentlyVisibleAlerts = [self alertsOfType:alertType andCompletionStatus:completionStatus];
-
-    [self.tableView reloadData];
-
-    // Update Title
-    [self setTitle:[alertType capitalizedString]];
-
-    // Update Toolbar
-    if([alertType isEqualToString:@"home"])
+    if([self.currentTypeFilter isEqualToString:@"HOME"])
     {
-        // Hide back button
         [self.navigationItem setLeftBarButtonItems:nil];
     }
     else
     {
-        // Show back button
         [self.navigationItem setLeftBarButtonItem:self.backButton];
     }
+
+    self.indexesOfCurrentlyDisplayedAlerts = [self.alertList indexesOfObjectsPassingTest:^BOOL(NSDictionary *thisAlert, NSUInteger idx, BOOL *stop) {
+        if([self.currentTypeFilter isEqualToString:@"HOME"])
+        {
+            return [thisAlert[@"details"][@"status"] isEqualToString: self.currentStatusFilter];
+        } else
+        {
+            return [thisAlert[@"details"][@"status"] isEqualToString: self.currentStatusFilter] && [thisAlert[@"details"][@"type"] isEqualToString:self.currentTypeFilter];
+        }
+    }];
+
+    [self.tableView reloadData];
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
-}
-
-#pragma mark - Alert Filtering
-
-- (NSArray*) alertsOfType: (NSString *)alertType
-{
-    if( [alertType isEqualToString:@"home"] ) {
-        return self.allAlerts;
-    }
-    else
-    {
-        NSPredicate *predicate = [NSPredicate predicateWithBlock:^BOOL(CCAlert *alert, NSDictionary *bindings){
-            return [alert.alertType isEqualToString: alertType];
-        }];
-        return [self.allAlerts filteredArrayUsingPredicate:predicate];
-    }
-
-}
-
-- (NSArray*) alertsOfCompletionStatus: (NSString *)completionStatus
-{
-    NSPredicate *predicate = [NSPredicate predicateWithBlock:^BOOL(CCAlert *alert, NSDictionary *bindings){
-        return [alert.isComplete isEqualToString: completionStatus];
-    }];
-
-    return [self.allAlerts filteredArrayUsingPredicate:predicate];
-}
-
-- (NSArray *) alertsOfType: (NSString *) alertType andCompletionStatus: (NSString *)isComplete
-{
-    NSMutableOrderedSet *alertsOfType = [NSMutableOrderedSet orderedSetWithArray:[self alertsOfType:alertType]];
-    NSMutableOrderedSet *alertsOfCompletionStatus = [NSMutableOrderedSet orderedSetWithArray:[self alertsOfCompletionStatus:isComplete]];
-
-    [alertsOfType intersectOrderedSet:alertsOfCompletionStatus];
-    return [alertsOfType array];
-}
-
-#pragma mark - CCAlertDetailsViewControllerDelegate
-
--(void)didSetCompletionStatusOf:(CCAlert *)alert to:(BOOL)status {
-    if(status == YES) {
-        alert.isComplete = @"YES";
-    } else {
-        alert.isComplete = @"NO";
-    }
-    [self updateView];
 }
 
 #pragma mark - UITableViewDataSource
@@ -171,30 +133,42 @@
 
 -(NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    NSInteger rowCount = [self.currentlyVisibleAlerts count];
-    if (rowCount == 0) {
-        NSString *alertType = ([self.currentAlertTypeFilter isEqualToString:@"home"]) ? @"" : self.currentAlertTypeFilter;
-        NSString *completedStatus = ([self.segmentedControl selectedSegmentIndex] == 0) ? @"remaining" : @"completed";
-        UILabel *emptyTableLabel = self.emptyTableView.subviews[0];
-        emptyTableLabel.text = [NSString stringWithFormat:@"No %@ alerts %@", alertType, completedStatus];
-        [self.emptyTableView setHidden:NO];
-        return 0;
-    }
-    else {
+    NSInteger count = [self.indexesOfCurrentlyDisplayedAlerts count];
+    if(count > 0) {
         [self.emptyTableView setHidden:YES];
-        return rowCount;
+        return count;
+    } else {
+        NSString *emptyTableViewMessage = [NSString stringWithFormat:@"No %@ alerts %@",
+                                           [self.currentTypeFilter isEqualToString:@"HOME"] ? @"" : [self.currentTypeFilter capitalizedString],
+                                           [self.currentStatusFilter capitalizedString]];
+        UILabel *emptyTableViewLabel = (UILabel *)[self.emptyTableView viewWithTag:1];
+        emptyTableViewLabel.text = emptyTableViewMessage;
+        [self.emptyTableView setHidden:NO];
+        return count;
     }
+}
+
+-(NSInteger) indexInAlertListForTableViewIndexPath: (NSIndexPath *)indexPath
+{
+    NSUInteger thisIndex = [self.indexesOfCurrentlyDisplayedAlerts firstIndex];
+
+    for (NSUInteger i = 0; i < indexPath.row; i++)
+        thisIndex = [self.indexesOfCurrentlyDisplayedAlerts indexGreaterThanIndex:thisIndex];
+    
+    return thisIndex;
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"AlertCell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    CCAlert *alert = self.currentlyVisibleAlerts[indexPath.row];
-    NSString *alertText = [[NSString alloc] initWithFormat:@"%@ (%@) %@",
-                           alert.patientName, alert.patientBed, alert.alertDescription];
-    if([alert.isComplete isEqualToString:@"YES"])
-    {
+
+    NSUInteger thisIndex = [self indexInAlertListForTableViewIndexPath: indexPath];
+    NSDictionary *thisAlert = self.alertList[thisIndex];
+    
+    NSString *alertText = [NSString stringWithFormat:@"%@ [%@] %@", thisAlert[@"patient"][@"name"], thisAlert[@"patient"][@"bed"], thisAlert[@"details"][@"description"]];
+
+    if([thisAlert[@"status"] isEqualToString:@"RESOLVED"]) {
         cell.textLabel.textColor = [UIColor lightGrayColor];
         NSDictionary* attributes = @{
                                      NSStrikethroughStyleAttributeName: [NSNumber numberWithInt:NSUnderlineStyleSingle]
@@ -207,10 +181,12 @@
         cell.textLabel.textColor = [UIColor darkGrayColor];
         cell.textLabel.text = alertText;
     }
-    cell.detailTextLabel.text = alert.alertTimeAgo;
-    cell.imageView.image = [UIImage imageNamed: [[NSString alloc] initWithFormat:@"%@.png", alert.alertType]];
+
+    cell.detailTextLabel.text = thisAlert[@"details"][@"timestamp"];
+
+    cell.imageView.image = [UIImage imageNamed: [NSString stringWithFormat:@"%@.png", thisAlert[@"details"][@"type"]]];
     cell.imageView.userInteractionEnabled = YES;
-    cell.imageView.tag = indexPath.row;
+    cell.imageView.tag = thisIndex;
     UITapGestureRecognizer *tapped = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(alertImageClicked:)];
     tapped.numberOfTapsRequired = 1;
     [cell.imageView addGestureRecognizer:tapped];
@@ -231,19 +207,24 @@
 -(void)alertImageClicked :(id) sender
 {
     UITapGestureRecognizer *gesture = (UITapGestureRecognizer *) sender;
-    CCAlert *thisAlert = self.currentlyVisibleAlerts[gesture.view.tag];
-    self.currentAlertTypeFilter =  [[NSString stringWithString: thisAlert.alertType] mutableCopy];
+    self.currentTypeFilter = self.alertList[gesture.view.tag][@"details"][@"type"];
     [self updateView];
 }
 
 - (IBAction)backButtonPressed:(UIBarButtonItem *)sender
 {
-    self.currentAlertTypeFilter = [@"home" mutableCopy];
+    self.currentTypeFilter = [@"HOME" mutableCopy];
     [self updateView];
 }
 
-- (IBAction)segmentedControlValueChanged:(UISegmentedControl *)sender
+- (void)segmentedControlValueChanged:(UISegmentedControl *)sender
 {
+    if([self.segmentedControl selectedSegmentIndex] == 0) {
+        self.currentStatusFilter = @"OPEN";
+    }
+    else {
+        self.currentStatusFilter = @"RESOLVED";
+    }
     [self updateView];
 }
 

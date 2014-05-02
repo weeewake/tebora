@@ -7,31 +7,20 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "CCAlert.h"
-
-
-// Protocols
-@protocol CCAlertDetailsViewControllerDelegate <NSObject>
--(void) didSetCompletionStatusOf:(CCAlert *)alert to:(BOOL)status;
-@end
 
 // Views
 @interface CCAlertDetailsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 @property (strong, nonatomic) IBOutlet UIImageView *alertImage;
 @property (strong, nonatomic) IBOutlet UILabel *alertDescription;
-@property (strong, nonatomic) IBOutlet UIButton *callNurse;
-@property (strong, nonatomic) IBOutlet UIButton *toggleCompleteButton;
-@property (strong, nonatomic) IBOutlet UITableView *messagesTableView;
-
-// Delegate
-@property (weak, nonatomic) id <CCAlertDetailsViewControllerDelegate> delegate;
+@property (strong, nonatomic) IBOutlet UITableView *alertDetailsTableView;
+@property (strong, nonatomic) IBOutlet UIButton *toggleStatusButton;
 
 // Model
-@property (strong, nonatomic) CCAlert *alert;
-@property (strong, nonatomic) NSArray *messages;
+@property (strong, nonatomic) NSDictionary *alert;
 
 
 // Actions
-- (IBAction)completeButtonPressed:(UIButton *)sender;
+- (IBAction)toggleStatusButtonPressed:(UIButton *)sender;
+
 
 @end

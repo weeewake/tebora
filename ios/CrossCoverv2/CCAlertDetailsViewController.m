@@ -28,21 +28,15 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    self.alertImage.image = [UIImage imageNamed: [[NSString alloc] initWithFormat:@"%@.png", self.alert.alertType]];
-    self.alertDescription.text = self.alert.alertDescription;
-    [self.alertDescription sizeToFit];
-    [self.toggleCompleteButton setTitle:([self.alert.isComplete isEqualToString:@"NO"]) ? @"Complete" : @"Reset" forState:UIControlStateNormal];
-    [self.callNurse setTitle: [NSString stringWithFormat:@"Call Nurse: %@", self.alert.nursePhone ] forState:UIControlStateNormal];
+    self.alertImage.image = [UIImage imageNamed: [[NSString alloc] initWithFormat:@"%@.png", self.alert[@"details"][@"type"]]];
+    self.alertDescription.text = self.alert[@"details"][@"description"];
 
-    self.messages = @[
-                      @{ @"sender" : @"Marie Andrews",
-                         @"message" : @"temperature of 100F"}
-                      ];
+    [self.toggleStatusButton setTitle:([self.alert[@"details"][@"status"] isEqualToString:@"OPEN"]) ? @"Resolve" : @"Reopen" forState:UIControlStateNormal];
     
-    self.messagesTableView.dataSource = self;
-    self.messagesTableView.delegate = self;
-    self.messagesTableView.allowsSelection = NO;
-    self.messagesTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    self.alertDetailsTableView.dataSource = self;
+    self.alertDetailsTableView.delegate = self;
+    self.alertDetailsTableView.allowsSelection = NO;
+    self.alertDetailsTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 }
 
 - (void)didReceiveMemoryWarning
@@ -65,15 +59,20 @@
 
 -(void)callNursePressed :(id) sender
 {
-    NSString *phoneCallURL = [NSString stringWithFormat:@"tel:%@", self.alert.nursePhone];
+    NSString *phoneCallURL = [NSString stringWithFormat:@"tel:%@", self.alert[@"creator"][@"phone"]];
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString: phoneCallURL]];
 }
 
-- (IBAction)completeButtonPressed:(UIButton *)sender {
-    if([self.alert.isComplete isEqualToString:@"NO"]) {
-        [self.delegate didSetCompletionStatusOf:self.alert to: YES];
-    } else {
-        [self.delegate didSetCompletionStatusOf:self.alert to: NO];
+- (IBAction)toggleStatusButtonPressed:(UIButton *)sender {
+    if([self.alert[@"details"][@"status"] isEqualToString:@"OPEN"])
+    {
+        Firebase* detailsRef = [[Firebase alloc] initWithUrl:self.alert[@"fireBaseURLForDetails"]];
+        [detailsRef updateChildValues:@{@"status": @"RESOLVED"}];
+    }
+    else
+    {
+        Firebase* detailsRef = [[Firebase alloc] initWithUrl:self.alert[@"fireBaseURLForDetails"]];
+        [detailsRef updateChildValues:@{@"status": @"OPEN"}];
     }
     [self.navigationController popViewControllerAnimated:YES];
 }
@@ -110,15 +109,15 @@
             switch(indexPath.row) {
                 case 0:
                     titleLabel.text = @"Name";
-                    valueLabel.text = self.alert.patientName;
+                    valueLabel.text = self.alert[@"patient"][@"name"];
                     break;
                 case 1:
                     titleLabel.text = @"MRN";
-                    valueLabel.text = self.alert.patientMRN;
+                    valueLabel.text = self.alert[@"patient"][@"mrn"];
                     break;
                 case 2:
                     titleLabel.text = @"Bed";
-                    valueLabel.text = self.alert.patientBed;
+                    valueLabel.text = self.alert[@"patient"][@"bed"];
                     break;
             }
             break;
@@ -126,11 +125,11 @@
             switch(indexPath.row) {
                 case 0:
                     titleLabel.text = @"Name";
-                    valueLabel.text = @"Marie Andrews";
+                    valueLabel.text = self.alert[@"creator"][@"name"];
                     break;
                 case 1:
                     titleLabel.text = @"Phone";
-                    valueLabel.text = self.alert.nursePhone;
+                    valueLabel.text = self.alert[@"creator"][@"phone"];
                     cell.detailTextLabel.textColor = [UIColor blueColor];
 
                     cell.detailTextLabel.tag = indexPath.row;
@@ -145,9 +144,8 @@
             cell = [tableView dequeueReusableCellWithIdentifier:@"MessageCell"];
             titleLabel = (UILabel *)[cell.contentView viewWithTag:1];
             valueLabel = (UILabel *)[cell.contentView viewWithTag:2];
-
-            titleLabel.text = self.alert.messages[indexPath.row][@"sender"];
-            valueLabel.text = self.alert.messages[indexPath.row][@"message"];
+            titleLabel.text = self.alert[@"messages"][indexPath.row][@"sender"][@"name"];
+            valueLabel.text = self.alert[@"messages"][indexPath.row][@"message"];
             break;
     }
 
@@ -159,7 +157,7 @@
     switch(section) {
         case 0: return 3;
         case 1: return 2;
-        case 2: return [self.alert.messages count];
+        case 2: return [self.alert[@"messages"] count];
     }
     return 0;
     //    return [self.messages count];

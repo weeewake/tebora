@@ -11,26 +11,29 @@
 
 @interface CCViewController : UIViewController
     <UITableViewDataSource,
-    UITableViewDelegate,
-    CCAlertDetailsViewControllerDelegate>
+    UITableViewDelegate>
 
-// Alert Data Model
-@property (strong, nonatomic) NSMutableArray *allAlerts;
+
+// Alert Model
+@property (strong, nonatomic) NSMutableArray *alertList;
+
+// User Model
+@property (strong, nonatomic) NSString *userId;
 
 // Application State Model
-@property (strong, nonatomic) NSMutableString *currentAlertTypeFilter;
-@property (strong, nonatomic) NSString *currentCompletionStatusFilter;
-@property (strong, nonatomic) NSArray *currentlyVisibleAlerts;
+@property (strong, nonatomic) NSMutableString *currentTypeFilter;
+@property (strong, nonatomic) NSString *currentStatusFilter;
+@property (strong, nonatomic) NSIndexSet *indexesOfCurrentlyDisplayedAlerts;
 
 // Views
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *backButton;
-@property (strong, nonatomic) IBOutlet UISegmentedControl *segmentedControl;
 @property (strong, nonatomic) IBOutlet UIView *emptyTableView;
+@property (strong, nonatomic) UISegmentedControl *segmentedControl;
 
 // Actions
 - (IBAction)backButtonPressed:(UIBarButtonItem *)sender;
-- (IBAction)segmentedControlValueChanged:(UISegmentedControl *)sender;
+- (void)segmentedControlValueChanged:(UISegmentedControl *)sender;
 - (void)alertImageClicked :(id) sender;
 
 @end

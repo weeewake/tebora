@@ -22,27 +22,24 @@
 		4766551118FB02E700D994B1 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4766550F18FB02E700D994B1 /* InfoPlist.strings */; };
 		4766551318FB02E700D994B1 /* CrossCoverv2Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4766551218FB02E700D994B1 /* CrossCoverv2Tests.m */; };
 		4766552318FB321000D994B1 /* CCAlertDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4766552218FB321000D994B1 /* CCAlertDetailsViewController.m */; };
-		4777491F190887750000FCCE /* alertData.json in Resources */ = {isa = PBXBuildFile; fileRef = 4777491E190887750000FCCE /* alertData.json */; };
 		47A9E71F191067E100348E41 /* Firebase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47A9E71E191067E100348E41 /* Firebase.framework */; };
 		47A9E7211910682C00348E41 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 47A9E7201910682C00348E41 /* libicucore.dylib */; };
 		47A9E7231910683A00348E41 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 47A9E7221910683A00348E41 /* libc++.dylib */; };
 		47A9E7251910684600348E41 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47A9E7241910684600348E41 /* CFNetwork.framework */; };
 		47A9E7271910685200348E41 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47A9E7261910685200348E41 /* Security.framework */; };
 		47A9E7291910686000348E41 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47A9E7281910686000348E41 /* SystemConfiguration.framework */; };
-		47AF497F18FC28E20050EC0E /* CCAlert.m in Sources */ = {isa = PBXBuildFile; fileRef = 47AF497E18FC28E20050EC0E /* CCAlert.m */; };
-		47AF498218FC65380050EC0E /* CCAlertData.m in Sources */ = {isa = PBXBuildFile; fileRef = 47AF498118FC65380050EC0E /* CCAlertData.m */; };
 		47AF498F18FC9E830050EC0E /* consult.png in Resources */ = {isa = PBXBuildFile; fileRef = 47AF498318FC9E830050EC0E /* consult.png */; };
 		47AF499018FC9E830050EC0E /* consult@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 47AF498418FC9E830050EC0E /* consult@2x.png */; };
 		47AF499118FC9E830050EC0E /* critical.png in Resources */ = {isa = PBXBuildFile; fileRef = 47AF498518FC9E830050EC0E /* critical.png */; };
 		47AF499218FC9E830050EC0E /* critical@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 47AF498618FC9E830050EC0E /* critical@2x.png */; };
-		47AF499318FC9E830050EC0E /* labs.png in Resources */ = {isa = PBXBuildFile; fileRef = 47AF498718FC9E830050EC0E /* labs.png */; };
-		47AF499418FC9E830050EC0E /* labs@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 47AF498818FC9E830050EC0E /* labs@2x.png */; };
+		47AF499318FC9E830050EC0E /* lab.png in Resources */ = {isa = PBXBuildFile; fileRef = 47AF498718FC9E830050EC0E /* lab.png */; };
+		47AF499418FC9E830050EC0E /* lab@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 47AF498818FC9E830050EC0E /* lab@2x.png */; };
 		47AF499518FC9E830050EC0E /* prescription.png in Resources */ = {isa = PBXBuildFile; fileRef = 47AF498918FC9E830050EC0E /* prescription.png */; };
 		47AF499618FC9E830050EC0E /* prescription@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 47AF498A18FC9E830050EC0E /* prescription@2x.png */; };
 		47AF499718FC9E830050EC0E /* radiology.png in Resources */ = {isa = PBXBuildFile; fileRef = 47AF498B18FC9E830050EC0E /* radiology.png */; };
 		47AF499818FC9E830050EC0E /* radiology@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 47AF498C18FC9E830050EC0E /* radiology@2x.png */; };
-		47AF499918FC9E830050EC0E /* vitals.png in Resources */ = {isa = PBXBuildFile; fileRef = 47AF498D18FC9E830050EC0E /* vitals.png */; };
-		47AF499A18FC9E830050EC0E /* vitals@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 47AF498E18FC9E830050EC0E /* vitals@2x.png */; };
+		47AF499918FC9E830050EC0E /* vital.png in Resources */ = {isa = PBXBuildFile; fileRef = 47AF498D18FC9E830050EC0E /* vital.png */; };
+		47AF499A18FC9E830050EC0E /* vital@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 47AF498E18FC9E830050EC0E /* vital@2x.png */; };
 		47AF499D18FC9FF30050EC0E /* io.png in Resources */ = {isa = PBXBuildFile; fileRef = 47AF499B18FC9FF30050EC0E /* io.png */; };
 		47AF499E18FC9FF30050EC0E /* io@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 47AF499C18FC9FF30050EC0E /* io@2x.png */; };
 /* End PBXBuildFile section */
@@ -79,29 +76,24 @@
 		4766551218FB02E700D994B1 /* CrossCoverv2Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CrossCoverv2Tests.m; sourceTree = "<group>"; };
 		4766552118FB321000D994B1 /* CCAlertDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAlertDetailsViewController.h; sourceTree = "<group>"; };
 		4766552218FB321000D994B1 /* CCAlertDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCAlertDetailsViewController.m; sourceTree = "<group>"; };
-		4777491E190887750000FCCE /* alertData.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = alertData.json; sourceTree = "<group>"; };
 		47A9E71E191067E100348E41 /* Firebase.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Firebase.framework; sourceTree = "<group>"; };
 		47A9E7201910682C00348E41 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
 		47A9E7221910683A00348E41 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
 		47A9E7241910684600348E41 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		47A9E7261910685200348E41 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		47A9E7281910686000348E41 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
-		47AF497D18FC28E20050EC0E /* CCAlert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CCAlert.h; path = ../CCAlert.h; sourceTree = "<group>"; };
-		47AF497E18FC28E20050EC0E /* CCAlert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CCAlert.m; path = ../CCAlert.m; sourceTree = "<group>"; };
-		47AF498018FC65380050EC0E /* CCAlertData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAlertData.h; sourceTree = "<group>"; };
-		47AF498118FC65380050EC0E /* CCAlertData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCAlertData.m; sourceTree = "<group>"; };
 		47AF498318FC9E830050EC0E /* consult.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = consult.png; sourceTree = "<group>"; };
 		47AF498418FC9E830050EC0E /* consult@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "consult@2x.png"; sourceTree = "<group>"; };
 		47AF498518FC9E830050EC0E /* critical.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = critical.png; sourceTree = "<group>"; };
 		47AF498618FC9E830050EC0E /* critical@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "critical@2x.png"; sourceTree = "<group>"; };
-		47AF498718FC9E830050EC0E /* labs.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = labs.png; sourceTree = "<group>"; };
-		47AF498818FC9E830050EC0E /* labs@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "labs@2x.png"; sourceTree = "<group>"; };
+		47AF498718FC9E830050EC0E /* lab.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lab.png; sourceTree = "<group>"; };
+		47AF498818FC9E830050EC0E /* lab@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lab@2x.png"; sourceTree = "<group>"; };
 		47AF498918FC9E830050EC0E /* prescription.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = prescription.png; sourceTree = "<group>"; };
 		47AF498A18FC9E830050EC0E /* prescription@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "prescription@2x.png"; sourceTree = "<group>"; };
 		47AF498B18FC9E830050EC0E /* radiology.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = radiology.png; sourceTree = "<group>"; };
 		47AF498C18FC9E830050EC0E /* radiology@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "radiology@2x.png"; sourceTree = "<group>"; };
-		47AF498D18FC9E830050EC0E /* vitals.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = vitals.png; sourceTree = "<group>"; };
-		47AF498E18FC9E830050EC0E /* vitals@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "vitals@2x.png"; sourceTree = "<group>"; };
+		47AF498D18FC9E830050EC0E /* vital.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = vital.png; sourceTree = "<group>"; };
+		47AF498E18FC9E830050EC0E /* vital@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "vital@2x.png"; sourceTree = "<group>"; };
 		47AF499B18FC9FF30050EC0E /* io.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = io.png; sourceTree = "<group>"; };
 		47AF499C18FC9FF30050EC0E /* io@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "io@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -175,8 +167,6 @@
 		476654ED18FB02E700D994B1 /* CrossCoverv2 */ = {
 			isa = PBXGroup;
 			children = (
-				47AF497D18FC28E20050EC0E /* CCAlert.h */,
-				47AF497E18FC28E20050EC0E /* CCAlert.m */,
 				476654F618FB02E700D994B1 /* CCAppDelegate.h */,
 				476654F718FB02E700D994B1 /* CCAppDelegate.m */,
 				476654F918FB02E700D994B1 /* Main.storyboard */,
@@ -184,8 +174,6 @@
 				4766552218FB321000D994B1 /* CCAlertDetailsViewController.m */,
 				476654FC18FB02E700D994B1 /* CCViewController.h */,
 				476654FD18FB02E700D994B1 /* CCViewController.m */,
-				47AF498018FC65380050EC0E /* CCAlertData.h */,
-				47AF498118FC65380050EC0E /* CCAlertData.m */,
 				476654FF18FB02E700D994B1 /* Images.xcassets */,
 				476654EE18FB02E700D994B1 /* Supporting Files */,
 			);
@@ -195,21 +183,20 @@
 		476654EE18FB02E700D994B1 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				4777491E190887750000FCCE /* alertData.json */,
 				47AF499B18FC9FF30050EC0E /* io.png */,
 				47AF499C18FC9FF30050EC0E /* io@2x.png */,
 				47AF498318FC9E830050EC0E /* consult.png */,
 				47AF498418FC9E830050EC0E /* consult@2x.png */,
 				47AF498518FC9E830050EC0E /* critical.png */,
 				47AF498618FC9E830050EC0E /* critical@2x.png */,
-				47AF498718FC9E830050EC0E /* labs.png */,
-				47AF498818FC9E830050EC0E /* labs@2x.png */,
+				47AF498718FC9E830050EC0E /* lab.png */,
+				47AF498818FC9E830050EC0E /* lab@2x.png */,
 				47AF498918FC9E830050EC0E /* prescription.png */,
 				47AF498A18FC9E830050EC0E /* prescription@2x.png */,
 				47AF498B18FC9E830050EC0E /* radiology.png */,
 				47AF498C18FC9E830050EC0E /* radiology@2x.png */,
-				47AF498D18FC9E830050EC0E /* vitals.png */,
-				47AF498E18FC9E830050EC0E /* vitals@2x.png */,
+				47AF498D18FC9E830050EC0E /* vital.png */,
+				47AF498E18FC9E830050EC0E /* vital@2x.png */,
 				476654EF18FB02E700D994B1 /* CrossCoverv2-Info.plist */,
 				476654F018FB02E700D994B1 /* InfoPlist.strings */,
 				476654F318FB02E700D994B1 /* main.m */,
@@ -316,23 +303,22 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				47AF499A18FC9E830050EC0E /* vitals@2x.png in Resources */,
+				47AF499A18FC9E830050EC0E /* vital@2x.png in Resources */,
 				47AF499D18FC9FF30050EC0E /* io.png in Resources */,
 				4766550018FB02E700D994B1 /* Images.xcassets in Resources */,
 				47AF499618FC9E830050EC0E /* prescription@2x.png in Resources */,
 				47AF499018FC9E830050EC0E /* consult@2x.png in Resources */,
-				47AF499418FC9E830050EC0E /* labs@2x.png in Resources */,
-				4777491F190887750000FCCE /* alertData.json in Resources */,
+				47AF499418FC9E830050EC0E /* lab@2x.png in Resources */,
 				476654F218FB02E700D994B1 /* InfoPlist.strings in Resources */,
 				47AF498F18FC9E830050EC0E /* consult.png in Resources */,
 				47AF499818FC9E830050EC0E /* radiology@2x.png in Resources */,
 				47AF499E18FC9FF30050EC0E /* io@2x.png in Resources */,
 				47AF499718FC9E830050EC0E /* radiology.png in Resources */,
 				47AF499118FC9E830050EC0E /* critical.png in Resources */,
-				47AF499318FC9E830050EC0E /* labs.png in Resources */,
+				47AF499318FC9E830050EC0E /* lab.png in Resources */,
 				476654FB18FB02E700D994B1 /* Main.storyboard in Resources */,
 				47AF499218FC9E830050EC0E /* critical@2x.png in Resources */,
-				47AF499918FC9E830050EC0E /* vitals.png in Resources */,
+				47AF499918FC9E830050EC0E /* vital.png in Resources */,
 				47AF499518FC9E830050EC0E /* prescription.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -352,11 +338,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				47AF498218FC65380050EC0E /* CCAlertData.m in Sources */,
 				476654F818FB02E700D994B1 /* CCAppDelegate.m in Sources */,
 				476654F418FB02E700D994B1 /* main.m in Sources */,
 				476654FE18FB02E700D994B1 /* CCViewController.m in Sources */,
-				47AF497F18FC28E20050EC0E /* CCAlert.m in Sources */,
 				4766552318FB321000D994B1 /* CCAlertDetailsViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

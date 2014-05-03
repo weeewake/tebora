@@ -263,6 +263,15 @@
         </div>
     </div>
     <script type="text/javascript">
+    var pageUpdateTime = 30000;   // once every 30 seconds
+    function updatePageTimes() {
+      console.log('updating page times');
+      $('li[id ^= "channel_id_"').each(function(index) {
+          var timestamp = $(this).find('.page-timestamp').text();
+          $(this).find('.page-time').text(moment.unix(timestamp).fromNow());
+      });
+      setTimeout(updatePageTimes, pageUpdateTime);  // schedule the next call
+    }
     $(document).ready(function() {
         $('.btn').tooltip({
             placement: 'auto',
@@ -328,6 +337,9 @@
             });
             return false;
         });
+
+        // Update the times of the pages every pageUpdateTime
+        setTimeout(updatePageTimes, pageUpdateTime);
     });
     </script>
 </body>

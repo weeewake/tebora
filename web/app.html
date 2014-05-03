@@ -114,8 +114,9 @@
                     }
                     var rendered = Mustache.render($('#pageTemplate').html(), data);
                     var pageElement = existingPage;
+                    var channelId = channelData.name();
                     if (pageElement == null) {
-                        pageElement = $('<li></li>').addClass('list-group-item').attr('id', 'channel_id_' + channelData.name());
+                        pageElement = $('<li></li>').addClass('list-group-item').attr('id', 'channel_id_' + channelId);
                     }
                     var renderedPage = pageElement.html(rendered);
                     var pages = $(pageListName).children();
@@ -131,6 +132,9 @@
                     } else {
                       $(pageListName).append(renderedPage);
                     }
+                    $(renderedPage).find('.btn').click(function() {
+                      fbRef.child('channel').child(channelId).child('details/timestamp').set(moment().format('X'));
+                    });
                 });
             });
         } else {
@@ -309,6 +313,7 @@
                         type: $("input[type='radio'][name='inputPageType']:checked").attr('id').toUpperCase(),
                         description: $('#inputPageMessage').val(),
                         status: 'OPEN',
+                        creation_timestamp: moment().format('X'),
                         timestamp: moment().format('X')
                     },
                 };

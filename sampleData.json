@@ -77,6 +77,7 @@
         "status": "OPEN",
         "type": "CRITICAL",
         "description": "Fever of 105F",
+        "creation_timestamp": "1398037384",
         "timestamp": "1398037384"
       },
       "patient": {
@@ -126,6 +127,7 @@
         "status": "RESOLVED",
         "type": "CRITICAL",
         "description": "Heart rate has dropped to 35",
+        "creation_timestamp": "1398037384",
         "timestamp": "1398637384"
       },
       "patient": {
@@ -175,6 +177,7 @@
         "status": "OPEN",
         "type": "VITAL",
         "description": "Has a fever of 102F",
+        "creation_timestamp": "1398037384",
         "timestamp": "1398037384"
       },
       "patient": {
@@ -224,6 +227,7 @@
         "status": "RESOLVED",
         "type": "RADIOLOGY",
         "description": "Need to confirm NG Placement",
+        "creation_timestamp": "1398037384",
         "timestamp": "1398637384"
       },
       "patient": {
@@ -273,6 +277,7 @@
         "status": "OPEN",
         "type": "LAB",
         "description": "Has HCT < 28",
+        "creation_timestamp": "1398037384",
         "timestamp": "1398037384"
       },
       "patient": {
@@ -322,6 +327,7 @@
         "status": "RESOLVED",
         "type": "PRESCRIPTION",
         "description": "Needs sleep medication",
+        "creation_timestamp": "1398037384",
         "timestamp": "1398637384"
       },
       "patient": {
@@ -371,6 +377,7 @@
         "status": "OPEN",
         "type": "CONSULT",
         "description": "Wants to speak with you",
+        "creation_timestamp": "1398037384",
         "timestamp": "1398037384"
       },
       "patient": {
@@ -420,6 +427,7 @@
         "status": "RESOLVED",
         "type": "IO",
         "description": "Has UO < 50cc for 4 hours",
+        "creation_timestamp": "1398037384",
         "timestamp": "1398637384"
       },
       "patient": {
@@ -469,6 +477,7 @@
         "status": "OPEN",
         "type": "PRESCRIPTION",
         "description": "Needs Diarrhoea Medication",
+        "creation_timestamp": "1398037384",
         "timestamp": "1398037384"
       },
       "patient": {
@@ -518,6 +527,7 @@
         "status": "RESOLVED",
         "type": "PRESCRIPTION",
         "description": "Needs pain medication",
+        "creation_timestamp": "1398037384",
         "timestamp": "1398637384"
       },
       "patient": {
@@ -567,6 +577,7 @@
         "status": "OPEN",
         "type": "VITAL",
         "description": "Has BP of 170",
+        "creation_timestamp": "1398037384",
         "timestamp": "1398037384"
       },
       "patient": {
@@ -616,6 +627,7 @@
         "status": "RESOLVED",
         "type": "IO",
         "description": "IO indicators are unstable",
+        "creation_timestamp": "1398037384",
         "timestamp": "1398637384"
       },
       "patient": {

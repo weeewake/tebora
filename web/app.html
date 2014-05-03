@@ -72,12 +72,15 @@
             window.location.href = "index.html";
         } else if (user) {
             // user authenticated with Firebase
-            fbUser = user;
             $('#username').text('' + user.email);
             var userRef = fbRef.child('user/' + user.id);
-            var userNameRef = userRef.child('name');
-            userNameRef.on('value', function(snapshot) {
-                $('#username').text('' + snapshot.val());
+            userRef.on('value', function(snapshot) {
+                fbUser = {
+                    id: user.id,
+                    name: snapshot.val().name,
+                    phone: snapshot.val().phone
+                };
+                $('#username').text('' + fbUser.name);
             });
             var userChannelsRef = userRef.child('channels');
             userChannelsRef.on('child_added', function(snapshot) {
@@ -102,18 +105,36 @@
                         patient: patient,
                         description: details.description,
                         unresolved: (details.status == 'OPEN'),
-                        time: moment.unix(details.timestamp).fromNow()
+                        time: moment.unix(details.timestamp).fromNow(),
+                        timestamp: details.timestamp
                     };
-                    var pageListName = '#pendinglist';
-                    if (details.status == 'RESOLVED') {
-                        pageListName = '#completedlist';
+                    var pageListName = '#completedlist';
+                    if (details.status == 'OPEN') {
+                        pageListName = '#pendinglist';
                     }
                     var rendered = Mustache.render($('#pageTemplate').html(), data);
                     var pageElement = existingPage;
+                    var channelId = channelData.name();
                     if (pageElement == null) {
-                        pageElement = $('<li></li>').addClass('list-group-item').attr('id', 'channel_id_' + channelData.name());
+                        pageElement = $('<li></li>').addClass('list-group-item').attr('id', 'channel_id_' + channelId);
                     }
-                    $(pageListName).append(pageElement.html(rendered));
+                    var renderedPage = pageElement.html(rendered);
+                    var pages = $(pageListName).children();
+                    var olderPageIndex = -1;
+                    for (var i = 0; i < pages.length; i++) {
+                      if ($(pages[i]).find('.page-timestamp').text().valueOf() <= data.timestamp) {
+                        olderPageIndex = i;
+                        break;
+                      }
+                    }
+                    if (olderPageIndex >= 0) {
+                      $(pages[olderPageIndex]).before(renderedPage);
+                    } else {
+                      $(pageListName).append(renderedPage);
+                    }
+                    $(renderedPage).find('.btn').click(function() {
+                      fbRef.child('channel').child(channelId).child('details/timestamp').set(moment().format('X'));
+                    });
                 });
             });
         } else {
@@ -153,7 +174,7 @@
     <div class="container" role="main">
         <div class="panel panel-primary panel-send-page">
             <div class="panel-body">
-                <form class="form-horizontal" role="form">
+                <form class="form-horizontal" role="form" id="pageForm">
                     <div class="form-group">
                         <label for="inputPatientName" class="col-sm-2 control-label">Patient's Name</label>
                         <div class="col-sm-9">
@@ -175,11 +196,26 @@
                     <div class="form-group">
                         <div class="col-sm-offset-2 col-sm-9">
                             <div class="btn-group" data-toggle="buttons">
-                                <label class="btn btn-sm btn-default" data-toggle="tooltip" title="Urgent">
-                                    <input type="radio" name="inputPageType" id="urgent">Urgent</input>
+                                <label class="btn btn-sm btn-default" data-toggle="tooltip" title="Critical">
+                                    <input type="radio" name="inputPageType" id="critical">Critical</input>
                                 </label>
-                                <label class="btn btn-sm btn-default" data-toggle="tooltip" title="Rx">
-                                    <input type="radio" name="inputPageType" id="rx">Rx</input>
+                                <label class="btn btn-sm btn-default" data-toggle="tooltip" title="Vital">
+                                    <input type="radio" name="inputPageType" id="vital">Vital</input>
+                                </label>
+                                <label class="btn btn-sm btn-default" data-toggle="tooltip" title="Lab">
+                                    <input type="radio" name="inputPageType" id="lab">Lab</input>
+                                </label>
+                                <label class="btn btn-sm btn-default" data-toggle="tooltip" title="Consult">
+                                    <input type="radio" name="inputPageType" id="consult">Consult</input>
+                                </label>
+                                <label class="btn btn-sm btn-default" data-toggle="tooltip" title="Prescription">
+                                    <input type="radio" name="inputPageType" id="prescription">Prescription</input>
+                                </label>
+                                <label class="btn btn-sm btn-default" data-toggle="tooltip" title="Radiology">
+                                    <input type="radio" name="inputPageType" id="radiology">Radiology</input>
+                                </label>
+                                <label class="btn btn-sm btn-default" data-toggle="tooltip" title="IO">
+                                    <input type="radio" name="inputPageType" id="io">IO</input>
                                 </label>
                                 <label class="btn btn-sm btn-default" data-toggle="tooltip" title="General">
                                     <input type="radio" name="inputPageType" id="general">General</input>
@@ -204,6 +240,7 @@
 
         <script id="pageTemplate" type="text/x-tmpl-mustache">
             <span class="page-resolution" style="display:none">{{status}}</span>
+            <span class="page-timestamp" style="display:none">{{timestamp}}</span>
             <span class="page-type page-type-alert">{{type}}</span>
             <span class="page-message">{{patient.name}} <b>(MRN {{patient.mrn}}, Bed {{patient.bed}})</b> - {{description}}</span>
             <span class="seperator">&middot;</span>
@@ -230,6 +267,15 @@
         </div>
     </div>
     <script type="text/javascript">
+    var pageUpdateTime = 30000;   // once every 30 seconds
+    function updatePageTimes() {
+      console.log('updating page times');
+      $('li[id ^= "channel_id_"').each(function(index) {
+          var timestamp = $(this).find('.page-timestamp').text();
+          $(this).find('.page-time').text(moment.unix(timestamp).fromNow());
+      });
+      setTimeout(updatePageTimes, pageUpdateTime);  // schedule the next call
+    }
     $(document).ready(function() {
         $('.btn').tooltip({
             placement: 'auto',
@@ -244,6 +290,61 @@
             fbAuth.logout();
             window.location.href = "index.html";
         });
+        $('#sendpage').click(function() {
+            fbRef.child('oncall').once('value', function(oncallData) {
+                if (!fbUser) return false;
+                var creator = fbUser;
+                var oncall = oncallData.val();
+                var channelData = {
+                    creator: {
+                        id: creator.id,
+                        name: creator.name,
+                        phone: creator.phone
+                    },
+                    patient: {
+                        id: '1', // TODO:
+                        bed: $('#inputPatientBed').val(),
+                        mrn: $('#inputPatientMrn').val(),
+                        name: $('#inputPatientName').val()
+                    },
+                    participants: {},
+                    messages: [],
+                    details: {
+                        type: $("input[type='radio'][name='inputPageType']:checked").attr('id').toUpperCase(),
+                        description: $('#inputPageMessage').val(),
+                        status: 'OPEN',
+                        creation_timestamp: moment().format('X'),
+                        timestamp: moment().format('X')
+                    },
+                };
+                channelData['participants'][creator.id] = {
+                    name: creator.name,
+                    phone: creator.phone
+                };
+                channelData['participants'][oncall.id] = {
+                    name: oncall.name,
+                    phone: oncall.phone
+                };
+                var channelId = creator.id + ':' + Math.floor(Math.random() * 10000000);
+                fbRef.child('channel').child(channelId).set(channelData,
+                    function(error) {
+                        if (error) return; // TODO: handle errors here and below!
+                        $('#pageForm')[0].reset();
+                        $('input[type="radio"][name="inputPageType"]').prop('checked', false)
+                        $('#pageForm').find('.btn-group .btn').removeClass('active');
+                        fbRef.child('user').child(creator.id).child('channels').push({
+                            id: channelId
+                        }, function(error) {});
+                        fbRef.child('user').child(oncall.id).child('channels').push({
+                            id: channelId
+                        }, function(error) {});
+                    });
+            });
+            return false;
+        });
+
+        // Update the times of the pages every pageUpdateTime
+        setTimeout(updatePageTimes, pageUpdateTime);
     });
     </script>
 </body>

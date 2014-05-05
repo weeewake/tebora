@@ -132,9 +132,19 @@
                     } else {
                       $(pageListName).append(renderedPage);
                     }
-                    $(renderedPage).find('.btn').click(function() {
-                      fbRef.child('channel').child(channelId).child('details/timestamp').set(moment().format('X'));
-                    });
+                    var pageSend = $(renderedPage).find('.btn-page-send');
+                    if (pageSend.length > 0) {
+                      pageSend.click(function() {
+                        fbRef.child('channel').child(channelId).child('details/timestamp').set(moment().format('X'));
+                      });
+                    }
+                    var pageReopen = $(renderedPage).find('.btn-page-reopen');
+                    if (pageReopen.length > 0) {
+                      pageReopen.click(function() {
+                        fbRef.child('channel').child(channelId).child('details/timestamp').set(moment().format('X'));
+                        fbRef.child('channel').child(channelId).child('details/status').set('OPEN');
+                      });
+                    }
                 });
             });
         } else {
@@ -247,8 +257,12 @@
             <span class="page-time">{{time}}</span>
 
             {{#unresolved}}
-              <a href="#" role="button" class="btn btn-sm btn-default" data-toggle="tooltip"
+              <a href="#" role="button" class="btn btn-sm btn-default btn-page-send" data-toggle="tooltip"
                  data-title="Click here to send the page again">Send Again</a>
+            {{/unresolved}}
+            {{^unresolved}}
+              <a href="#" role="button" class="btn btn-sm btn-default btn-page-reopen" data-toggle="tooltip"
+                 data-title="Click here to reopen the page">Reopen</a>
             {{/unresolved}}
         </script>
 

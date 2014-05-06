@@ -1,0 +1,5 @@
+{
+  "firebase": "tebora",
+  "public": "web",
+  "rules": "firebase-security-rules.json"
+}

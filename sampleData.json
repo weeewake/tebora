@@ -8,67 +8,63 @@
     "1": {
       "name": "Doctor Jane",
       "phone": "530-942-9432",
-      "channels": []
+      "channels": {}
     },
     "3": {
       "name": "Nurse Luke",
       "phone": "510-934-9473",
-      "channels": [
-        {
+      "channels": {
+        "abc": {
           "id": "002"
         }
-      ]
+      }
     },
     "4": {
       "name": "Doctor Debbie",
       "phone": "408-247-9846",
-      "channels": [
-        {
+      "channels": {
+        "abc": {
           "id": "001"
         },
-        {
+        "def": {
           "id": "002"
         },
-        {
+        "ghi": {
           "id": "003"
         },
-        {
+        "jkl": {
           "id": "004"
         },
-        {
+        "mno": {
           "id": "005"
         },
-        {
+        "pqr": {
           "id": "006"
         },
-        {
+        "stu": {
           "id": "007"
         },
-        {
+        "vwx": {
           "id": "008"
         },
-        {
+        "yza": {
           "id": "009"
         },
-        {
+        "yyz": {
           "id": "010"
         },
-        {
+        "yyyz": {
           "id": "011"
         },
-        {
+        "yyyyz": {
           "id": "012"
         }
-      ]
+      }
     },
     "5": {
       "name": "Nurse Marie",
       "phone": "510-983-0283",
-      "channels": [
-        {
-          "id": "001"
-        }
-      ]
+      "channels": {}
     }
   },
   "channel": {
@@ -101,8 +97,8 @@
           "phone": "510-983-0283"
         }
       },
-      "messages": [
-        {
+      "messages": {
+        "abc": {
           "sender": {
             "name": "Nurse Marie",
             "phone": "510-983-0283",
@@ -111,7 +107,7 @@
           "message": "Bob's fever has been going up in the last 22 minutes",
           "timestamp": "1398037900"
         },
-        {
+        "xyz": {
           "sender": {
             "name": "Doctor Debbie",
             "phone": "408-247-9846",
@@ -120,7 +116,7 @@
           "message": "I'm going to take a look at the patient",
           "timestamp": "1398038384"
         }
-      ]
+      }
     },
     "002": {
       "details": {
@@ -151,26 +147,26 @@
           "phone": "408-247-9846"
         }
       },
-      "messages": [
-        {
+      "messages": {
+        "abc": {
           "sender": {
-            "name": "Nurse Luke",
-            "phone": "510-934-9473",
-            "id": "3"
+            "name": "Nurse Marie",
+            "phone": "510-983-0283",
+            "id": "5"
           },
-          "message": "Jill's heart rate is over 180",
-          "timestamp": "1398640384"
+          "message": "Bob's fever has been going up in the last 22 minutes",
+          "timestamp": "1398037900"
         },
-        {
+        "xyz": {
           "sender": {
             "name": "Doctor Debbie",
             "phone": "408-247-9846",
             "id": "4"
           },
-          "message": "I'll be right there!",
-          "timestamp": "1398647384"
+          "message": "I'm going to take a look at the patient",
+          "timestamp": "1398038384"
         }
-      ]
+      }
     },
     "003": {
       "details": {
@@ -201,8 +197,8 @@
           "phone": "510-983-0283"
         }
       },
-      "messages": [
-        {
+      "messages": {
+        "abc": {
           "sender": {
             "name": "Nurse Marie",
             "phone": "510-983-0283",
@@ -211,7 +207,7 @@
           "message": "Bob's fever has been going up in the last 22 minutes",
           "timestamp": "1398037900"
         },
-        {
+        "xyz": {
           "sender": {
             "name": "Doctor Debbie",
             "phone": "408-247-9846",
@@ -220,7 +216,7 @@
           "message": "I'm going to take a look at the patient",
           "timestamp": "1398038384"
         }
-      ]
+      }
     },
     "004": {
       "details": {
@@ -251,26 +247,26 @@
           "phone": "408-247-9846"
         }
       },
-      "messages": [
-        {
+      "messages": {
+        "abc": {
           "sender": {
-            "name": "Nurse Luke",
-            "phone": "510-934-9473",
-            "id": "3"
+            "name": "Nurse Marie",
+            "phone": "510-983-0283",
+            "id": "5"
           },
-          "message": "Jill's heart rate is over 180",
-          "timestamp": "1398640384"
+          "message": "Bob's fever has been going up in the last 22 minutes",
+          "timestamp": "1398037900"
         },
-        {
+        "xyz": {
           "sender": {
             "name": "Doctor Debbie",
             "phone": "408-247-9846",
             "id": "4"
           },
-          "message": "I'll be right there!",
-          "timestamp": "1398647384"
+          "message": "I'm going to take a look at the patient",
+          "timestamp": "1398038384"
         }
-      ]
+      }
     },
     "005": {
       "details": {
@@ -301,8 +297,8 @@
           "phone": "510-983-0283"
         }
       },
-      "messages": [
-        {
+      "messages": {
+        "abc": {
           "sender": {
             "name": "Nurse Marie",
             "phone": "510-983-0283",
@@ -311,7 +307,7 @@
           "message": "Bob's fever has been going up in the last 22 minutes",
           "timestamp": "1398037900"
         },
-        {
+        "xyz": {
           "sender": {
             "name": "Doctor Debbie",
             "phone": "408-247-9846",
@@ -320,7 +316,7 @@
           "message": "I'm going to take a look at the patient",
           "timestamp": "1398038384"
         }
-      ]
+      }
     },
     "006": {
       "details": {
@@ -351,26 +347,26 @@
           "phone": "408-247-9846"
         }
       },
-      "messages": [
-        {
+      "messages": {
+        "abc": {
           "sender": {
-            "name": "Nurse Luke",
-            "phone": "510-934-9473",
-            "id": "3"
+            "name": "Nurse Marie",
+            "phone": "510-983-0283",
+            "id": "5"
           },
-          "message": "Jill's heart rate is over 180",
-          "timestamp": "1398640384"
+          "message": "Bob's fever has been going up in the last 22 minutes",
+          "timestamp": "1398037900"
         },
-        {
+        "xyz": {
           "sender": {
             "name": "Doctor Debbie",
             "phone": "408-247-9846",
             "id": "4"
           },
-          "message": "I'll be right there!",
-          "timestamp": "1398647384"
+          "message": "I'm going to take a look at the patient",
+          "timestamp": "1398038384"
         }
-      ]
+      }
     },
     "007": {
       "details": {
@@ -401,8 +397,8 @@
           "phone": "510-983-0283"
         }
       },
-      "messages": [
-        {
+      "messages": {
+        "abc": {
           "sender": {
             "name": "Nurse Marie",
             "phone": "510-983-0283",
@@ -411,7 +407,7 @@
           "message": "Bob's fever has been going up in the last 22 minutes",
           "timestamp": "1398037900"
         },
-        {
+        "xyz": {
           "sender": {
             "name": "Doctor Debbie",
             "phone": "408-247-9846",
@@ -420,7 +416,7 @@
           "message": "I'm going to take a look at the patient",
           "timestamp": "1398038384"
         }
-      ]
+      }
     },
     "008": {
       "details": {
@@ -451,26 +447,26 @@
           "phone": "408-247-9846"
         }
       },
-      "messages": [
-        {
+      "messages": {
+        "abc": {
           "sender": {
-            "name": "Nurse Luke",
-            "phone": "510-934-9473",
-            "id": "3"
+            "name": "Nurse Marie",
+            "phone": "510-983-0283",
+            "id": "5"
           },
-          "message": "Jill's heart rate is over 180",
-          "timestamp": "1398640384"
+          "message": "Bob's fever has been going up in the last 22 minutes",
+          "timestamp": "1398037900"
         },
-        {
+        "xyz": {
           "sender": {
             "name": "Doctor Debbie",
             "phone": "408-247-9846",
             "id": "4"
           },
-          "message": "I'll be right there!",
-          "timestamp": "1398647384"
+          "message": "I'm going to take a look at the patient",
+          "timestamp": "1398038384"
         }
-      ]
+      }
     },
     "009": {
       "details": {
@@ -501,8 +497,8 @@
           "phone": "510-983-0283"
         }
       },
-      "messages": [
-        {
+      "messages": {
+        "abc": {
           "sender": {
             "name": "Nurse Marie",
             "phone": "510-983-0283",
@@ -511,7 +507,7 @@
           "message": "Bob's fever has been going up in the last 22 minutes",
           "timestamp": "1398037900"
         },
-        {
+        "xyz": {
           "sender": {
             "name": "Doctor Debbie",
             "phone": "408-247-9846",
@@ -520,7 +516,7 @@
           "message": "I'm going to take a look at the patient",
           "timestamp": "1398038384"
         }
-      ]
+      }
     },
     "010": {
       "details": {
@@ -551,26 +547,26 @@
           "phone": "408-247-9846"
         }
       },
-      "messages": [
-        {
+      "messages": {
+        "abc": {
           "sender": {
-            "name": "Nurse Luke",
-            "phone": "510-934-9473",
-            "id": "3"
+            "name": "Nurse Marie",
+            "phone": "510-983-0283",
+            "id": "5"
           },
-          "message": "Jill's heart rate is over 180",
-          "timestamp": "1398640384"
+          "message": "Bob's fever has been going up in the last 22 minutes",
+          "timestamp": "1398037900"
         },
-        {
+        "xyz": {
           "sender": {
             "name": "Doctor Debbie",
             "phone": "408-247-9846",
             "id": "4"
           },
-          "message": "I'll be right there!",
-          "timestamp": "1398647384"
+          "message": "I'm going to take a look at the patient",
+          "timestamp": "1398038384"
         }
-      ]
+      }
     },
     "011": {
       "details": {
@@ -601,8 +597,8 @@
           "phone": "510-983-0283"
         }
       },
-      "messages": [
-        {
+      "messages": {
+        "abc": {
           "sender": {
             "name": "Nurse Marie",
             "phone": "510-983-0283",
@@ -611,7 +607,7 @@
           "message": "Bob's fever has been going up in the last 22 minutes",
           "timestamp": "1398037900"
         },
-        {
+        "xyz": {
           "sender": {
             "name": "Doctor Debbie",
             "phone": "408-247-9846",
@@ -620,7 +616,7 @@
           "message": "I'm going to take a look at the patient",
           "timestamp": "1398038384"
         }
-      ]
+      }
     },
     "012": {
       "details": {
@@ -651,26 +647,26 @@
           "phone": "408-247-9846"
         }
       },
-      "messages": [
-        {
+      "messages": {
+        "abc": {
           "sender": {
-            "name": "Nurse Luke",
-            "phone": "510-934-9473",
-            "id": "3"
+            "name": "Nurse Marie",
+            "phone": "510-983-0283",
+            "id": "5"
           },
-          "message": "Jill's heart rate is over 180",
-          "timestamp": "1398640384"
+          "message": "Bob's fever has been going up in the last 22 minutes",
+          "timestamp": "1398037900"
         },
-        {
+        "xyz": {
           "sender": {
             "name": "Doctor Debbie",
             "phone": "408-247-9846",
             "id": "4"
           },
-          "message": "I'll be right there!",
-          "timestamp": "1398647384"
+          "message": "I'm going to take a look at the patient",
+          "timestamp": "1398038384"
         }
-      ]
+      }
     }
   }
 }

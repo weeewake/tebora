@@ -51,15 +51,24 @@
         text-align: left;
         font-size: 12px;
         padding-left: 8px;
-        padding-right: 15px;
+        padding-right: 8px;
     }
     .page-type {
         display: inline-block;
         padding-left: 0px;
         padding-right: 10px;
     }
+    .page-message-count {
+        display: inline-block;
+        float: none !important;
+        margin-left: 0px;
+        margin-right: 15px;
+    }
     .panel .list-group-item {
         line-height: 30px;
+    }
+    .badge-info {
+        background-color: #3a87ad;
     }
     </style>
     <script type="text/javascript">
@@ -99,12 +108,14 @@
                     }
 
                     var patient = channelData.val().patient;
+                    var messages = channelData.val().messages;
                     var data = {
                         status: details.status,
                         type: details.type,
                         patient: patient,
                         description: details.description,
                         unresolved: (details.status == 'OPEN'),
+                        messageCount: (messages != null ? messages.length : 0),
                         time: moment.unix(details.timestamp).fromNow(),
                         timestamp: details.timestamp
                     };
@@ -255,6 +266,10 @@
             <span class="page-message">{{patient.name}} <b>(MRN {{patient.mrn}}, Bed {{patient.bed}})</b> - {{description}}</span>
             <span class="seperator">&middot;</span>
             <span class="page-time">{{time}}</span>
+
+            {{#messageCount}}
+            <span class="page-message-count badge badge-info">{{messageCount}}</span>
+            {{/messageCount}}
 
             {{#unresolved}}
               <a href="#" role="button" class="btn btn-sm btn-default btn-page-send" data-toggle="tooltip"

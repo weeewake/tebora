@@ -101,7 +101,8 @@
                 var channelRef = fbRef.child('channel/' + snapshot.val().id);
                 channelRef.on('value', function(channelData) {
                     var details = channelData.val().details;
-                    var existingPage = $('#channel_id_' + channelData.name());
+                    var channelId = channelData.name();
+                    var existingPage = $('#channel_id_' + channelId);
                     if (existingPage != null) {
                         // if the status changed, remove the existing node
                         if (existingPage.find('.page-status').text() != details.status) {
@@ -111,7 +112,6 @@
                             // Same status, just update the data in the following code.
                         }
                     }
-                    var channelId = channelData.name();
                     var patient = channelData.val().patient;
                     var messages = channelData.val().messages;
                     var data = {
@@ -332,7 +332,7 @@
     var pageUpdateTime = 30000;   // once every 30 seconds
     function updatePageTimes() {
       console.log('updating page times');
-      $('li[id ^= "channel_id_"').each(function(index) {
+      $('div[id ^= "channel_id_"').each(function(index) {
           var timestamp = $(this).find('.page-timestamp').text();
           $(this).find('.page-time').text(moment.unix(timestamp).fromNow());
       });
@@ -387,7 +387,7 @@
                     name: oncall.name,
                     phone: oncall.phone
                 };
-                var channelId = creator.id + ':' + Math.floor(Math.random() * 10000000);
+                var channelId = creator.id + '_' + Math.floor(Math.random() * 10000000);
                 fbRef.child('channel').child(channelId).set(channelData,
                     function(error) {
                         if (error) return; // TODO: handle errors here and below!

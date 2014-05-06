@@ -18,7 +18,7 @@
 @property (strong, nonatomic) NSMutableArray *alertList;
 
 // User Model
-@property (strong, nonatomic) NSString *userId;
+@property (strong, nonatomic) NSMutableDictionary *user;
 
 // Application State Model
 @property (strong, nonatomic) NSMutableString *currentTypeFilter;

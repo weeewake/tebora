@@ -8,19 +8,21 @@
 
 #import <UIKit/UIKit.h>
 
+@interface CCAlertDetailsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate>
+
 // Views
-@interface CCAlertDetailsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
-@property (strong, nonatomic) IBOutlet UIImageView *alertImage;
-@property (strong, nonatomic) IBOutlet UILabel *alertDescription;
 @property (strong, nonatomic) IBOutlet UITableView *alertDetailsTableView;
 @property (strong, nonatomic) IBOutlet UIButton *toggleStatusButton;
+@property (strong, nonatomic) IBOutlet UITextField *enterMessageTextField;
+
+// View State
+@property (strong, nonatomic) UITextField *activeField;
 
 // Model
-@property (strong, nonatomic) NSDictionary *alert;
-
+@property (strong, nonatomic) NSMutableDictionary *alert;
 
 // Actions
 - (IBAction)toggleStatusButtonPressed:(UIButton *)sender;
-
+- (IBAction)sendMessageButtonPressed:(UIButton *)sender;
 
 @end

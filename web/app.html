@@ -66,6 +66,11 @@
     }
     .panel .list-group-item {
         line-height: 30px;
+        border-radius: 0px;
+    }
+    .panel .list-group {
+        margin-bottom: 0px;
+        border-radius: 0px;
     }
     .badge-info {
         background-color: #3a87ad;
@@ -99,14 +104,14 @@
                     var existingPage = $('#channel_id_' + channelData.name());
                     if (existingPage != null) {
                         // if the status changed, remove the existing node
-                        if (existingPage.find('page-status').text() != details.status) {
+                        if (existingPage.find('.page-status').text() != details.status) {
                             existingPage.remove();
                             existingPage = null;
                         } else {
                             // Same status, just update the data in the following code.
                         }
                     }
-
+                    var channelId = channelData.name();
                     var patient = channelData.val().patient;
                     var messages = channelData.val().messages;
                     var data = {
@@ -125,11 +130,17 @@
                     }
                     var rendered = Mustache.render($('#pageTemplate').html(), data);
                     var pageElement = existingPage;
-                    var channelId = channelData.name();
                     if (pageElement == null) {
-                        pageElement = $('<li></li>').addClass('list-group-item').attr('id', 'channel_id_' + channelId);
+                        pageElement = $('<div></div>');
                     }
+                    pageElement.attr('id', 'channel_id_' + channelId);
                     var renderedPage = pageElement.html(rendered);
+                    pageElement.click(function() {
+                        var currentMessageList = $(this).find('.message-list');
+                        var collapsed = currentMessageList.hasClass('collapse');
+                        $('.message-list').addClass('collapse');
+                        if (collapsed) currentMessageList.removeClass('collapse');
+                    });
                     var pages = $(pageListName).children();
                     var olderPageIndex = -1;
                     for (var i = 0; i < pages.length; i++) {
@@ -260,6 +271,8 @@
         </div>
 
         <script id="pageTemplate" type="text/x-tmpl-mustache">
+            <ul class="list-group">
+            <li class="list-group-item">
             <span class="page-resolution" style="display:none">{{status}}</span>
             <span class="page-timestamp" style="display:none">{{timestamp}}</span>
             <span class="page-type page-type-alert">{{type}}</span>
@@ -279,20 +292,40 @@
               <a href="#" role="button" class="btn btn-sm btn-default btn-page-reopen" data-toggle="tooltip"
                  data-title="Click here to reopen the page">Reopen</a>
             {{/unresolved}}
+            <div class="panel panel-default collapse message-list">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                    <form class="message-form" role="form">
+                        <div class="input-group">
+                            <input type="text" class="form-control">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button">Send</button>
+                            </span>
+                        </div>
+                    </form>
+                    </div>
+                </div>
+                <ul class="list-group">
+                <li class="list-group-item"><span>First message</span>
+                <li class="list-group-item"><span>Second message</span>
+                </ul>
+            </div>
+            </li>
+            </ul>
         </script>
 
         <div class="panel panel-info panel-pending-pages">
             <div class="panel-heading">
                 <h2 class="panel-title">Pending</h2>
             </div>
-            <ul class="list-group" id="pendinglist"></ul>
+            <div id="pendinglist"></div>
         </div>
 
         <div class="panel panel-success panel-completed-pages">
             <div class="panel-heading">
                 <h2 class="panel-title">Completed</h2>
             </div>
-            <ul class="list-group" id="completedlist"></ul>
+            <div id="completedlist"></div>
         </div>
     </div>
     <script type="text/javascript">

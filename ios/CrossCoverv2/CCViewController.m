@@ -20,6 +20,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    // TODO - Initialize user from Login
     self.user = [@{@"id":@4} mutableCopy];
     [self loadAlertData];
     
@@ -38,6 +39,25 @@
     [self.emptyTableView setHidden: YES];
     [self updateView];
 }
+
+
+//Take cell definition to code
+//
+//- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+//    
+//    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MyIdentifier"];
+//    if (cell == nil) {
+//        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"MyIdentifier"];
+//        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+//    }
+//    NSDictionary *item = (NSDictionary *)[self.content objectAtIndex:indexPath.row];
+//    cell.textLabel.text = [item objectForKey:@"mainTitleKey"];
+//    cell.detailTextLabel.text = [item objectForKey:@"secondaryTitleKey"];
+//    NSString *path = [[NSBundle mainBundle] pathForResource:[item objectForKey:@"imageKey"] ofType:@"png"];
+//    UIImage *theImage = [UIImage imageWithContentsOfFile:path];
+//    cell.imageView.image = theImage;
+//    return cell;
+//}
 
 - (void) loadAlertData
 {
@@ -160,14 +180,14 @@
     NSUInteger thisIndex = [self indexInAlertListForTableViewIndexPath: indexPath];
     NSDictionary *thisAlert = self.alertList[thisIndex];
     
-    NSString *alertText = [NSString stringWithFormat:@"%@ [%@] %@", thisAlert[@"patient"][@"name"], thisAlert[@"patient"][@"bed"], thisAlert[@"details"][@"description"]];
+    NSString *alertText = thisAlert[@"details"][@"description"];
     
     cell.textLabel.textColor = [UIColor darkGrayColor];
     cell.textLabel.text = alertText;
     
-    cell.detailTextLabel.text = thisAlert[@"details"][@"timestamp"];
+    cell.detailTextLabel.text = [self userVisibleDateStringFromTimestamp:thisAlert[@"details"][@"timestamp"]];
     
-    cell.imageView.image = [UIImage imageNamed: [NSString stringWithFormat:@"%@.png", thisAlert[@"details"][@"type"]]];
+    cell.imageView.image = [UIImage imageNamed: thisAlert[@"details"][@"type"]];
     cell.imageView.userInteractionEnabled = YES;
     cell.imageView.tag = thisIndex;
     UITapGestureRecognizer *tapped = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(alertImageClicked:)];
@@ -175,6 +195,53 @@
     [cell.imageView addGestureRecognizer:tapped];
     return cell;
 }
+
+- (NSString *) userVisibleDateStringFromTimestamp: (NSString *) timestampString
+{
+    long long timestamp = [timestampString longLongValue];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateStyle:NSDateFormatterNoStyle];
+    [dateFormatter setTimeStyle:NSDateFormatterShortStyle];
+
+    NSDate *date = [NSDate dateWithTimeIntervalSince1970:timestamp];
+
+    NSString *formattedDateString = [dateFormatter stringFromDate:date];
+    NSLog(@"formattedDateString: %@", formattedDateString);
+    
+    return formattedDateString;
+}
+
+// - (NSString *)userVisibleDateTimeStringForRFC3339DateTimeString:(NSString *)rfc3339DateTimeString {
+//
+// Returns a user-visible date time string that corresponds to the specified
+// RFC 3339 date time string. Note that this does not handle all possible
+// RFC 3339 date time strings, just one of the most common styles.
+
+//
+//NSDateFormatter *rfc3339DateFormatter = [[NSDateFormatter alloc] init];
+//NSLocale *enUSPOSIXLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+//
+//[rfc3339DateFormatter setLocale:enUSPOSIXLocale];
+//[rfc3339DateFormatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"];
+//[rfc3339DateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+//
+//// Convert the RFC 3339 date time string to an NSDate.
+//NSDate *date = [rfc3339DateFormatter dateFromString:rfc3339DateTimeString];
+//
+//NSString *userVisibleDateTimeString;
+//if (date != nil) {
+//    // Convert the date object to a user-visible date string.
+//    NSDateFormatter *userVisibleDateFormatter = [[NSDateFormatter alloc] init];
+//    assert(userVisibleDateFormatter != nil);
+//    
+//    [userVisibleDateFormatter setDateStyle:NSDateFormatterShortStyle];
+//    [userVisibleDateFormatter setTimeStyle:NSDateFormatterShortStyle];
+//    
+//    userVisibleDateTimeString = [userVisibleDateFormatter stringFromDate:date];
+//}
+//return userVisibleDateTimeString;
+//}
+
 
 #pragma mark - UITableViewDelegate
 
@@ -212,3 +279,17 @@
 }
 
 @end
+
+// TODO Add a title to the table view with total alert count of type
+//- (void)loadView
+//{
+//    CGRect titleRect = CGRectMake(0, 0, 300, 40);
+//    UILabel *tableTitle = [[UILabel alloc] initWithFrame:titleRect];
+//    tableTitle.textColor = [UIColor blueColor];
+//    tableTitle.backgroundColor = [self.tableView backgroundColor];
+//    tableTitle.opaque = YES;
+//    tableTitle.font = [UIFont boldSystemFontOfSize:18];
+//    tableTitle.text = [curTrail objectForKey:@"Name"];
+//    self.tableView.tableHeaderView = tableTitle;
+//    [self.tableView reloadData];
+//}

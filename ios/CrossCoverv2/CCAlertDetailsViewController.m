@@ -98,17 +98,15 @@
     return @"Unknown";
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    switch(indexPath.section) {
-        case 0:
-        case 1:
-        case 2:
-            return 50;
-        case 3:
-            return 80;
-    }
-    return 50;
-}
+// Alternate color for message cells
+//- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+//    if (indexPath.row%2 == 0) {
+//        UIColor *altCellColor = [UIColor colorWithWhite:0.7 alpha:0.1];
+//        cell.backgroundColor = altCellColor;
+//    }
+//}
+
+//Add subviews to a cell’s content view.
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
@@ -117,32 +115,22 @@
     switch(indexPath.section) {
         case 0: {
             cell = [tableView dequeueReusableCellWithIdentifier:@"AlertCell"];
-            UIImageView *alertImage = (UIImageView *)[cell.contentView viewWithTag:1];
-            UILabel *alertLabel = (UILabel *)[cell.contentView viewWithTag:2];
-            alertImage.image = [UIImage imageNamed: [[NSString alloc] initWithFormat:@"%@.png", self.alert[@"details"][@"type"]]];
-            alertLabel = self.alert[@"details"][@"description"];
+            cell.imageView.image = [UIImage imageNamed: [[NSString alloc] initWithFormat:@"%@.png", self.alert[@"details"][@"type"]]];
+            cell.textLabel.text = self.alert[@"details"][@"description"];
             return cell;
         }
             
         case 1: {
             cell = [tableView dequeueReusableCellWithIdentifier:@"NameCell"];
-            UILabel *titleLabel, *valueLabel;
-            
-            titleLabel = (UILabel *)[cell.contentView viewWithTag:1];
-            valueLabel = (UILabel *)[cell.contentView viewWithTag:2];
-            
             switch(indexPath.row) {
                 case 0:
-                    titleLabel.text = @"Name";
-                    valueLabel.text = self.alert[@"patient"][@"name"];
+                    cell.textLabel.text = self.alert[@"patient"][@"name"];
                     break;
                 case 1:
-                    titleLabel.text = @"MRN";
-                    valueLabel.text = self.alert[@"patient"][@"mrn"];
+                    cell.textLabel.text = self.alert[@"patient"][@"mrn"];
                     break;
                 case 2:
-                    titleLabel.text = @"Bed";
-                    valueLabel.text = self.alert[@"patient"][@"bed"];
+                    cell.textLabel.text = self.alert[@"patient"][@"bed"];
                     break;
             }
             return cell;
@@ -150,25 +138,17 @@
             
         case 2: {
             UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NameCell"];
-            UILabel *titleLabel, *valueLabel;
-            
-            titleLabel = (UILabel *)[cell.contentView viewWithTag:1];
-            valueLabel = (UILabel *)[cell.contentView viewWithTag:2];
-            
             switch(indexPath.row) {
                 case 0:
-                    titleLabel.text = @"Name";
-                    valueLabel.text = self.alert[@"creator"][@"name"];
+                    cell.textLabel.text = self.alert[@"creator"][@"name"];
                     break;
                 case 1:
-                    titleLabel.text = @"Phone";
-                    valueLabel.text = self.alert[@"creator"][@"phone"];
-                    cell.detailTextLabel.textColor = [UIColor blueColor];
-                    cell.detailTextLabel.tag = indexPath.row;
-                    cell.detailTextLabel.userInteractionEnabled = YES;
+                    cell.textLabel.text = self.alert[@"creator"][@"phone"];
+                    cell.textLabel.textColor = [UIColor blueColor];
+                    cell.textLabel.userInteractionEnabled = YES;
                     UITapGestureRecognizer *tapped = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(callNursePressed:)];
                     tapped.numberOfTapsRequired = 1;
-                    [cell.detailTextLabel addGestureRecognizer:tapped];
+                    [cell.textLabel addGestureRecognizer:tapped];
                     break;
             }
             return cell;
@@ -176,12 +156,8 @@
             
         case 3: {
             UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MessageCell"];
-            UILabel *titleLabel, *valueLabel;
-            
-            titleLabel = (UILabel *)[cell.contentView viewWithTag:1];
-            valueLabel = (UILabel *)[cell.contentView viewWithTag:2];
-            titleLabel.text = self.messageList[indexPath.row][@"sender"][@"name"];
-            valueLabel.text = self.messageList[indexPath.row][@"message"];
+            cell.textLabel.text = self.messageList[indexPath.row][@"sender"][@"name"];
+            cell.detailTextLabel.text = self.messageList[indexPath.row][@"message"];
             return cell;
         }
     }
@@ -250,3 +226,55 @@
 }
 
 @end
+
+
+//Listing 5-7  Adding subviews to a cell’s content view
+//#define MAINLABEL_TAG 1
+//#define SECONDLABEL_TAG 2
+//#define PHOTO_TAG 3
+
+//- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+//    
+//    static NSString *CellIdentifier = @"ImageOnRightCell";
+//    
+//    UILabel *mainLabel, *secondLabel;
+//    UIImageView *photo;
+//    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+//    if (cell == nil) {
+//        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+//        cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
+//        
+//        mainLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0, 0.0, 220.0, 15.0)];
+//        mainLabel.tag = MAINLABEL_TAG;
+//        mainLabel.font = [UIFont systemFontOfSize:14.0];
+//        mainLabel.textAlignment = UITextAlignmentRight;
+//        mainLabel.textColor = [UIColor blackColor];
+//        mainLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleHeight;
+//        [cell.contentView addSubview:mainLabel];
+//        
+//        secondLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0, 20.0, 220.0, 25.0)];
+//        secondLabel.tag = SECONDLABEL_TAG;
+//        secondLabel.font = [UIFont systemFontOfSize:12.0];
+//        secondLabel.textAlignment = UITextAlignmentRight;
+//        secondLabel.textColor = [UIColor darkGrayColor];
+//        secondLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleHeight;
+//        [cell.contentView addSubview:secondLabel];
+//        
+//        photo = [[UIImageView alloc] initWithFrame:CGRectMake(225.0, 0.0, 80.0, 45.0)];
+//        photo.tag = PHOTO_TAG;
+//        photo.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleHeight;
+//        [cell.contentView addSubview:photo];
+//    } else {
+//        mainLabel = (UILabel *)[cell.contentView viewWithTag:MAINLABEL_TAG];
+//        secondLabel = (UILabel *)[cell.contentView viewWithTag:SECONDLABEL_TAG];
+//        photo = (UIImageView *)[cell.contentView viewWithTag:PHOTO_TAG];
+//    }
+//    NSDictionary *aDict = [self.list objectAtIndex:indexPath.row];
+//    mainLabel.text = [aDict objectForKey:@"mainTitleKey"];
+//    secondLabel.text = [aDict objectForKey:@"secondaryTitleKey"];
+//    NSString *imagePath = [[NSBundle mainBundle] pathForResource:[aDict objectForKey:@"imageKey"] ofType:@"png"];
+//    UIImage *theImage = [UIImage imageWithContentsOfFile:imagePath];
+//    photo.image = theImage;
+//    
+//    return cell;
+//}

@@ -19,6 +19,7 @@
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.7.0/mustache.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.6.0/moment-with-langs.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
     <script type="text/javascript" src="https://cdn.firebase.com/v0/firebase.js"></script>
     <script type="text/javascript" src="https://cdn.firebase.com/v0/firebase-simple-login.js"></script>
     <script src="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
@@ -101,7 +102,8 @@
                 var channelRef = fbRef.child('channel/' + snapshot.val().id);
                 channelRef.on('value', function(channelData) {
                     var details = channelData.val().details;
-                    var existingPage = $('#channel_id_' + channelData.name());
+                    var channelId = channelData.name();
+                    var existingPage = $('#channel_id_' + channelId);
                     if (existingPage != null) {
                         // if the status changed, remove the existing node
                         if (existingPage.find('.page-status').text() != details.status) {
@@ -111,16 +113,22 @@
                             // Same status, just update the data in the following code.
                         }
                     }
-                    var channelId = channelData.name();
                     var patient = channelData.val().patient;
                     var messages = channelData.val().messages;
+                    var messageKeysLength = (messages != null ? _.keys(messages).length : 0);
+                    var messageValues = (messages != null ? _.values(messages) : []);
+                    _.each(messageValues, function(message) {
+                        message.time = moment.unix(message.timestamp).fromNow();
+                    });
                     var data = {
                         status: details.status,
                         type: details.type,
                         patient: patient,
+                        channelId: channelId,
                         description: details.description,
                         unresolved: (details.status == 'OPEN'),
-                        messageCount: (messages != null ? messages.length : 0),
+                        unreadMessageCount: messageKeysLength,  // TODO:
+                        messages: messageValues,
                         time: moment.unix(details.timestamp).fromNow(),
                         timestamp: details.timestamp
                     };
@@ -280,9 +288,9 @@
             <span class="seperator">&middot;</span>
             <span class="page-time">{{time}}</span>
 
-            {{#messageCount}}
-            <span class="page-message-count badge badge-info">{{messageCount}}</span>
-            {{/messageCount}}
+            {{#unreadMessageCount}}
+            <span class="page-message-count badge badge-info">{{unreadMessageCount}}</span>
+            {{/unreadMessageCount}}
 
             {{#unresolved}}
               <a href="#" role="button" class="btn btn-sm btn-default btn-page-send" data-toggle="tooltip"
@@ -306,8 +314,16 @@
                     </div>
                 </div>
                 <ul class="list-group">
-                <li class="list-group-item"><span>First message</span>
-                <li class="list-group-item"><span>Second message</span>
+                {{#messages}}
+                  <li class="list-group-item" id="message_id_{{channelId}}_{{timestamp}}">
+                    <span class="message-timestamp" style="display:none">{{timestamp}}</span>
+                    <span class="message-content">{{message}}</span>
+                    <span class="seperator">&middot;</span>
+                    <span class="message-sender-name">{{sender.name}}</span>
+                    <span class="seperator">&middot;</span>
+                    <span class="message-time">{{time}}</span>
+                  </li>
+                {{/messages}}
                 </ul>
             </div>
             </li>
@@ -332,10 +348,15 @@
     var pageUpdateTime = 30000;   // once every 30 seconds
     function updatePageTimes() {
       console.log('updating page times');
-      $('li[id ^= "channel_id_"').each(function(index) {
+      $('div[id ^= "channel_id_"').each(function(index) {
           var timestamp = $(this).find('.page-timestamp').text();
           $(this).find('.page-time').text(moment.unix(timestamp).fromNow());
       });
+      $('li[id ^= "messages_id_"').each(function(index) {
+          var timestamp = $(this).find('.message-timestamp').text();
+          $(this).find('.message-time').text(moment.unix(timestamp).fromNow());
+      });
+
       setTimeout(updatePageTimes, pageUpdateTime);  // schedule the next call
     }
     $(document).ready(function() {
@@ -387,7 +408,7 @@
                     name: oncall.name,
                     phone: oncall.phone
                 };
-                var channelId = creator.id + ':' + Math.floor(Math.random() * 10000000);
+                var channelId = creator.id + '_' + Math.floor(Math.random() * 10000000);
                 fbRef.child('channel').child(channelId).set(channelData,
                     function(error) {
                         if (error) return; // TODO: handle errors here and below!

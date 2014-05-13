@@ -20,13 +20,14 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // TODO - Initialize user from Login
-    self.user = [@{@"id":@4} mutableCopy];
+
+    // Load Data from Firebase
     [self loadAlertData];
-    
+
+    // Initialize View
     self.currentTypeFilter = [@"HOME" mutableCopy];
     self.currentStatusFilter = [@"OPEN" mutableCopy];
-    
+
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
@@ -34,36 +35,18 @@
     self.segmentedControl = [[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObjects:@"Open", @"Resolved", nil]];
     [self.segmentedControl setSelectedSegmentIndex:0];
     [self.segmentedControl addTarget:self action:@selector(segmentedControlValueChanged:) forControlEvents: UIControlEventValueChanged];
+    [self.segmentedControl setTintColor:[UIColor whiteColor]];
     self.navigationItem.titleView = self.segmentedControl;
     
-    [self.emptyTableView setHidden: YES];
     [self updateView];
 }
-
-
-//Take cell definition to code
-//
-//- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-//    
-//    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MyIdentifier"];
-//    if (cell == nil) {
-//        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"MyIdentifier"];
-//        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-//    }
-//    NSDictionary *item = (NSDictionary *)[self.content objectAtIndex:indexPath.row];
-//    cell.textLabel.text = [item objectForKey:@"mainTitleKey"];
-//    cell.detailTextLabel.text = [item objectForKey:@"secondaryTitleKey"];
-//    NSString *path = [[NSBundle mainBundle] pathForResource:[item objectForKey:@"imageKey"] ofType:@"png"];
-//    UIImage *theImage = [UIImage imageWithContentsOfFile:path];
-//    cell.imageView.image = theImage;
-//    return cell;
-//}
 
 - (void) loadAlertData
 {
     self.alertList = [[NSMutableArray alloc] init];
     
-    Firebase *alertsListRef = [[Firebase alloc] initWithUrl:[NSString stringWithFormat:@"https://tebora.firebaseio.com/user/%@/channels", self.user[@"id"]]];
+    NSString *userId = self.thisUser.userId ? self.thisUser.userId : @"4";
+    Firebase *alertsListRef = [[Firebase alloc] initWithUrl:[NSString stringWithFormat:@"https://tebora.firebaseio.com/user/%@/channels", userId]];
     
     [alertsListRef observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         [self alertListChangedTo: snapshot.value];
@@ -90,6 +73,14 @@
             {
                 self.alertList[index] = changedAlert;
             }
+            
+            NSComparator sortALertList = ^(NSMutableDictionary *alert1, NSMutableDictionary *alert2)
+            {
+                return [alert1[@"details"][@"timestamp"] longLongValue] < [alert2[@"details"][@"timestamp"] longLongValue];
+            };
+
+            self.alertList = [[self.alertList sortedArrayUsingComparator:sortALertList] mutableCopy];
+            
             [self updateView];
         }];
     }
@@ -128,7 +119,23 @@
             return [thisAlert[@"details"][@"status"] isEqualToString: self.currentStatusFilter] && [thisAlert[@"details"][@"type"] isEqualToString:self.currentTypeFilter];
         }
     }];
+
+    CGRect titleRect = CGRectMake(0, 0, 300, 40);
+    UILabel *tableTitle = [[UILabel alloc] initWithFrame:titleRect];
+
+    tableTitle.backgroundColor = [UIColor colorWithRed:205.0/255 green:94.0/255 blue:43.0/255 alpha:0.1];
+    tableTitle.textColor = [UIColor colorWithRed:205.0/255 green:94.0/255 blue:43.0/255 alpha:1.0];
+    tableTitle.opaque = YES;
+    tableTitle.font = [UIFont boldSystemFontOfSize:13];
+    tableTitle.textAlignment = NSTextAlignmentCenter;
     
+    tableTitle.text = [NSString stringWithFormat:@"%lu %@ %@ %@",
+                                                    (unsigned long)[self.indexesOfCurrentlyDisplayedAlerts count],
+                                                    [self.currentStatusFilter capitalizedString],
+                       [self.currentTypeFilter isEqualToString:@"HOME"] ? @"" : [self.currentTypeFilter capitalizedString],
+                       [self.indexesOfCurrentlyDisplayedAlerts count] == 1 ? @"alert" : @"alerts"];
+    
+    self.tableView.tableHeaderView = tableTitle;
     [self.tableView reloadData];
 }
 
@@ -147,19 +154,7 @@
 
 -(NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    NSInteger count = [self.indexesOfCurrentlyDisplayedAlerts count];
-    if(count > 0) {
-        [self.emptyTableView setHidden:YES];
-        return count;
-    } else {
-        NSString *emptyTableViewMessage = [NSString stringWithFormat:@"No %@ alerts %@",
-                                           [self.currentTypeFilter isEqualToString:@"HOME"] ? @"" : [self.currentTypeFilter capitalizedString],
-                                           [self.currentStatusFilter capitalizedString]];
-        UILabel *emptyTableViewLabel = (UILabel *)[self.emptyTableView viewWithTag:1];
-        emptyTableViewLabel.text = emptyTableViewMessage;
-        [self.emptyTableView setHidden:NO];
-        return count;
-    }
+    return [self.indexesOfCurrentlyDisplayedAlerts count];
 }
 
 -(NSInteger) indexInAlertListForTableViewIndexPath: (NSIndexPath *)indexPath
@@ -175,17 +170,14 @@
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"AlertCell";
+
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
     NSUInteger thisIndex = [self indexInAlertListForTableViewIndexPath: indexPath];
     NSDictionary *thisAlert = self.alertList[thisIndex];
-    
-    NSString *alertText = thisAlert[@"details"][@"description"];
-    
-    cell.textLabel.textColor = [UIColor darkGrayColor];
-    cell.textLabel.text = alertText;
-    
-    cell.detailTextLabel.text = [self userVisibleDateStringFromTimestamp:thisAlert[@"details"][@"timestamp"]];
+
+    cell.textLabel.text = [NSString stringWithFormat:@"%@ - %@", thisAlert[@"patient"][@"bed"], thisAlert[@"patient"][@"name"]];
+    cell.detailTextLabel.text = thisAlert[@"details"][@"description"];
     
     cell.imageView.image = [UIImage imageNamed: thisAlert[@"details"][@"type"]];
     cell.imageView.userInteractionEnabled = YES;
@@ -193,6 +185,24 @@
     UITapGestureRecognizer *tapped = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(alertImageClicked:)];
     tapped.numberOfTapsRequired = 1;
     [cell.imageView addGestureRecognizer:tapped];
+    
+    UILabel *timestampLabel;
+
+    if([[cell.contentView subviews] count] < 4)
+    {
+        timestampLabel = [[UILabel alloc] initWithFrame:CGRectMake(250, 20, 50, 20)];
+        [cell.contentView addSubview:timestampLabel];
+        
+        timestampLabel.font = [UIFont systemFontOfSize:12.0];
+        timestampLabel.textAlignment = NSTextAlignmentRight;
+        timestampLabel.textColor = [UIColor lightGrayColor];
+    }
+    else
+    {
+        timestampLabel = [cell.contentView subviews][3];
+    }
+    
+    timestampLabel.text = [self userVisibleDateStringFromTimestamp:thisAlert[@"details"][@"timestamp"]];
     return cell;
 }
 
@@ -203,44 +213,17 @@
     [dateFormatter setDateStyle:NSDateFormatterNoStyle];
     [dateFormatter setTimeStyle:NSDateFormatterShortStyle];
 
+    // If timeago is
+    // 0-24 hours show 3:45 am
+    // 24-120 hours show Day of Week
+    // else show Date
+
     NSDate *date = [NSDate dateWithTimeIntervalSince1970:timestamp];
 
     NSString *formattedDateString = [dateFormatter stringFromDate:date];
-    NSLog(@"formattedDateString: %@", formattedDateString);
     
     return formattedDateString;
 }
-
-// - (NSString *)userVisibleDateTimeStringForRFC3339DateTimeString:(NSString *)rfc3339DateTimeString {
-//
-// Returns a user-visible date time string that corresponds to the specified
-// RFC 3339 date time string. Note that this does not handle all possible
-// RFC 3339 date time strings, just one of the most common styles.
-
-//
-//NSDateFormatter *rfc3339DateFormatter = [[NSDateFormatter alloc] init];
-//NSLocale *enUSPOSIXLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
-//
-//[rfc3339DateFormatter setLocale:enUSPOSIXLocale];
-//[rfc3339DateFormatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"];
-//[rfc3339DateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-//
-//// Convert the RFC 3339 date time string to an NSDate.
-//NSDate *date = [rfc3339DateFormatter dateFromString:rfc3339DateTimeString];
-//
-//NSString *userVisibleDateTimeString;
-//if (date != nil) {
-//    // Convert the date object to a user-visible date string.
-//    NSDateFormatter *userVisibleDateFormatter = [[NSDateFormatter alloc] init];
-//    assert(userVisibleDateFormatter != nil);
-//    
-//    [userVisibleDateFormatter setDateStyle:NSDateFormatterShortStyle];
-//    [userVisibleDateFormatter setTimeStyle:NSDateFormatterShortStyle];
-//    
-//    userVisibleDateTimeString = [userVisibleDateFormatter stringFromDate:date];
-//}
-//return userVisibleDateTimeString;
-//}
 
 
 #pragma mark - UITableViewDelegate
@@ -280,16 +263,3 @@
 
 @end
 
-// TODO Add a title to the table view with total alert count of type
-//- (void)loadView
-//{
-//    CGRect titleRect = CGRectMake(0, 0, 300, 40);
-//    UILabel *tableTitle = [[UILabel alloc] initWithFrame:titleRect];
-//    tableTitle.textColor = [UIColor blueColor];
-//    tableTitle.backgroundColor = [self.tableView backgroundColor];
-//    tableTitle.opaque = YES;
-//    tableTitle.font = [UIFont boldSystemFontOfSize:18];
-//    tableTitle.text = [curTrail objectForKey:@"Name"];
-//    self.tableView.tableHeaderView = tableTitle;
-//    [self.tableView reloadData];
-//}

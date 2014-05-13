@@ -18,7 +18,7 @@
 @property (strong, nonatomic) NSMutableArray *alertList;
 
 // User Model
-@property (strong, nonatomic) NSMutableDictionary *user;
+@property (strong, nonatomic) FAUser *thisUser;
 
 // Application State Model
 @property (strong, nonatomic) NSMutableString *currentTypeFilter;
@@ -28,7 +28,6 @@
 // Views
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *backButton;
-@property (strong, nonatomic) IBOutlet UIView *emptyTableView;
 @property (strong, nonatomic) UISegmentedControl *segmentedControl;
 
 // Actions

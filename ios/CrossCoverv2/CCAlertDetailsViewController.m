@@ -15,15 +15,6 @@
 
 @implementation CCAlertDetailsViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -58,6 +49,14 @@
     [alertDetailsRef observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot){
         [self.alert addEntriesFromDictionary: snapshot.value];
         self.messageList = [snapshot.value[@"messages"] allValues];
+        
+        NSComparator sortMessageList = ^(NSMutableDictionary *msg1, NSMutableDictionary *msg2)
+        {
+            return [msg1[@"timestamp"] longLongValue] < [msg2[@"timestamp"] longLongValue];
+        };
+        
+        self.messageList = [[self.messageList sortedArrayUsingComparator:sortMessageList] mutableCopy];
+
         [self updateView];
     }];
 }
@@ -98,13 +97,14 @@
     return @"Unknown";
 }
 
-// Alternate color for message cells
-//- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-//    if (indexPath.row%2 == 0) {
-//        UIColor *altCellColor = [UIColor colorWithWhite:0.7 alpha:0.1];
-//        cell.backgroundColor = altCellColor;
-//    }
-//}
+
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == 3 && indexPath.row%2 == 0) {
+        UIColor *altCellColor = [UIColor colorWithWhite:0.985 alpha:1];
+        cell.backgroundColor = altCellColor;
+        [cell.contentView sizeToFit];
+    }
+}
 
 //Add subviews to a cell’s content view.
 
@@ -156,12 +156,40 @@
             
         case 3: {
             UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MessageCell"];
+            UILabel *timestampLabel;
+            if([[cell.contentView subviews] count] <= 3)
+            {
+                timestampLabel = [[UILabel alloc] initWithFrame:CGRectMake(250, 0, 60, 20)];
+                [cell.contentView addSubview:timestampLabel];
+                timestampLabel.font = [UIFont systemFontOfSize:10.0];
+                timestampLabel.textAlignment = NSTextAlignmentRight;
+                timestampLabel.textColor = [UIColor lightGrayColor];
+            } else
+            {
+                timestampLabel = [cell.contentView subviews][3];
+            }
+
             cell.textLabel.text = self.messageList[indexPath.row][@"sender"][@"name"];
             cell.detailTextLabel.text = self.messageList[indexPath.row][@"message"];
+            timestampLabel.text = [self userVisibleDateStringFromTimestamp: self.messageList[indexPath.row][@"timestamp"]];
             return cell;
         }
     }
     return cell;
+}
+
+- (NSString *) userVisibleDateStringFromTimestamp: (NSString *) timestampString
+{
+    long long timestamp = [timestampString longLongValue];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateStyle:NSDateFormatterNoStyle];
+    [dateFormatter setTimeStyle:NSDateFormatterShortStyle];
+    
+    NSDate *date = [NSDate dateWithTimeIntervalSince1970:timestamp];
+    
+    NSString *formattedDateString = [dateFormatter stringFromDate:date];
+    
+    return formattedDateString;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -201,6 +229,7 @@
         [newMessageRef setValue:newMessage];
     }
     [self.enterMessageTextField resignFirstResponder];
+    self.enterMessageTextField.text = @"";
     [self updateView];
 }
 

@@ -29,6 +29,7 @@
 		47673EBD191EE518003E3C81 /* PRESCRIPTION@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 47673EB6191EE518003E3C81 /* PRESCRIPTION@2x.png */; };
 		47673EBE191EE518003E3C81 /* RADIOLOGY@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 47673EB7191EE518003E3C81 /* RADIOLOGY@2x.png */; };
 		47673EBF191EE518003E3C81 /* VITAL@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 47673EB8191EE518003E3C81 /* VITAL@2x.png */; };
+		47673EC5192034E9003E3C81 /* Icon Straight.png in Resources */ = {isa = PBXBuildFile; fileRef = 47673EC4192034E9003E3C81 /* Icon Straight.png */; };
 		47A9E71F191067E100348E41 /* Firebase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47A9E71E191067E100348E41 /* Firebase.framework */; };
 		47A9E7211910682C00348E41 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 47A9E7201910682C00348E41 /* libicucore.dylib */; };
 		47A9E7231910683A00348E41 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 47A9E7221910683A00348E41 /* libc++.dylib */; };
@@ -80,6 +81,7 @@
 		47673EB6191EE518003E3C81 /* PRESCRIPTION@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "PRESCRIPTION@2x.png"; sourceTree = "<group>"; };
 		47673EB7191EE518003E3C81 /* RADIOLOGY@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "RADIOLOGY@2x.png"; sourceTree = "<group>"; };
 		47673EB8191EE518003E3C81 /* VITAL@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "VITAL@2x.png"; sourceTree = "<group>"; };
+		47673EC4192034E9003E3C81 /* Icon Straight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon Straight.png"; sourceTree = "<group>"; };
 		47A9E71E191067E100348E41 /* Firebase.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Firebase.framework; sourceTree = "<group>"; };
 		47A9E7201910682C00348E41 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
 		47A9E7221910683A00348E41 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
@@ -186,6 +188,7 @@
 		476654EE18FB02E700D994B1 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				47673EC4192034E9003E3C81 /* Icon Straight.png */,
 				47673EB2191EE518003E3C81 /* CONSULT@2x.png */,
 				47673EB3191EE518003E3C81 /* CRITICAL@2x.png */,
 				47673EB4191EE518003E3C81 /* IO@2x.png */,
@@ -302,6 +305,7 @@
 				4766550018FB02E700D994B1 /* Images.xcassets in Resources */,
 				476654F218FB02E700D994B1 /* InfoPlist.strings in Resources */,
 				47673EBD191EE518003E3C81 /* PRESCRIPTION@2x.png in Resources */,
+				47673EC5192034E9003E3C81 /* Icon Straight.png in Resources */,
 				47673EBA191EE518003E3C81 /* CRITICAL@2x.png in Resources */,
 				47673EBC191EE518003E3C81 /* LAB@2x.png in Resources */,
 				47673EBF191EE518003E3C81 /* VITAL@2x.png in Resources */,

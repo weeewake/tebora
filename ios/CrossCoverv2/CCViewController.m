@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 Tebora. All rights reserved.
 //
 
+#import "CCSettings.h"
 #import "CCViewController.h"
 #import "CCAlertDetailsViewController.h"
 
@@ -24,7 +25,7 @@
     // Load Data from Firebase
     [self loadAlertData];
 
-    self.navigationController.navigationBar.barTintColor = TINT_COLOR;
+    self.navigationController.navigationBar.barTintColor = [CCSettings tintColor];
 
     // Initialize View
     self.currentTypeFilter = [@"HOME" mutableCopy];
@@ -125,8 +126,8 @@
     CGRect titleRect = CGRectMake(0, 0, 300, 40);
     UILabel *tableTitle = [[UILabel alloc] initWithFrame:titleRect];
 
-    tableTitle.backgroundColor = LIGHT_TINT_COLOR;
-    tableTitle.textColor = [UIColor colorWithRed:205.0/255 green:94.0/255 blue:43.0/255 alpha:1.0];
+    tableTitle.backgroundColor = [CCSettings lightTintColor];
+    tableTitle.textColor = [CCSettings alertTextColor];
     tableTitle.opaque = YES;
     tableTitle.font = [UIFont boldSystemFontOfSize:13];
     tableTitle.textAlignment = NSTextAlignmentCenter;

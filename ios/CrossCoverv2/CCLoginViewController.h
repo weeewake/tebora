@@ -10,6 +10,7 @@
 
 @interface CCLoginViewController : UIViewController <UITextFieldDelegate>
 
+@property (strong, nonatomic) IBOutlet UIView *backgroundView;
 @property (strong, nonatomic) IBOutlet UITextField *usernameTextField;
 @property (strong, nonatomic) IBOutlet UITextField *passwordTextField;
 

@@ -40,6 +40,8 @@
 		47EC8116191C05F000E74CFA /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47EC8115191C05F000E74CFA /* Accounts.framework */; };
 		47EC8118191C05F800E74CFA /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47EC8117191C05F800E74CFA /* Social.framework */; };
 		47EC811B191C066200E74CFA /* CCLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 47EC811A191C066200E74CFA /* CCLoginViewController.m */; };
+		7140221D1924260700685482 /* CCSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 7140221C1924260700685482 /* CCSettings.m */; };
+		7140221E1924260700685482 /* CCSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 7140221C1924260700685482 /* CCSettings.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -93,6 +95,8 @@
 		47EC8117191C05F800E74CFA /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		47EC8119191C066200E74CFA /* CCLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCLoginViewController.h; sourceTree = "<group>"; };
 		47EC811A191C066200E74CFA /* CCLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCLoginViewController.m; sourceTree = "<group>"; };
+		7140221B1924260700685482 /* CCSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSettings.h; sourceTree = "<group>"; };
+		7140221C1924260700685482 /* CCSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCSettings.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -170,13 +174,15 @@
 		476654ED18FB02E700D994B1 /* CrossCoverv2 */ = {
 			isa = PBXGroup;
 			children = (
-				476654F618FB02E700D994B1 /* CCAppDelegate.h */,
-				476654F718FB02E700D994B1 /* CCAppDelegate.m */,
 				476654F918FB02E700D994B1 /* Main.storyboard */,
-				47EC8119191C066200E74CFA /* CCLoginViewController.h */,
-				47EC811A191C066200E74CFA /* CCLoginViewController.m */,
 				4766552118FB321000D994B1 /* CCAlertDetailsViewController.h */,
 				4766552218FB321000D994B1 /* CCAlertDetailsViewController.m */,
+				476654F618FB02E700D994B1 /* CCAppDelegate.h */,
+				476654F718FB02E700D994B1 /* CCAppDelegate.m */,
+				47EC8119191C066200E74CFA /* CCLoginViewController.h */,
+				47EC811A191C066200E74CFA /* CCLoginViewController.m */,
+				7140221B1924260700685482 /* CCSettings.h */,
+				7140221C1924260700685482 /* CCSettings.m */,
 				476654FC18FB02E700D994B1 /* CCViewController.h */,
 				476654FD18FB02E700D994B1 /* CCViewController.m */,
 				476654FF18FB02E700D994B1 /* Images.xcassets */,
@@ -331,6 +337,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7140221D1924260700685482 /* CCSettings.m in Sources */,
 				476654F818FB02E700D994B1 /* CCAppDelegate.m in Sources */,
 				47EC811B191C066200E74CFA /* CCLoginViewController.m in Sources */,
 				476654F418FB02E700D994B1 /* main.m in Sources */,
@@ -343,6 +350,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7140221E1924260700685482 /* CCSettings.m in Sources */,
 				4766551318FB02E700D994B1 /* CrossCoverv2Tests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -250,6 +250,7 @@
                         <color key="backgroundColor" red="0.80392156862745101" green="0.36862745098039218" blue="0.16862745098039217" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
                     <connections>
+                        <outlet property="backgroundView" destination="u4J-1b-YcN" id="Dec-1M-Pg2"/>
                         <outlet property="passwordTextField" destination="Cvx-KW-shw" id="g9y-48-O9u"/>
                         <outlet property="usernameTextField" destination="Vav-X1-ayL" id="WDi-hJ-t4I"/>
                         <segue destination="OYf-KM-QTe" kind="modal" identifier="LoginSuccessful" id="cw4-FJ-Afz"/>

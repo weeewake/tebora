@@ -12,21 +12,6 @@
 #warning "This project uses features only available in iOS SDK 5.0 and later."
 #endif
 
-#define PATIENT_NAME @"patientName"
-#define PATIENT_MRN @"patientMRN"
-#define PATIENT_BED @"patientBed"
-#define ALERT_TYPE @"alertType"
-#define ALERT_DESCRIPTION @"alertDescription"
-#define ALERT_TIME_AGO @"alertTimeAgo"
-#define NURSE_PHONE @"nursePhone"
-#define ALERT_COMPLETE @"isComplete"
-#define MESSAGES @"messages"
-
-
-#define TINT_COLOR [UIColor colorWithRed:74.0/255 green:144.0/255 blue:226.0/255 alpha:1.0]
-
-#define LIGHT_TINT_COLOR [UIColor colorWithRed:74.0/255 green:144.0/255 blue:226.0/255 alpha:0.1]
-
 #ifdef __OBJC__
     #import <UIKit/UIKit.h>
     #import <Foundation/Foundation.h>

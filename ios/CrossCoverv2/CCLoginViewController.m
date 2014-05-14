@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 Tebora. All rights reserved.
 //
 
+#import "CCSettings.h"
 #import "CCLoginViewController.h"
 #import "CCViewController.h"
 
@@ -36,6 +37,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.backgroundView.backgroundColor = [CCSettings tintColor];
 }
 
 - (BOOL) textFieldShouldReturn:(UITextField *)textField

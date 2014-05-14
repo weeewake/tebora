@@ -233,7 +233,7 @@
                                     <outlet property="delegate" destination="3o3-2A-9ds" id="zU0-uO-IFc"/>
                                 </connections>
                             </textField>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Icon Straight.png" translatesAutoresizingMaskIntoConstraints="NO" id="Ci0-zF-Mg3">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="App Icon - Straight.png" translatesAutoresizingMaskIntoConstraints="NO" id="Ci0-zF-Mg3">
                                 <rect key="frame" x="87" y="238" width="60" height="60"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -247,7 +247,6 @@
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
-                        <color key="backgroundColor" red="0.80392156862745101" green="0.36862745098039218" blue="0.16862745098039217" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
                     <connections>
                         <outlet property="backgroundView" destination="u4J-1b-YcN" id="Dec-1M-Pg2"/>
@@ -285,7 +284,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Icon Straight.png" width="120" height="120"/>
+        <image name="App Icon - Straight.png" width="120" height="120"/>
     </resources>
     <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

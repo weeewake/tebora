@@ -78,7 +78,7 @@
             
             NSComparator sortALertList = ^(NSMutableDictionary *alert1, NSMutableDictionary *alert2)
             {
-                return [alert1[@"details"][@"timestamp"] longLongValue] < [alert2[@"details"][@"timestamp"] longLongValue];
+                return [alert2[@"details"][@"timestamp"] compare:alert1[@"details"][@"timestamp"]];
             };
 
             self.alertList = [[self.alertList sortedArrayUsingComparator:sortALertList] mutableCopy];

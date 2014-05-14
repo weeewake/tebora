@@ -52,7 +52,7 @@
         
         NSComparator sortMessageList = ^(NSMutableDictionary *msg1, NSMutableDictionary *msg2)
         {
-            return [msg1[@"timestamp"] longLongValue] < [msg2[@"timestamp"] longLongValue];
+            return [msg2[@"timestamp"] compare:msg1[@"timestamp"]];
         };
         
         self.messageList = [[self.messageList sortedArrayUsingComparator:sortMessageList] mutableCopy];

@@ -24,6 +24,8 @@
     // Load Data from Firebase
     [self loadAlertData];
 
+    self.navigationController.navigationBar.barTintColor = TINT_COLOR;
+
     // Initialize View
     self.currentTypeFilter = [@"HOME" mutableCopy];
     self.currentStatusFilter = [@"OPEN" mutableCopy];
@@ -123,7 +125,7 @@
     CGRect titleRect = CGRectMake(0, 0, 300, 40);
     UILabel *tableTitle = [[UILabel alloc] initWithFrame:titleRect];
 
-    tableTitle.backgroundColor = [UIColor colorWithRed:205.0/255 green:94.0/255 blue:43.0/255 alpha:0.1];
+    tableTitle.backgroundColor = LIGHT_TINT_COLOR;
     tableTitle.textColor = [UIColor colorWithRed:205.0/255 green:94.0/255 blue:43.0/255 alpha:1.0];
     tableTitle.opaque = YES;
     tableTitle.font = [UIFont boldSystemFontOfSize:13];

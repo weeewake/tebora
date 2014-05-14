@@ -22,6 +22,11 @@
 #define ALERT_COMPLETE @"isComplete"
 #define MESSAGES @"messages"
 
+
+#define TINT_COLOR [UIColor colorWithRed:74.0/255 green:144.0/255 blue:226.0/255 alpha:1.0]
+
+#define LIGHT_TINT_COLOR [UIColor colorWithRed:74.0/255 green:144.0/255 blue:226.0/255 alpha:0.1]
+
 #ifdef __OBJC__
     #import <UIKit/UIKit.h>
     #import <Foundation/Foundation.h>

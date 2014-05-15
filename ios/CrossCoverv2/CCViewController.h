@@ -9,11 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "CCAlertDetailsViewController.h"
 
-@interface CCViewController : UIViewController
-    <UITableViewDataSource,
-    UITableViewDelegate>
-
-
+@interface CCViewController : UIViewController<UITableViewDataSource,
+                                               UITableViewDelegate>
 // Alert Model
 @property (strong, nonatomic) NSMutableArray *alertList;
 
@@ -21,8 +18,8 @@
 @property (strong, nonatomic) FAUser *thisUser;
 
 // Application State Model
-@property (strong, nonatomic) NSMutableString *currentTypeFilter;
-@property (strong, nonatomic) NSString *currentStatusFilter;
+@property (copy, nonatomic) NSString *currentTypeFilter;
+@property (copy, nonatomic) NSString *currentStatusFilter;
 @property (strong, nonatomic) NSIndexSet *indexesOfCurrentlyDisplayedAlerts;
 
 // Views
@@ -33,6 +30,6 @@
 // Actions
 - (IBAction)backButtonPressed:(UIBarButtonItem *)sender;
 - (void)segmentedControlValueChanged:(UISegmentedControl *)sender;
-- (void)alertImageClicked :(id) sender;
+- (void)alertImageClicked:(id)sender;
 
 @end

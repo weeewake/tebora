@@ -12,129 +12,125 @@
 
 @interface CCLoginViewController ()
 
+@property (strong, nonatomic) UIView *usernameFieldPaddingView;
+@property (strong, nonatomic) UIView *passwordFieldPaddingView;
+
 @end
 
 @implementation CCLoginViewController
 
-
-//{
-//    if ([[segue identifier] isEqualToString:@"sLogowanieFirmy"]) {
-//        UINavigationController *nav = [segue destinationViewController];
-//        FirmyVC *firmyVC = (FirmyVC *)nav.topViewController;
-//        firmyVC.tabFirmy = self.tabFirmy;
-//    }
-//    
-//    // etc...
-//}
-
-- (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    UINavigationController *navVC = [segue destinationViewController];
-    CCViewController *vc = (CCViewController *)navVC.topViewController;
-    vc.thisUser = (FAUser *) sender;
+  UINavigationController *navVC = [segue destinationViewController];
+  CCViewController *vc = (CCViewController *)navVC.topViewController;
+  vc.thisUser = (FAUser *)sender;
 }
 
 - (void)viewDidLoad
 {
-    [super viewDidLoad];
-    self.backgroundView.backgroundColor = [CCSettings tintColor];
+  [super viewDidLoad];
+
+  // Set the background to be our blue.
+  self.backgroundView.backgroundColor = [CCSettings tintColor];
+
+  // Add a white border to the sign in button and round the corners.
+  CALayer *signInButtonLayer = self.signInButton.layer;
+  signInButtonLayer.borderWidth = 1.0f;
+  signInButtonLayer.borderColor = [[UIColor whiteColor] CGColor];
+  signInButtonLayer.cornerRadius = 1.5f;
+  signInButtonLayer.masksToBounds = YES;
+
+  // Add a padding to the username and password text fields.
+  self.usernameTextField.leftView = self.usernameFieldPaddingView;
+  self.usernameTextField.leftViewMode = UITextFieldViewModeAlways;
+  self.passwordTextField.leftView = self.passwordFieldPaddingView;
+  self.passwordTextField.leftViewMode = UITextFieldViewModeAlways;
+
+  // Round the corners for username and password text fields.
+  CALayer *usernameLayer = self.usernameTextField.layer;
+  usernameLayer.cornerRadius = 2.0f;
+  usernameLayer.masksToBounds = YES;
+  CALayer *passwordLayer = self.passwordTextField.layer;
+  passwordLayer.cornerRadius = 2.0f;
+  passwordLayer.masksToBounds = YES;
 }
 
-- (BOOL) textFieldShouldReturn:(UITextField *)textField
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-    [textField resignFirstResponder];
-    return YES;
+  [textField resignFirstResponder];
+  return YES;
 }
 
-- (BOOL) validateEmail: (NSString *) candidate {
-    NSString *emailRegex = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
-    NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegex];
-    return [emailTest evaluateWithObject:candidate];
-}
-
-- (BOOL) validateAlphanumericDash: (NSString *) candidate {
-    NSMutableCharacterSet *characterSet = [NSMutableCharacterSet alphanumericCharacterSet];
-    [characterSet addCharactersInString:@"-_."];
-    return [self validateStringInCharacterSet:candidate characterSet:characterSet];
-}
-
-- (BOOL) validateStringInCharacterSet: (NSString *) string characterSet: (NSMutableCharacterSet *) characterSet {
-    // Since we invert the character set if it is == NSNotFound then it is in the character set.
-    return ([string rangeOfCharacterFromSet:[characterSet invertedSet]].location != NSNotFound) ? NO : YES;
-}
-
-- (BOOL)textFieldShouldEndEditing:(UITextField *)textField
-{
-    // The textfield is about to resign First responder
-    if(textField == self.usernameTextField)
-    {
-        if(![self validateEmail:textField.text])
-        {
-            UIAlertView *theAlert = [[UIAlertView alloc] initWithTitle:@"Invalid Email Address"
-                                                               message:@"Valid e-mail addresses are of the form xx@yy.zz"
-                                                              delegate:self
-                                                     cancelButtonTitle:@"OK"
-                                                     otherButtonTitles:nil];
-            [theAlert show];
-
-            return NO;
-        }
-        else
-            return YES;
-        
-    }
-    else if(textField == self.passwordTextField)
-    {
-        if(![self validateAlphanumericDash:textField.text])
-        {
-            UIAlertView *theAlert = [[UIAlertView alloc] initWithTitle:@"Invalid Password"
-                                                               message:@"Valid password only contain alphabets, numbers and -'s."
-                                                              delegate:self
-                                                     cancelButtonTitle:@"OK"
-                                                     otherButtonTitles:nil];
-            [theAlert show];
-            return NO;
-        }
-        else
-            return YES;
-    }
-    return NO;
+- (BOOL)validateEmail:(NSString *)candidate {
+  NSString *emailRegex = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
+  NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegex];
+  return [emailTest evaluateWithObject:candidate];
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
-    if(textField == self.usernameTextField)
-    {
-       [self.passwordTextField becomeFirstResponder];
+  if (textField == self.usernameTextField) {
+    [self.passwordTextField becomeFirstResponder];
+  } else if (textField == self.passwordTextField) {
+    if (![self.usernameTextField.text isEqualToString:@""] &&
+        ![self.passwordTextField.text isEqualToString:@""]) {
+      // send a click event.
+      [self.signInButton sendActionsForControlEvents:UIControlEventTouchUpInside];
     }
-    else if(textField == self.passwordTextField)
-    {
-        Firebase* ref = [[Firebase alloc] initWithUrl:@"https://tebora.firebaseio.com"];
-        FirebaseSimpleLogin* authClient = [[FirebaseSimpleLogin alloc] initWithRef:ref];
-
-        [authClient loginWithEmail:self.usernameTextField.text andPassword:self.passwordTextField.text
-               withCompletionBlock:^(NSError* error, FAUser* user) {
-                   if (error != nil) {
-                       NSLog(@"Login Error: %@", error);
-                       // There was an error logging in to this account
-
-                       UIAlertView *theAlert = [[UIAlertView alloc] initWithTitle:nil
-                                                                          message:error.userInfo[@"NSLocalizedDescription"]
-                                                                         delegate:self
-                                                                cancelButtonTitle:@"OK"
-                                                                otherButtonTitles:nil];
-                       [theAlert show];
-
-                   } else {
-                       [self performSegueWithIdentifier:@"LoginSuccessful" sender:user];
-                   }
-               }];
-    }
+  }
 }
 
-- (void)didReceiveMemoryWarning
+- (IBAction)signInButtonClicked:(id)sender
 {
-    [super didReceiveMemoryWarning];
+  if(![self validateEmail:self.usernameTextField.text]) {
+    UIAlertView *theAlert = [[UIAlertView alloc] initWithTitle:@"Invalid Email Address"
+                                                       message:@"Valid e-mail addresses are of "
+                             "the form email@company.com"
+                                                      delegate:self
+                                             cancelButtonTitle:@"OK"
+                                             otherButtonTitles:nil];
+    [theAlert show];
+    return;
+  }
+
+  [self.signInActivityView startAnimating];
+
+  Firebase* ref = [[Firebase alloc] initWithUrl:@"https://tebora.firebaseio.com"];
+  FirebaseSimpleLogin* authClient = [[FirebaseSimpleLogin alloc] initWithRef:ref];
+  [authClient loginWithEmail:self.usernameTextField.text andPassword:self.passwordTextField.text
+         withCompletionBlock:^(NSError* error, FAUser* user) {
+            [self.signInActivityView stopAnimating];
+            if (error != nil) {
+              NSLog(@"Login Error: %@", error);
+              // There was an error logging in to this account
+
+              UIAlertView *theAlert =
+              [[UIAlertView alloc] initWithTitle:nil
+                                         message:error.userInfo[@"NSLocalizedDescription"]
+                                        delegate:self
+                               cancelButtonTitle:@"OK"
+                               otherButtonTitles:nil];
+              [theAlert show];
+            } else {
+              [self performSegueWithIdentifier:@"LoginSuccessful" sender:user];
+            }
+         }];
+}
+
+- (UIView *)usernameFieldPaddingView
+{
+  if (_usernameFieldPaddingView == nil) {
+    _usernameFieldPaddingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 15, 42)];
+  }
+  return _usernameFieldPaddingView;
+}
+
+- (UIView *)passwordFieldPaddingView
+{
+  if (_passwordFieldPaddingView == nil) {
+    _passwordFieldPaddingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 15, 42)];
+  }
+  return _passwordFieldPaddingView;
 }
 
 

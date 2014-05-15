@@ -8,10 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
-@interface CCLoginViewController : UIViewController <UITextFieldDelegate>
+@interface CCLoginViewController : UIViewController<UITextFieldDelegate>
 
 @property (strong, nonatomic) IBOutlet UIView *backgroundView;
 @property (strong, nonatomic) IBOutlet UITextField *usernameTextField;
 @property (strong, nonatomic) IBOutlet UITextField *passwordTextField;
+@property (strong, nonatomic) IBOutlet UIButton *signInButton;
+@property (strong, nonatomic) IBOutlet UIActivityIndicatorView *signInActivityView;
+
+-(IBAction)signInButtonClicked:(id)sender;
 
 @end

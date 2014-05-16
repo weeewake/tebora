@@ -7,8 +7,10 @@
 //
 
 #import "CCAlertDetailsViewController.h"
+#import "CCAlertDetailsTableCells.h"
 
 @interface CCAlertDetailsViewController ()
+
 @property (strong, nonatomic) NSArray *messageList;
 
 @end
@@ -17,293 +19,296 @@
 
 - (void)viewDidLoad
 {
-    [super viewDidLoad];
-    
-    [self registerForKeyboardNotifications];
-    
-    self.enterMessageTextField.delegate = self;
-    self.alertDetailsTableView.delegate = self;
-    self.alertDetailsTableView.dataSource = self;
-    
-    self.alertDetailsTableView.allowsSelection = NO;
-    self.alertDetailsTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    
-    [self updateData];
+  [super viewDidLoad];
+  [self.alertDetailsTableView registerClass:[CCTableViewPatientCell class]
+                     forCellReuseIdentifier:@"PatientCell"];
+  [self.alertDetailsTableView registerClass:[CCTableViewNurseCell class]
+                     forCellReuseIdentifier:@"NurseCell"];
+  [self.alertDetailsTableView registerClass:[CCTableViewConversationCell class]
+                     forCellReuseIdentifier:@"ConversationCell"];
+
+  [self registerForKeyboardNotifications];
+  self.title = self.alert[@"details"][@"type"];
+  self.enterMessageTextField.delegate = self;
+  self.alertDetailsTableView.delegate = self;
+  self.alertDetailsTableView.dataSource = self;
+  self.alertDetailsTableView.sectionHeaderHeight = 30;
+  self.alertDetailsTableView.estimatedRowHeight = self.alertDetailsTableView.rowHeight;
+  [self updateData];
 }
 
 - (void)registerForKeyboardNotifications
 {
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWasShown:)
-                                                 name:UIKeyboardDidShowNotification object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillBeHidden:)
-                                                 name:UIKeyboardWillHideNotification object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(keyboardWasShown:)
+                                               name:UIKeyboardDidShowNotification object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(keyboardWillBeHidden:)
+                                               name:UIKeyboardWillHideNotification object:nil];
 }
 
 - (void)updateData
 {
-    Firebase* alertDetailsRef = [[Firebase alloc] initWithUrl:[NSString stringWithFormat:@"https://tebora.firebaseio.com/channel/%@", self.alert[@"id"]]];
-    
-    [alertDetailsRef observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot){
-        [self.alert addEntriesFromDictionary: snapshot.value];
-        self.messageList = [snapshot.value[@"messages"] allValues];
-        
-        NSComparator sortMessageList = ^(NSMutableDictionary *msg1, NSMutableDictionary *msg2)
-        {
-            return [msg2[@"timestamp"] compare:msg1[@"timestamp"]];
-        };
-        
-        self.messageList = [[self.messageList sortedArrayUsingComparator:sortMessageList] mutableCopy];
+  Firebase* alertDetailsRef = [[Firebase alloc] initWithUrl:[NSString stringWithFormat:@"https://tebora.firebaseio.com/channel/%@", self.alert[@"id"]]];
 
-        [self updateView];
-    }];
+  [alertDetailsRef observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot){
+      [self.alert addEntriesFromDictionary: snapshot.value];
+      NSArray *messages = [snapshot.value[@"messages"] allValues];
+      NSComparator sortMessageList = ^(NSMutableDictionary *msg1, NSMutableDictionary *msg2) {
+          return [msg1[@"timestamp"] compare:msg2[@"timestamp"]];
+      };
+      self.messageList = [[messages sortedArrayUsingComparator:sortMessageList] mutableCopy];
+      [self updateView];
+  }];
 }
 
 - (void)updateView
 {
-    [self.toggleStatusButton setTitle:([self.alert[@"details"][@"status"] isEqualToString:@"OPEN"]) ? @"Resolve" : @"Reopen" forState:UIControlStateNormal];
-    
-    [self.alertDetailsTableView reloadData];
+  NSString *title = @"Reopen";
+  if ([self.alert[@"details"][@"status"] isEqualToString:@"OPEN"]) {
+    title = @"Resolve";
+  }
+  [self.toggleStatusButton setTitle:title
+                           forState:UIControlStateNormal];
+  [self.alertDetailsTableView reloadData];
 }
 
-- (void)didReceiveMemoryWarning
+- (void)callNursePressed:(UIGestureRecognizer *)gestureRecognizer
 {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+  NSString *phoneCallURL = [NSString stringWithFormat:@"tel:%@", self.alert[@"creator"][@"phone"]];
+  [[UIApplication sharedApplication] openURL:[NSURL URLWithString: phoneCallURL]];
 }
 
--(void)callNursePressed :(id) sender
+- (void)mrnPressed:(UIGestureRecognizer *)gestureRecognizer
 {
-    NSString *phoneCallURL = [NSString stringWithFormat:@"tel:%@", self.alert[@"creator"][@"phone"]];
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString: phoneCallURL]];
+  UIAlertView *alert =
+      [[UIAlertView alloc] initWithTitle:self.alert[@"patient"][@"mrn"]
+                                 message:@"In the future, this will take you to your EHR system"
+                                delegate:self
+                       cancelButtonTitle:@"OK"
+                       otherButtonTitles:nil];
+  [alert show];
+}
+
+#pragma mark - UITableViewDelegate
+
+- (void)tableView:(UITableView *)tableView
+    willDisplayHeaderView:(UIView *)view
+               forSection:(NSInteger)section
+{
+  view.tintColor = [UIColor colorWithRed:(239.f/255.)
+                                   green:(239.f/255.)
+                                    blue:(244.f/255.)
+                                   alpha:1.0];
+  UITableViewHeaderFooterView *headerView = (UITableViewHeaderFooterView *)view;
+  headerView.textLabel.textColor = [UIColor colorWithRed:(120.f/255.)
+                                                   green:(120.f/255.)
+                                                    blue:(125.f/255.)
+                                                   alpha:1.0];
+  headerView.textLabel.font = [UIFont systemFontOfSize:14.0f];
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+  CGSize cellSize = CGSizeMake(tableView.bounds.size.width, tableView.rowHeight);
+  CGSize constraintSize = CGSizeMake(tableView.bounds.size.width, FLT_MAX);
+  if (indexPath.section == 0) {
+    cellSize = [CCTableViewPatientCell sizeThatFits:constraintSize
+                                           withName:self.alert[@"patient"][@"name"]
+                                                mrn:self.alert[@"patient"][@"mrn"]
+                                                bed:self.alert[@"patient"][@"bed"]];
+  } else if (indexPath.section == 1) {
+    cellSize = [CCTableViewNurseCell sizeThatFits:constraintSize
+                                         withName:self.alert[@"creator"][@"name"]
+                                            phone:self.alert[@"creator"][@"phone"]];
+  } else if (indexPath.section == 2) {
+    NSInteger row = indexPath.row;
+    NSString *message = nil, *timestamp = nil, *name = nil;
+    if (row == 0) {
+      message = self.alert[@"details"][@"description"];
+      timestamp = [self userVisibleDateStringFromTimestamp:
+                      self.alert[@"details"][@"creation_timestamp"]];
+      name = self.alert[@"creator"][@"name"];
+    } else {
+      message = self.messageList[row-1][@"message"];
+      timestamp = [self userVisibleDateStringFromTimestamp:self.messageList[row-1][@"timestamp"]];
+      NSString *creatorName = self.alert[@"creator"][@"name"];
+      if ([self.messageList[row-1][@"sender"][@"name"] isEqualToString:creatorName]) {
+        name = self.messageList[row-1][@"sender"][@"name"];
+      }
+    }
+
+    cellSize = [CCTableViewConversationCell sizeThatFits:constraintSize
+                                                withName:name
+                                                 message:message
+                                               timestamp:timestamp];
+  }
+  NSLog(@"heightForRowAtIndexPath:%@, height:%lf", indexPath, cellSize.height);
+  return cellSize.height;
 }
 
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 4;
+  return 3;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    // The header for the section is the region name -- get this from the region at the section index.
-    switch(section) {
-        case 0: return @"Alert Details";
-        case 1: return @"Patient Details";
-        case 2: return @"Nurse Details";
-        case 3: return @"Conversation";
-    }
-    return @"Unknown";
-}
-
-
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 3 && indexPath.row%2 == 0) {
-        UIColor *altCellColor = [UIColor colorWithWhite:0.985 alpha:1];
-        cell.backgroundColor = altCellColor;
-        [cell.contentView sizeToFit];
-    }
+  // The header for the section is the region name -- get this from the region at the section index.
+  switch(section) {
+    case 0: return @"PATIENT";
+    case 1: return @"NURSE";
+    case 2: return @"CONVERSATION";
+  }
+  return @"UNKNOWN";
 }
 
 //Add subviews to a cell’s content view.
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    UITableViewCell *cell;
-    
-    switch(indexPath.section) {
-        case 0: {
-            cell = [tableView dequeueReusableCellWithIdentifier:@"AlertCell"];
-            cell.imageView.image = [UIImage imageNamed: [[NSString alloc] initWithFormat:@"%@.png", self.alert[@"details"][@"type"]]];
-            cell.textLabel.text = self.alert[@"details"][@"description"];
-            return cell;
-        }
-            
-        case 1: {
-            cell = [tableView dequeueReusableCellWithIdentifier:@"NameCell"];
-            switch(indexPath.row) {
-                case 0:
-                    cell.textLabel.text = self.alert[@"patient"][@"name"];
-                    break;
-                case 1:
-                    cell.textLabel.text = self.alert[@"patient"][@"mrn"];
-                    break;
-                case 2:
-                    cell.textLabel.text = self.alert[@"patient"][@"bed"];
-                    break;
-            }
-            return cell;
-        }
-            
-        case 2: {
-            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NameCell"];
-            switch(indexPath.row) {
-                case 0:
-                    cell.textLabel.text = self.alert[@"creator"][@"name"];
-                    break;
-                case 1:
-                    cell.textLabel.text = self.alert[@"creator"][@"phone"];
-                    cell.textLabel.textColor = [UIColor blueColor];
-                    cell.textLabel.userInteractionEnabled = YES;
-                    UITapGestureRecognizer *tapped = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(callNursePressed:)];
-                    tapped.numberOfTapsRequired = 1;
-                    [cell.textLabel addGestureRecognizer:tapped];
-                    break;
-            }
-            return cell;
-        }
-            
-        case 3: {
-            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MessageCell"];
-            UILabel *timestampLabel;
-            if([[cell.contentView subviews] count] <= 3)
-            {
-                timestampLabel = [[UILabel alloc] initWithFrame:CGRectMake(250, 0, 60, 20)];
-                [cell.contentView addSubview:timestampLabel];
-                timestampLabel.font = [UIFont systemFontOfSize:10.0];
-                timestampLabel.textAlignment = NSTextAlignmentRight;
-                timestampLabel.textColor = [UIColor lightGrayColor];
-            } else
-            {
-                timestampLabel = [cell.contentView subviews][3];
-            }
-
-            cell.textLabel.text = self.messageList[indexPath.row][@"sender"][@"name"];
-            cell.detailTextLabel.text = self.messageList[indexPath.row][@"message"];
-            timestampLabel.text = [self userVisibleDateStringFromTimestamp: self.messageList[indexPath.row][@"timestamp"]];
-            return cell;
-        }
-    }
-    return cell;
-}
-
-- (NSString *) userVisibleDateStringFromTimestamp: (NSString *) timestampString
+- (UITableViewCell *)tableView:(UITableView *)tableView
+         cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    long long timestamp = [timestampString longLongValue];
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateStyle:NSDateFormatterNoStyle];
-    [dateFormatter setTimeStyle:NSDateFormatterShortStyle];
-    
-    NSDate *date = [NSDate dateWithTimeIntervalSince1970:timestamp];
-    
-    NSString *formattedDateString = [dateFormatter stringFromDate:date];
-    
-    return formattedDateString;
+  switch(indexPath.section) {
+    case 0: {
+      CCTableViewPatientCell *cell = [tableView dequeueReusableCellWithIdentifier:@"PatientCell"];
+      cell.nameLabel.text = self.alert[@"patient"][@"name"];
+      cell.mrnLabel.text = self.alert[@"patient"][@"mrn"];
+      cell.bedLabel.text = self.alert[@"patient"][@"bed"];
+      UITapGestureRecognizer *tapped =
+          [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(mrnPressed:)];
+      tapped.numberOfTapsRequired = 1;
+      [cell.mrnLabel addGestureRecognizer:tapped];
+      return cell;
+    }
+
+    case 1: {
+      CCTableViewNurseCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NurseCell"];
+      cell.nameLabel.text = self.alert[@"creator"][@"name"];
+      cell.phoneLabel.text = self.alert[@"creator"][@"phone"];
+      UITapGestureRecognizer *tapped =
+          [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(callNursePressed:)];
+      tapped.numberOfTapsRequired = 1;
+      [cell.phoneLabel addGestureRecognizer:tapped];
+      return cell;
+    }
+
+    case 2: {
+      CCTableViewConversationCell *cell =
+          [tableView dequeueReusableCellWithIdentifier:@"ConversationCell"];
+      NSString *creatorName = self.alert[@"creator"][@"name"];
+      NSInteger row = indexPath.row;
+      if (row == 0) {
+        cell.nameLabel.text = self.alert[@"creator"][@"name"];
+        cell.messageLabel.text = self.alert[@"details"][@"description"];
+        cell.timestampLabel.text = [self userVisibleDateStringFromTimestamp:
+                                        self.alert[@"details"][@"creation_timestamp"]];
+      } else {
+        if ([self.messageList[row-1][@"sender"][@"name"] isEqualToString:creatorName]) {
+          cell.nameLabel.text = self.messageList[row-1][@"sender"][@"name"];
+          cell.isMyMessage = NO;
+        } else {
+          cell.nameLabel.text = @"";
+          cell.isMyMessage = YES;
+        }
+        cell.messageLabel.text = self.messageList[row-1][@"message"];
+        cell.timestampLabel.text = [self userVisibleDateStringFromTimestamp:
+                                        self.messageList[row-1][@"timestamp"]];
+      }
+      return cell;
+    }
+  }
+  return nil;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    switch(section) {
-        case 0: return 1;
-        case 1: return 3;
-        case 2: return 2;
-        case 3: return [self.messageList count];
-    }
-    return 0;
+- (NSString *)userVisibleDateStringFromTimestamp:(NSString *)timestampString
+{
+  NSDate *date = [NSDate dateWithTimeIntervalSince1970:[timestampString longLongValue]];
+  NSTimeInterval interval = -[date timeIntervalSinceNow];
+  if (interval < 45) {  // show "%d mins ago" upto 1 hr.
+    return @"a moment ago";
+  } else if (interval < 3600) {  // show "%d mins ago" upto 1 hr.
+    int mins = 1;
+    if (interval > 60) mins = (int)(interval / 60.);
+    return [NSString stringWithFormat:@"%d min ago", mins];
+  } else if (interval < (24 * 60 * 60)) {
+    int hrs = (int)(interval / 3600);
+    return [NSString stringWithFormat:@"%d hr ago", hrs];
+  } else {
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    NSString *formatString = [NSDateFormatter dateFormatFromTemplate:@"dMMM"
+                                                             options:0
+                                                              locale:[NSLocale currentLocale]];
+    [dateFormatter setDateFormat:formatString];
+    return [dateFormatter stringFromDate:date];
+  }
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+  switch(section) {
+    case 0: return 1;
+    case 1: return 1;
+    case 2: return 1 + [self.messageList count];
+  }
+  return 0;
 }
 
 #pragma mark - Actions
 
-- (IBAction)toggleStatusButtonPressed:(UIButton *)sender {
+- (IBAction)toggleStatusButtonPressed:(UIButton *)sender
+{
+  NSString *fbDetailsUrl =
+      [NSString stringWithFormat:@"https://tebora.firebaseio.com/channel/%@/details",
+                                 self.alert[@"id"]];
+  Firebase* alertDetailsRef = [[Firebase alloc] initWithUrl:fbDetailsUrl];
 
-    Firebase* alertDetailsRef = [[Firebase alloc] initWithUrl:[NSString stringWithFormat:@"https://tebora.firebaseio.com/channel/%@/details", self.alert[@"id"]]];
-
-    if([self.alert[@"details"][@"status"] isEqualToString:@"OPEN"])
-    {
-        [alertDetailsRef updateChildValues:@{@"status": @"RESOLVED"}];
-    }
-    else
-    {
-        [alertDetailsRef updateChildValues:@{@"status": @"OPEN"}];
-    }
-    [self.navigationController popViewControllerAnimated:YES];
+  if ([self.alert[@"details"][@"status"] isEqualToString:@"OPEN"]) {
+    [alertDetailsRef updateChildValues:@{ @"status" : @"RESOLVED" }];
+  } else {
+    [alertDetailsRef updateChildValues:@{ @"status" : @"OPEN" }];
+  }
+  [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (IBAction)sendMessageButtonPressed:(UIButton *)sender
 {
-    if(![self.enterMessageTextField.text isEqualToString:@""])
-    {
-        Firebase* messagesRef = [[Firebase alloc] initWithUrl:[NSString stringWithFormat:@"https://tebora.firebaseio.com/channel/%@/messages/", self.alert[@"id"]]];
-        Firebase* newMessageRef = [messagesRef childByAutoId];
-        NSDictionary *newMessage = @{@"message": self.enterMessageTextField.text, @"sender": @ {@"name": @"Bob"}, @"timestamp": @"1111"};
-        [newMessageRef setValue:newMessage];
-    }
-    [self.enterMessageTextField resignFirstResponder];
-    self.enterMessageTextField.text = @"";
-    [self updateView];
+  if (![self.enterMessageTextField.text isEqualToString:@""])
+  {
+    NSString *fbMessagesUrl =
+        [NSString stringWithFormat:@"https://tebora.firebaseio.com/channel/%@/messages/",
+                                   self.alert[@"id"]];
+    Firebase* messagesRef = [[Firebase alloc] initWithUrl:fbMessagesUrl];
+    Firebase* newMessageRef = [messagesRef childByAutoId];
+    NSTimeInterval interval = [[NSDate date] timeIntervalSince1970];
+    NSString *timestamp = [NSString stringWithFormat:@"%lld", (long long)interval];
+    NSDictionary *newMessage = @{ @"message" : self.enterMessageTextField.text,
+                                  @"sender": @{ @"name": @"Bob" },
+                                  @"timestamp": timestamp,
+                                };
+    [newMessageRef setValue:newMessage];
+  }
+  [self.enterMessageTextField resignFirstResponder];
+  self.enterMessageTextField.text = @"";
+  [self updateView];
 }
 
-- (void)keyboardWasShown:(NSNotification*)aNotification {
-    NSDictionary* info = [aNotification userInfo];
-    CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
-    
-    CGRect bkgndRect = self.enterMessageTextField.superview.frame;
-    bkgndRect.origin.y -= kbSize.height;
-    
-    [self.enterMessageTextField.superview setFrame:bkgndRect];
+- (void)keyboardWasShown:(NSNotification*)aNotification
+{
+  NSDictionary* info = [aNotification userInfo];
+  CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+  CGRect bgRect = self.enterMessageTextField.superview.frame;
+  bgRect.origin.y -= kbSize.height;
+
+  [self.enterMessageTextField.superview setFrame:bgRect];
 }
 
 - (void)keyboardWillBeHidden:(NSNotification*)aNotification
 {
-    NSDictionary* info = [aNotification userInfo];
-    CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
-    
-    CGRect bkgndRect = self.enterMessageTextField.superview.frame;
-    bkgndRect.origin.y += kbSize.height;
-    
-    [self.enterMessageTextField.superview setFrame:bkgndRect];
+  NSDictionary* info = [aNotification userInfo];
+  CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+  CGRect bgRect = self.enterMessageTextField.superview.frame;
+  bgRect.origin.y += kbSize.height;
+  [self.enterMessageTextField.superview setFrame:bgRect];
 }
 
 @end
-
-
-//Listing 5-7  Adding subviews to a cell’s content view
-//#define MAINLABEL_TAG 1
-//#define SECONDLABEL_TAG 2
-//#define PHOTO_TAG 3
-
-//- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-//    
-//    static NSString *CellIdentifier = @"ImageOnRightCell";
-//    
-//    UILabel *mainLabel, *secondLabel;
-//    UIImageView *photo;
-//    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-//    if (cell == nil) {
-//        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-//        cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
-//        
-//        mainLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0, 0.0, 220.0, 15.0)];
-//        mainLabel.tag = MAINLABEL_TAG;
-//        mainLabel.font = [UIFont systemFontOfSize:14.0];
-//        mainLabel.textAlignment = UITextAlignmentRight;
-//        mainLabel.textColor = [UIColor blackColor];
-//        mainLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleHeight;
-//        [cell.contentView addSubview:mainLabel];
-//        
-//        secondLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0, 20.0, 220.0, 25.0)];
-//        secondLabel.tag = SECONDLABEL_TAG;
-//        secondLabel.font = [UIFont systemFontOfSize:12.0];
-//        secondLabel.textAlignment = UITextAlignmentRight;
-//        secondLabel.textColor = [UIColor darkGrayColor];
-//        secondLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleHeight;
-//        [cell.contentView addSubview:secondLabel];
-//        
-//        photo = [[UIImageView alloc] initWithFrame:CGRectMake(225.0, 0.0, 80.0, 45.0)];
-//        photo.tag = PHOTO_TAG;
-//        photo.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleHeight;
-//        [cell.contentView addSubview:photo];
-//    } else {
-//        mainLabel = (UILabel *)[cell.contentView viewWithTag:MAINLABEL_TAG];
-//        secondLabel = (UILabel *)[cell.contentView viewWithTag:SECONDLABEL_TAG];
-//        photo = (UIImageView *)[cell.contentView viewWithTag:PHOTO_TAG];
-//    }
-//    NSDictionary *aDict = [self.list objectAtIndex:indexPath.row];
-//    mainLabel.text = [aDict objectForKey:@"mainTitleKey"];
-//    secondLabel.text = [aDict objectForKey:@"secondaryTitleKey"];
-//    NSString *imagePath = [[NSBundle mainBundle] pathForResource:[aDict objectForKey:@"imageKey"] ofType:@"png"];
-//    UIImage *theImage = [UIImage imageWithContentsOfFile:imagePath];
-//    photo.image = theImage;
-//    
-//    return cell;
-//}

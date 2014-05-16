@@ -8,7 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-@interface CCAlertDetailsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate>
+@interface CCAlertDetailsViewController : UIViewController<UITableViewDataSource,
+                                                           UITableViewDelegate,
+                                                           UITextFieldDelegate>
 
 // Views
 @property (strong, nonatomic) IBOutlet UITableView *alertDetailsTableView;

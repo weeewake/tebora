@@ -143,7 +143,6 @@
                                                  message:message
                                                timestamp:timestamp];
   }
-  NSLog(@"heightForRowAtIndexPath:%@, height:%lf", indexPath, cellSize.height);
   return cellSize.height;
 }
 

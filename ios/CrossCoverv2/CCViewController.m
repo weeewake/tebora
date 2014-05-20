@@ -33,7 +33,6 @@
 
   self.tableView.dataSource = self;
   self.tableView.delegate = self;
-  self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
 
   self.segmentedControl = [[UISegmentedControl alloc] initWithItems:
                                [NSArray arrayWithObjects:@"Open", @"Resolved", nil]];
@@ -113,31 +112,29 @@
     [self.navigationItem setLeftBarButtonItem:self.backButton];
   }
 
+  __block int openAlertCount = 0, resolvedAlertCount = 0;
   self.indexesOfCurrentlyDisplayedAlerts =
       [self.alertList indexesOfObjectsPassingTest:^BOOL(NSDictionary *thisAlert,
                                                         NSUInteger idx,
                                                         BOOL *stop) {
-          if ([self.currentTypeFilter isEqualToString:@"HOME"]) {
-            return [thisAlert[@"details"][@"status"] isEqualToString:self.currentStatusFilter];
-          } else {
-            return [thisAlert[@"details"][@"status"] isEqualToString: self.currentStatusFilter] && [thisAlert[@"details"][@"type"] isEqualToString:self.currentTypeFilter];
+          NSString *status = thisAlert[@"details"][@"status"];
+          if ([self.currentTypeFilter isEqualToString:@"HOME"] ||
+              [thisAlert[@"details"][@"type"] isEqualToString:self.currentTypeFilter]) {
+            if ([status isEqualToString:@"OPEN"]) {
+              openAlertCount++;
+            } else {
+              resolvedAlertCount++;
+            }
+            return [status isEqualToString:self.currentStatusFilter];
           }
+          return NO;
       }];
 
-  CGRect titleRect = CGRectMake(0, 0, 300, 40);
-  UILabel *tableTitle = [[UILabel alloc] initWithFrame:titleRect];
-  tableTitle.backgroundColor = [CCSettings lightTintColor];
-  tableTitle.textColor = [CCSettings alertTextColor];
-  tableTitle.opaque = YES;
-  tableTitle.font = [UIFont boldSystemFontOfSize:13];
-  tableTitle.textAlignment = NSTextAlignmentCenter;
-  tableTitle.text = [NSString stringWithFormat:@"%lu %@ %@ %@",
-                        (unsigned long)[self.indexesOfCurrentlyDisplayedAlerts count],
-                        [self.currentStatusFilter capitalizedString],
-                        [self.currentTypeFilter isEqualToString:@"HOME"] ? @"" : [self.currentTypeFilter capitalizedString],
-                        [self.indexesOfCurrentlyDisplayedAlerts count] == 1 ? @"alert" : @"alerts"];
+  [self.segmentedControl setTitle:[NSString stringWithFormat:@"%d Open", openAlertCount]
+                forSegmentAtIndex:0];
+  [self.segmentedControl setTitle:[NSString stringWithFormat:@"%d Resolved", resolvedAlertCount]
+                forSegmentAtIndex:1];
 
-  self.tableView.tableHeaderView = tableTitle;
   [self.tableView reloadData];
 }
 

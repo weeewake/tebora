@@ -49,21 +49,21 @@
 - (void)loadAlertData
 {
   self.alertList = [[NSMutableArray alloc] init];
-
-  NSString *userId = self.thisUser.userId ? self.thisUser.userId : @"4";
-  Firebase *alertsListRef =
-      [[Firebase alloc] initWithUrl:[NSString stringWithFormat:
-                                        @"https://tebora.firebaseio.com/user/%@/channels", userId]];
-
-  [alertsListRef observeEventType:FEventTypeValue
-                        withBlock:^(FDataSnapshot *snapshot) {
-                            [self alertListChangedTo:snapshot.value];
-                        }];
+  NSString *userId = self.thisUser.userId;
+  if (userId != nil && ![userId isEqualToString:@""]) {
+    NSString *fbUrl = [NSString stringWithFormat:@"https://tebora.firebaseio.com/user/%@/channels",
+                                                 userId];
+    Firebase *alertsListRef = [[Firebase alloc] initWithUrl:fbUrl];
+    [alertsListRef observeEventType:FEventTypeValue
+                          withBlock:^(FDataSnapshot *snapshot) { [self alertListChangedTo:snapshot.value]; }];
+  }
 }
 
 - (void)alertListChangedTo:(NSDictionary *)newAlertList
 {
-  self.alertList = [[newAlertList allValues] mutableCopy];
+  self.alertList = [newAlertList isMemberOfClass:[NSNull class]]
+                       ? [@[] mutableCopy]
+                       : [[newAlertList allValues] mutableCopy];
 
   for (NSDictionary *alert in self.alertList) {
     Firebase *alertRef = [[Firebase alloc] initWithUrl:[NSString stringWithFormat:@"https://tebora.firebaseio.com/channel/%@", alert[@"id"]]];
@@ -100,6 +100,7 @@
     NSUInteger thisIndex = [self indexInAlertListForTableViewIndexPath:sender];
     NSMutableDictionary *thisAlert = self.alertList[thisIndex];
     alertDetailsVC.alert = thisAlert;
+    alertDetailsVC.thisUser = self.thisUser;
   }
 }
 

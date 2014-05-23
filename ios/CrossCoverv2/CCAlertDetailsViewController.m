@@ -132,8 +132,7 @@
     } else {
       message = self.messageList[row-1][@"message"];
       timestamp = [self userVisibleDateStringFromTimestamp:self.messageList[row-1][@"timestamp"]];
-      NSString *creatorName = self.alert[@"creator"][@"name"];
-      if ([self.messageList[row-1][@"sender"][@"name"] isEqualToString:creatorName]) {
+      if (![self.messageList[row-1][@"sender"][@"id"] isEqualToString:self.thisUser.userId]) {
         name = self.messageList[row-1][@"sender"][@"name"];
       }
     }
@@ -194,7 +193,6 @@
     case 2: {
       CCTableViewConversationCell *cell =
           [tableView dequeueReusableCellWithIdentifier:@"ConversationCell"];
-      NSString *creatorName = self.alert[@"creator"][@"name"];
       NSInteger row = indexPath.row;
       if (row == 0) {
         cell.nameLabel.text = self.alert[@"creator"][@"name"];
@@ -202,7 +200,7 @@
         cell.timestampLabel.text = [self userVisibleDateStringFromTimestamp:
                                         self.alert[@"details"][@"creation_timestamp"]];
       } else {
-        if ([self.messageList[row-1][@"sender"][@"name"] isEqualToString:creatorName]) {
+        if (![self.messageList[row-1][@"sender"][@"id"] isEqualToString:self.thisUser.userId]) {
           cell.nameLabel.text = self.messageList[row-1][@"sender"][@"name"];
           cell.isMyMessage = NO;
         } else {
@@ -280,8 +278,8 @@
     Firebase* newMessageRef = [messagesRef childByAutoId];
     NSTimeInterval interval = [[NSDate date] timeIntervalSince1970];
     NSString *timestamp = [NSString stringWithFormat:@"%lld", (long long)interval];
-    NSDictionary *newMessage = @{ @"message" : self.enterMessageTextField.text,
-                                  @"sender": @{ @"name": @"Bob" },
+    NSDictionary *newMessage = @{ @"message"  : self.enterMessageTextField.text,
+                                  @"sender"   : @{ @"id"   : self.thisUser.userId },  // TODO:
                                   @"timestamp": timestamp,
                                 };
     [newMessageRef setValue:newMessage];

@@ -22,6 +22,7 @@
 
 // Model
 @property (strong, nonatomic) NSMutableDictionary *alert;
+@property (strong, nonatomic) FAUser *thisUser;
 
 // Actions
 - (IBAction)toggleStatusButtonPressed:(UIButton *)sender;

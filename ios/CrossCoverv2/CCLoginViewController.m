@@ -14,10 +14,13 @@
 
 @property (strong, nonatomic) UIView *usernameFieldPaddingView;
 @property (strong, nonatomic) UIView *passwordFieldPaddingView;
+@property (assign, nonatomic) BOOL isSigningIn;
 
 @end
 
 @implementation CCLoginViewController
+
+@synthesize isSigningIn = isSigningIn_;
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
@@ -29,6 +32,14 @@
 - (void)viewDidLoad
 {
   [super viewDidLoad];
+
+  self.isSigningIn = NO;
+  self.overlayView.userInteractionEnabled = YES;
+  UITapGestureRecognizer *tapped =
+      [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(overlayTouched:)];
+  tapped.numberOfTapsRequired = 1;
+  [self.overlayView addGestureRecognizer:tapped];
+
 
   // Set the background to be our blue.
   self.backgroundView.backgroundColor = [CCSettings tintColor];
@@ -55,19 +66,24 @@
   passwordLayer.masksToBounds = YES;
 }
 
-- (BOOL)textFieldShouldReturn:(UITextField *)textField
+- (void)overlayTouched:(UIGestureRecognizer *)gestureRecognizer
 {
-  [textField resignFirstResponder];
-  return YES;
 }
 
-- (BOOL)validateEmail:(NSString *)candidate {
-  NSString *emailRegex = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
-  NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegex];
-  return [emailTest evaluateWithObject:candidate];
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+  if ([self.usernameTextField isFirstResponder] ||
+      [self.passwordTextField isFirstResponder]) {
+    UITouch *touch = [[event allTouches] anyObject];
+    if ((touch.view != self.usernameTextField) &&
+        (touch.view != self.passwordTextField)) {
+      [self.view endEditing:YES];
+    }
+  }
+  [super touchesEnded:touches withEvent:event];
 }
 
-- (void)textFieldDidEndEditing:(UITextField *)textField
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
   if (textField == self.usernameTextField) {
     [self.passwordTextField becomeFirstResponder];
@@ -78,10 +94,32 @@
       [self.signInButton sendActionsForControlEvents:UIControlEventTouchUpInside];
     }
   }
+  return YES;
+}
+
+- (BOOL)validateEmail:(NSString *)candidate
+{
+  NSString *emailRegex = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
+  NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegex];
+  return [emailTest evaluateWithObject:candidate];
+}
+
+- (void)setIsSigningIn:(BOOL)isSigningIn
+{
+  isSigningIn_ = isSigningIn;
+  if (isSigningIn_) {
+    [self.signInActivityView startAnimating];
+    self.overlayView.hidden = NO;
+    [self.view bringSubviewToFront:self.overlayView];
+  } else {
+    [self.signInActivityView stopAnimating];
+    self.overlayView.hidden = YES;
+  }
 }
 
 - (IBAction)signInButtonClicked:(id)sender
 {
+  [self.view endEditing:YES];
   if(![self validateEmail:self.usernameTextField.text]) {
     UIAlertView *theAlert = [[UIAlertView alloc] initWithTitle:@"Invalid Email Address"
                                                        message:@"Valid e-mail addresses are of "
@@ -93,23 +131,23 @@
     return;
   }
 
-  [self.signInActivityView startAnimating];
+  self.isSigningIn = YES;
 
   Firebase* ref = [[Firebase alloc] initWithUrl:@"https://tebora.firebaseio.com"];
   FirebaseSimpleLogin* authClient = [[FirebaseSimpleLogin alloc] initWithRef:ref];
   [authClient loginWithEmail:self.usernameTextField.text andPassword:self.passwordTextField.text
          withCompletionBlock:^(NSError* error, FAUser* user) {
-            [self.signInActivityView stopAnimating];
+            self.isSigningIn = NO;
             if (error != nil) {
               NSLog(@"Login Error: %@", error);
               // There was an error logging in to this account
 
               UIAlertView *theAlert =
-              [[UIAlertView alloc] initWithTitle:nil
-                                         message:error.userInfo[@"NSLocalizedDescription"]
-                                        delegate:self
-                               cancelButtonTitle:@"OK"
-                               otherButtonTitles:nil];
+                  [[UIAlertView alloc] initWithTitle:nil
+                                             message:error.userInfo[@"NSLocalizedDescription"]
+                                            delegate:self
+                                   cancelButtonTitle:@"OK"
+                                   otherButtonTitles:nil];
               [theAlert show];
             } else {
               [self performSegueWithIdentifier:@"LoginSuccessful" sender:user];

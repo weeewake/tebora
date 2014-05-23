@@ -310,6 +310,7 @@ static const CGFloat kConversationBubbleViewWidth = 210.f;
               withName:(NSString *)name
                message:(NSString *)message
              timestamp:(NSString *)timestamp
+        isAlertMessage:(BOOL)isAlertMessage
 {
   CGFloat height = kConversationTopPadding;
   CGSize constraintSize =
@@ -335,8 +336,11 @@ static const CGFloat kConversationBubbleViewWidth = 210.f;
                                          context:nil].size.height);
   height += kConversationBottomPadding;
 
-  // Add 2 * kConversationDefaultPadding for bubbleView padding.
-  return CGSizeMake(size.width, height + 2 * kConversationDefaultPadding);
+  // Add 2 * kConversationDefaultPadding for bubbleView padding and if it is the first message,
+  // add kConversationDefaultPadding for the top.
+  return CGSizeMake(size.width, height
+                    + 2 * kConversationDefaultPadding
+                    + (isAlertMessage ? kConversationDefaultPadding : 0));
 }
 
 - (CGSize)sizeThatFits:(CGSize)size
@@ -344,13 +348,16 @@ static const CGFloat kConversationBubbleViewWidth = 210.f;
   return [[self class] sizeThatFits:size
                            withName:self.nameLabel.text
                             message:self.messageLabel.text
-                          timestamp:self.timestampLabel.text];
+                          timestamp:self.timestampLabel.text
+                     isAlertMessage:self.isAlertMessage];
 }
 
 - (void)layoutSubviews
 {
+  CGFloat bubbleViewY =
+      kConversationDefaultPadding + (self.isAlertMessage ? kConversationDefaultPadding : 0);
   CGRect bubbleViewFrame = CGRectMake(kConversationBubbleViewShorterPadding,
-                                      kConversationDefaultPadding,
+                                      bubbleViewY,
                                       kConversationBubbleViewWidth,
                                       FLT_MAX);
   CGSize constraintSize = CGSizeMake(bubbleViewFrame.size.width - 2 * kConversationDefaultPadding,

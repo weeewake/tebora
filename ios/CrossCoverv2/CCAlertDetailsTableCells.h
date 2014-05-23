@@ -37,6 +37,7 @@
 @interface CCTableViewConversationCell : UITableViewCell
 
 @property (nonatomic, assign) BOOL isMyMessage;
+@property (nonatomic, assign) BOOL isAlertMessage;
 @property (nonatomic, strong) UILabel *nameLabel;
 @property (nonatomic, strong) UILabel *messageLabel;
 @property (nonatomic, strong) UILabel *timestampLabel;
@@ -45,6 +46,7 @@
 + (CGSize)sizeThatFits:(CGSize)size
               withName:(NSString *)name
                message:(NSString *)message
-             timestamp:(NSString *)timestamp;
+             timestamp:(NSString *)timestamp
+        isAlertMessage:(BOOL)isAlertMessage;
 
 @end

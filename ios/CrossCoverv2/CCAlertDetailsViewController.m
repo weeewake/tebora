@@ -124,11 +124,13 @@
   } else if (indexPath.section == 2) {
     NSInteger row = indexPath.row;
     NSString *message = nil, *timestamp = nil, *name = nil;
+    BOOL isAlertMessage = NO;
     if (row == 0) {
       message = self.alert[@"details"][@"description"];
       timestamp = [self userVisibleDateStringFromTimestamp:
                       self.alert[@"details"][@"creation_timestamp"]];
       name = self.alert[@"creator"][@"name"];
+      isAlertMessage = YES;
     } else {
       message = self.messageList[row-1][@"message"];
       timestamp = [self userVisibleDateStringFromTimestamp:self.messageList[row-1][@"timestamp"]];
@@ -140,7 +142,8 @@
     cellSize = [CCTableViewConversationCell sizeThatFits:constraintSize
                                                 withName:name
                                                  message:message
-                                               timestamp:timestamp];
+                                               timestamp:timestamp
+                                          isAlertMessage:isAlertMessage];
   }
   return cellSize.height;
 }
@@ -194,11 +197,13 @@
       CCTableViewConversationCell *cell =
           [tableView dequeueReusableCellWithIdentifier:@"ConversationCell"];
       NSInteger row = indexPath.row;
+      cell.isAlertMessage = (row == 0);
       if (row == 0) {
         cell.nameLabel.text = self.alert[@"creator"][@"name"];
         cell.messageLabel.text = self.alert[@"details"][@"description"];
         cell.timestampLabel.text = [self userVisibleDateStringFromTimestamp:
                                         self.alert[@"details"][@"creation_timestamp"]];
+
       } else {
         if (![self.messageList[row-1][@"sender"][@"id"] isEqualToString:self.thisUser.userId]) {
           cell.nameLabel.text = self.messageList[row-1][@"sender"][@"name"];

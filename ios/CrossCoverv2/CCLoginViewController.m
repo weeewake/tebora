@@ -15,8 +15,6 @@
 
 @interface CCLoginViewController ()
 
-@property (strong, nonatomic) UIView *usernameFieldPaddingView;
-@property (strong, nonatomic) UIView *passwordFieldPaddingView;
 @property (assign, nonatomic) BOOL isSigningIn;
 
 @end
@@ -55,15 +53,16 @@
   signInButtonLayer.masksToBounds = YES;
 
   // Add a padding to the username and password text fields.
-  self.usernameTextField.leftView = self.usernameFieldPaddingView;
+  self.usernameTextField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 15, 42)];
   self.usernameTextField.leftViewMode = UITextFieldViewModeAlways;
-  self.passwordTextField.leftView = self.passwordFieldPaddingView;
+  self.passwordTextField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 15, 42)];
   self.passwordTextField.leftViewMode = UITextFieldViewModeAlways;
 
   // Round the corners for username and password text fields.
   CALayer *usernameLayer = self.usernameTextField.layer;
   usernameLayer.cornerRadius = 2.0f;
   usernameLayer.masksToBounds = YES;
+
   CALayer *passwordLayer = self.passwordTextField.layer;
   passwordLayer.cornerRadius = 2.0f;
   passwordLayer.masksToBounds = YES;
@@ -71,6 +70,7 @@
 
 - (void)overlayTouched:(UIGestureRecognizer *)gestureRecognizer
 {
+  // ignore touches.
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
@@ -143,8 +143,6 @@
             self.isSigningIn = NO;
             if (error != nil) {
               NSLog(@"Login Error: %@", error);
-              // There was an error logging in to this account
-
               UIAlertView *theAlert =
                   [[UIAlertView alloc] initWithTitle:nil
                                              message:error.userInfo[@"NSLocalizedDescription"]
@@ -160,22 +158,5 @@
             }
          }];
 }
-
-- (UIView *)usernameFieldPaddingView
-{
-  if (_usernameFieldPaddingView == nil) {
-    _usernameFieldPaddingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 15, 42)];
-  }
-  return _usernameFieldPaddingView;
-}
-
-- (UIView *)passwordFieldPaddingView
-{
-  if (_passwordFieldPaddingView == nil) {
-    _passwordFieldPaddingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 15, 42)];
-  }
-  return _passwordFieldPaddingView;
-}
-
 
 @end

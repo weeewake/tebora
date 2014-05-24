@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Tebora. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 @interface CCSettings : NSObject
 

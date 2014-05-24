@@ -64,7 +64,6 @@
 		476654EF18FB02E700D994B1 /* PageMD-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PageMD-Info.plist"; sourceTree = "<group>"; };
 		476654F118FB02E700D994B1 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		476654F318FB02E700D994B1 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		476654F518FB02E700D994B1 /* PageMD-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PageMD-Prefix.pch"; sourceTree = "<group>"; };
 		476654F618FB02E700D994B1 /* CCAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCAppDelegate.h; sourceTree = "<group>"; };
 		476654F718FB02E700D994B1 /* CCAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CCAppDelegate.m; sourceTree = "<group>"; };
 		476654FA18FB02E700D994B1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -211,7 +210,6 @@
 				476654EF18FB02E700D994B1 /* PageMD-Info.plist */,
 				476654F018FB02E700D994B1 /* InfoPlist.strings */,
 				476654F318FB02E700D994B1 /* main.m */,
-				476654F518FB02E700D994B1 /* PageMD-Prefix.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -482,8 +480,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "CrossCoverv2/PageMD-Prefix.pch";
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				INFOPLIST_FILE = "CrossCoverv2/PageMD-Info.plist";
 				"OTHER_LDFLAGS[arch=*]" = "-ObjC";
 				PRODUCT_NAME = PageMD;
@@ -503,8 +500,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "CrossCoverv2/PageMD-Prefix.pch";
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				INFOPLIST_FILE = "CrossCoverv2/PageMD-Info.plist";
 				"OTHER_LDFLAGS[arch=*]" = "-ObjC";
 				PRODUCT_NAME = PageMD;

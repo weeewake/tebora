@@ -7,11 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <FirebaseSimpleLogin/FirebaseSimpleLogin.h>
 
 @interface CCAlertDetailsViewController : UIViewController<UITableViewDataSource,
                                                            UITableViewDelegate,
                                                            UITextFieldDelegate>
-
 // Views
 @property (strong, nonatomic) IBOutlet UITableView *alertDetailsTableView;
 @property (strong, nonatomic) IBOutlet UIButton *toggleStatusButton;

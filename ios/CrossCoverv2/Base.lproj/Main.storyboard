@@ -176,7 +176,7 @@
                                     <outlet property="delegate" destination="3o3-2A-9ds" id="SAV-JW-OUJ"/>
                                 </connections>
                             </textField>
-                            <imageView userInteractionEnabled="NO" alpha="0.69999999999999973" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="App Icon - Straight.png" translatesAutoresizingMaskIntoConstraints="NO" id="Ci0-zF-Mg3">
+                            <imageView userInteractionEnabled="NO" alpha="0.69999999999999973" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="TransparentAppIcon" translatesAutoresizingMaskIntoConstraints="NO" id="Ci0-zF-Mg3">
                                 <rect key="frame" x="93" y="482" width="44" height="28"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -261,7 +261,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="App Icon - Straight.png" width="86" height="56"/>
+        <image name="TransparentAppIcon" width="43" height="28"/>
     </resources>
     <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

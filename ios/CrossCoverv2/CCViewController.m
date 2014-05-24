@@ -176,7 +176,8 @@
                          thisAlert[@"patient"][@"name"]];
   cell.detailTextLabel.text = thisAlert[@"details"][@"description"];
 
-  cell.imageView.image = [UIImage imageNamed: thisAlert[@"details"][@"type"]];
+  NSString *imageName = [thisAlert[@"details"][@"type"] capitalizedString];
+  cell.imageView.image = [UIImage imageNamed:imageName];
   cell.imageView.userInteractionEnabled = YES;
   cell.imageView.tag = thisIndex;
   UITapGestureRecognizer *tapped =

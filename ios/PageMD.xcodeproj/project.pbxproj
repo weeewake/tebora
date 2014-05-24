@@ -28,14 +28,6 @@
 		47A9E7251910684600348E41 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47A9E7241910684600348E41 /* CFNetwork.framework */; };
 		47A9E7271910685200348E41 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47A9E7261910685200348E41 /* Security.framework */; };
 		47A9E7291910686000348E41 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47A9E7281910686000348E41 /* SystemConfiguration.framework */; };
-		47B053821923FBBF00E2174B /* CONSULT@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 47B0537B1923FBBF00E2174B /* CONSULT@2x.png */; };
-		47B053831923FBBF00E2174B /* CRITICAL@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 47B0537C1923FBBF00E2174B /* CRITICAL@2x.png */; };
-		47B053841923FBBF00E2174B /* IO@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 47B0537D1923FBBF00E2174B /* IO@2x.png */; };
-		47B053851923FBBF00E2174B /* LAB@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 47B0537E1923FBBF00E2174B /* LAB@2x.png */; };
-		47B053861923FBBF00E2174B /* PRESCRIPTION@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 47B0537F1923FBBF00E2174B /* PRESCRIPTION@2x.png */; };
-		47B053871923FBBF00E2174B /* RADIOLOGY@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 47B053801923FBBF00E2174B /* RADIOLOGY@2x.png */; };
-		47B053881923FBBF00E2174B /* VITAL@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 47B053811923FBBF00E2174B /* VITAL@2x.png */; };
-		47B0539119242F2C00E2174B /* App Icon - Straight.png in Resources */ = {isa = PBXBuildFile; fileRef = 47B0539019242F2C00E2174B /* App Icon - Straight.png */; };
 		47EC8114191C05B300E74CFA /* FirebaseSimpleLogin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47EC8113191C05B300E74CFA /* FirebaseSimpleLogin.framework */; };
 		47EC8116191C05F000E74CFA /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47EC8115191C05F000E74CFA /* Accounts.framework */; };
 		47EC8118191C05F800E74CFA /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47EC8117191C05F800E74CFA /* Social.framework */; };
@@ -83,14 +75,6 @@
 		47A9E7241910684600348E41 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		47A9E7261910685200348E41 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		47A9E7281910686000348E41 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
-		47B0537B1923FBBF00E2174B /* CONSULT@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CONSULT@2x.png"; sourceTree = "<group>"; };
-		47B0537C1923FBBF00E2174B /* CRITICAL@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CRITICAL@2x.png"; sourceTree = "<group>"; };
-		47B0537D1923FBBF00E2174B /* IO@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "IO@2x.png"; sourceTree = "<group>"; };
-		47B0537E1923FBBF00E2174B /* LAB@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "LAB@2x.png"; sourceTree = "<group>"; };
-		47B0537F1923FBBF00E2174B /* PRESCRIPTION@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "PRESCRIPTION@2x.png"; sourceTree = "<group>"; };
-		47B053801923FBBF00E2174B /* RADIOLOGY@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "RADIOLOGY@2x.png"; sourceTree = "<group>"; };
-		47B053811923FBBF00E2174B /* VITAL@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "VITAL@2x.png"; sourceTree = "<group>"; };
-		47B0539019242F2C00E2174B /* App Icon - Straight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "App Icon - Straight.png"; sourceTree = "<group>"; };
 		47EC8113191C05B300E74CFA /* FirebaseSimpleLogin.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FirebaseSimpleLogin.framework; sourceTree = "<group>"; };
 		47EC8115191C05F000E74CFA /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		47EC8117191C05F800E74CFA /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
@@ -199,14 +183,6 @@
 		476654EE18FB02E700D994B1 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				47B0539019242F2C00E2174B /* App Icon - Straight.png */,
-				47B0537B1923FBBF00E2174B /* CONSULT@2x.png */,
-				47B0537C1923FBBF00E2174B /* CRITICAL@2x.png */,
-				47B0537D1923FBBF00E2174B /* IO@2x.png */,
-				47B0537E1923FBBF00E2174B /* LAB@2x.png */,
-				47B0537F1923FBBF00E2174B /* PRESCRIPTION@2x.png */,
-				47B053801923FBBF00E2174B /* RADIOLOGY@2x.png */,
-				47B053811923FBBF00E2174B /* VITAL@2x.png */,
 				476654EF18FB02E700D994B1 /* PageMD-Info.plist */,
 				476654F018FB02E700D994B1 /* InfoPlist.strings */,
 				476654F318FB02E700D994B1 /* main.m */,
@@ -313,16 +289,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				4766550018FB02E700D994B1 /* Images.xcassets in Resources */,
-				47B053861923FBBF00E2174B /* PRESCRIPTION@2x.png in Resources */,
-				47B0539119242F2C00E2174B /* App Icon - Straight.png in Resources */,
 				476654F218FB02E700D994B1 /* InfoPlist.strings in Resources */,
-				47B053871923FBBF00E2174B /* RADIOLOGY@2x.png in Resources */,
-				47B053881923FBBF00E2174B /* VITAL@2x.png in Resources */,
 				476654FB18FB02E700D994B1 /* Main.storyboard in Resources */,
-				47B053821923FBBF00E2174B /* CONSULT@2x.png in Resources */,
-				47B053831923FBBF00E2174B /* CRITICAL@2x.png in Resources */,
-				47B053851923FBBF00E2174B /* LAB@2x.png in Resources */,
-				47B053841923FBBF00E2174B /* IO@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

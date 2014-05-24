@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <FirebaseSimpleLogin/FirebaseSimpleLogin.h>
+
+#import "CCUser.h"
 
 @interface CCAlertDetailsViewController : UIViewController<UITableViewDataSource,
                                                            UITableViewDelegate,
@@ -22,7 +23,7 @@
 
 // Model
 @property (strong, nonatomic) NSMutableDictionary *alert;
-@property (strong, nonatomic) FAUser *thisUser;
+@property (strong, nonatomic) CCUser *thisUser;
 
 // Actions
 - (IBAction)toggleStatusButtonPressed:(UIButton *)sender;

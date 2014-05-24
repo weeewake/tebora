@@ -6,13 +6,10 @@
 //  Copyright (c) 2014 Tebora. All rights reserved.
 //
 
-#import "CCSettings.h"
-#import "CCViewController.h"
 #import "CCAlertDetailsViewController.h"
 
-@interface CCViewController ()
-
-@end
+#import "CCSettings.h"
+#import "CCViewController.h"
 
 @implementation CCViewController
 
@@ -51,11 +48,12 @@
   self.alertList = [[NSMutableArray alloc] init];
   NSString *userId = self.thisUser.userId;
   if (userId != nil && ![userId isEqualToString:@""]) {
-    NSString *fbUrl = [NSString stringWithFormat:@"https://tebora.firebaseio.com/user/%@/channels",
-                                                 userId];
-    Firebase *alertsListRef = [[Firebase alloc] initWithUrl:fbUrl];
+    Firebase *alertsListRef =
+        [CCSettings firebaseForPathComponents:@[@"user", userId, @"channels"]];
     [alertsListRef observeEventType:FEventTypeValue
-                          withBlock:^(FDataSnapshot *snapshot) { [self alertListChangedTo:snapshot.value]; }];
+                          withBlock:^(FDataSnapshot *snapshot) {
+        [self alertListChangedTo:snapshot.value];
+    }];
   }
 }
 
@@ -66,7 +64,7 @@
                        : [[newAlertList allValues] mutableCopy];
 
   for (NSDictionary *alert in self.alertList) {
-    Firebase *alertRef = [[Firebase alloc] initWithUrl:[NSString stringWithFormat:@"https://tebora.firebaseio.com/channel/%@", alert[@"id"]]];
+    Firebase *alertRef = [CCSettings firebaseForPathComponents:@[@"channel", alert[@"id"]]];
 
     [alertRef observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
         NSMutableDictionary *changedAlert = [snapshot.value mutableCopy];
@@ -228,7 +226,6 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-  //    NSLog(@"%@", indexPath);
   [self performSegueWithIdentifier:@"HomeToAlertDetails" sender:indexPath];
   [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }

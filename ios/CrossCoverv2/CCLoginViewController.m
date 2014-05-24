@@ -6,8 +6,11 @@
 //  Copyright (c) 2014 Tebora. All rights reserved.
 //
 
-#import "CCSettings.h"
 #import "CCLoginViewController.h"
+
+#import <FirebaseSimpleLogin/FirebaseSimpleLogin.h>
+
+#import "CCSettings.h"
 #import "CCViewController.h"
 
 @interface CCLoginViewController ()
@@ -22,11 +25,11 @@
 
 @synthesize isSigningIn = isSigningIn_;
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(CCUser *)sender
 {
   UINavigationController *navVC = [segue destinationViewController];
   CCViewController *vc = (CCViewController *)navVC.topViewController;
-  vc.thisUser = (FAUser *)sender;
+  vc.thisUser = sender;
 }
 
 - (void)viewDidLoad
@@ -133,10 +136,10 @@
 
   self.isSigningIn = YES;
 
-  Firebase* ref = [[Firebase alloc] initWithUrl:@"https://tebora.firebaseio.com"];
+  Firebase* ref = [CCSettings firebaseForPathComponents:@[]];
   FirebaseSimpleLogin* authClient = [[FirebaseSimpleLogin alloc] initWithRef:ref];
   [authClient loginWithEmail:self.usernameTextField.text andPassword:self.passwordTextField.text
-         withCompletionBlock:^(NSError* error, FAUser* user) {
+         withCompletionBlock:^(NSError* error, FAUser* faUser) {
             self.isSigningIn = NO;
             if (error != nil) {
               NSLog(@"Login Error: %@", error);
@@ -150,7 +153,10 @@
                                    otherButtonTitles:nil];
               [theAlert show];
             } else {
-              [self performSegueWithIdentifier:@"LoginSuccessful" sender:user];
+              CCUser *user = [[CCUser alloc] initWithUserId:faUser.userId];
+              [user updateNameAndPhoneWithBlock:^{
+                [self performSegueWithIdentifier:@"LoginSuccessful" sender:user];
+              }];
             }
          }];
 }

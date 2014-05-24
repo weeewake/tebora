@@ -6,8 +6,11 @@
 //  Copyright (c) 2014 Tebora. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
 #import "CCAlertDetailsViewController.h"
+
+#import <UIKit/UIKit.h>
+
+#import "CCUser.h"
 
 @interface CCViewController : UIViewController<UITableViewDataSource,
                                                UITableViewDelegate>
@@ -15,7 +18,7 @@
 @property (strong, nonatomic) NSMutableArray *alertList;
 
 // User Model
-@property (strong, nonatomic) FAUser *thisUser;
+@property (strong, nonatomic) CCUser *thisUser;
 
 // Application State Model
 @property (copy, nonatomic) NSString *currentTypeFilter;

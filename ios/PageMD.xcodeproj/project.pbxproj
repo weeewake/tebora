@@ -34,6 +34,8 @@
 		47EC811B191C066200E74CFA /* CCLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 47EC811A191C066200E74CFA /* CCLoginViewController.m */; };
 		7140221D1924260700685482 /* CCSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 7140221C1924260700685482 /* CCSettings.m */; };
 		7140221E1924260700685482 /* CCSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 7140221C1924260700685482 /* CCSettings.m */; };
+		71AD70F8193078880058A928 /* CCUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 71AD70F7193078880058A928 /* CCUser.m */; };
+		71AD70F9193078880058A928 /* CCUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 71AD70F7193078880058A928 /* CCUser.m */; };
 		71E96B09192B2BFE00DBA9E0 /* CCAlertDetailsTableCells.m in Sources */ = {isa = PBXBuildFile; fileRef = 71E96B08192B2BFE00DBA9E0 /* CCAlertDetailsTableCells.m */; };
 		71E96B0A192B2BFE00DBA9E0 /* CCAlertDetailsTableCells.m in Sources */ = {isa = PBXBuildFile; fileRef = 71E96B08192B2BFE00DBA9E0 /* CCAlertDetailsTableCells.m */; };
 /* End PBXBuildFile section */
@@ -82,6 +84,8 @@
 		47EC811A191C066200E74CFA /* CCLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCLoginViewController.m; sourceTree = "<group>"; };
 		7140221B1924260700685482 /* CCSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSettings.h; sourceTree = "<group>"; };
 		7140221C1924260700685482 /* CCSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCSettings.m; sourceTree = "<group>"; };
+		71AD70F6193078880058A928 /* CCUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCUser.h; sourceTree = "<group>"; };
+		71AD70F7193078880058A928 /* CCUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCUser.m; sourceTree = "<group>"; };
 		71E96B07192B2BC800DBA9E0 /* CCAlertDetailsTableCells.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAlertDetailsTableCells.h; sourceTree = "<group>"; };
 		71E96B08192B2BFE00DBA9E0 /* CCAlertDetailsTableCells.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCAlertDetailsTableCells.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -172,10 +176,12 @@
 				7140221C1924260700685482 /* CCSettings.m */,
 				476654FC18FB02E700D994B1 /* CCViewController.h */,
 				476654FD18FB02E700D994B1 /* CCViewController.m */,
-				476654FF18FB02E700D994B1 /* Images.xcassets */,
-				476654EE18FB02E700D994B1 /* Supporting Files */,
 				71E96B07192B2BC800DBA9E0 /* CCAlertDetailsTableCells.h */,
 				71E96B08192B2BFE00DBA9E0 /* CCAlertDetailsTableCells.m */,
+				71AD70F6193078880058A928 /* CCUser.h */,
+				71AD70F7193078880058A928 /* CCUser.m */,
+				476654FF18FB02E700D994B1 /* Images.xcassets */,
+				476654EE18FB02E700D994B1 /* Supporting Files */,
 			);
 			path = CrossCoverv2;
 			sourceTree = "<group>";
@@ -309,6 +315,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				71AD70F8193078880058A928 /* CCUser.m in Sources */,
 				7140221D1924260700685482 /* CCSettings.m in Sources */,
 				71E96B09192B2BFE00DBA9E0 /* CCAlertDetailsTableCells.m in Sources */,
 				476654F818FB02E700D994B1 /* CCAppDelegate.m in Sources */,
@@ -323,6 +330,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				71AD70F9193078880058A928 /* CCUser.m in Sources */,
 				7140221E1924260700685482 /* CCSettings.m in Sources */,
 				71E96B0A192B2BFE00DBA9E0 /* CCAlertDetailsTableCells.m in Sources */,
 				4766551318FB02E700D994B1 /* CrossCoverv2Tests.m in Sources */,

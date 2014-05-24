@@ -7,7 +7,9 @@
 //
 
 #import "CCAlertDetailsViewController.h"
+
 #import "CCAlertDetailsTableCells.h"
+#import "CCSettings.h"
 
 @interface CCAlertDetailsViewController ()
 
@@ -49,8 +51,8 @@
 
 - (void)updateData
 {
-  Firebase* alertDetailsRef = [[Firebase alloc] initWithUrl:[NSString stringWithFormat:@"https://tebora.firebaseio.com/channel/%@", self.alert[@"id"]]];
-
+  Firebase* alertDetailsRef =
+      [CCSettings firebaseForPathComponents:@[@"channel", self.alert[@"id"]]];
   [alertDetailsRef observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot){
       [self.alert addEntriesFromDictionary: snapshot.value];
       NSArray *messages = [snapshot.value[@"messages"] allValues];
@@ -259,11 +261,8 @@
 
 - (IBAction)toggleStatusButtonPressed:(UIButton *)sender
 {
-  NSString *fbDetailsUrl =
-      [NSString stringWithFormat:@"https://tebora.firebaseio.com/channel/%@/details",
-                                 self.alert[@"id"]];
-  Firebase* alertDetailsRef = [[Firebase alloc] initWithUrl:fbDetailsUrl];
-
+  Firebase* alertDetailsRef =
+      [CCSettings firebaseForPathComponents:@[@"channel", self.alert[@"id"], @"details"]];
   if ([self.alert[@"details"][@"status"] isEqualToString:@"OPEN"]) {
     [alertDetailsRef updateChildValues:@{ @"status" : @"RESOLVED" }];
   } else {
@@ -276,15 +275,16 @@
 {
   if (![self.enterMessageTextField.text isEqualToString:@""])
   {
-    NSString *fbMessagesUrl =
-        [NSString stringWithFormat:@"https://tebora.firebaseio.com/channel/%@/messages/",
-                                   self.alert[@"id"]];
-    Firebase* messagesRef = [[Firebase alloc] initWithUrl:fbMessagesUrl];
+    Firebase* messagesRef =
+        [CCSettings firebaseForPathComponents:@[@"channel", self.alert[@"id"], @"messages"]];
     Firebase* newMessageRef = [messagesRef childByAutoId];
     NSTimeInterval interval = [[NSDate date] timeIntervalSince1970];
     NSString *timestamp = [NSString stringWithFormat:@"%lld", (long long)interval];
     NSDictionary *newMessage = @{ @"message"  : self.enterMessageTextField.text,
-                                  @"sender"   : @{ @"id"   : self.thisUser.userId },  // TODO:
+                                  @"sender"   : @{ @"id"   : self.thisUser.userId,
+                                                   @"name" : self.thisUser.userName,
+                                                   @"phone": self.thisUser.userPhone
+                                                 },
                                   @"timestamp": timestamp,
                                 };
     [newMessageRef setValue:newMessage];

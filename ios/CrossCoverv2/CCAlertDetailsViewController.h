@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-#import "CCUser.h"
+#import "CCProvider.h"
 
 @interface CCAlertDetailsViewController : UIViewController<UITableViewDataSource,
                                                            UITableViewDelegate,
@@ -23,7 +23,7 @@
 
 // Model
 @property (strong, nonatomic) NSMutableDictionary *alert;
-@property (strong, nonatomic) CCUser *thisUser;
+@property (strong, nonatomic) CCProvider *thisUser;
 
 // Actions
 - (IBAction)toggleStatusButtonPressed:(UIButton *)sender;

@@ -136,7 +136,7 @@
     } else {
       message = self.messageList[row-1][@"message"];
       timestamp = [self userVisibleDateStringFromTimestamp:self.messageList[row-1][@"timestamp"]];
-      if (![self.messageList[row-1][@"sender"][@"id"] isEqualToString:self.thisUser.userId]) {
+      if (![self.messageList[row-1][@"sender"][@"id"] isEqualToString:self.thisUser.uid]) {
         name = self.messageList[row-1][@"sender"][@"name"];
       }
     }
@@ -207,7 +207,7 @@
                                         self.alert[@"details"][@"creation_timestamp"]];
 
       } else {
-        if (![self.messageList[row-1][@"sender"][@"id"] isEqualToString:self.thisUser.userId]) {
+        if (![self.messageList[row-1][@"sender"][@"id"] isEqualToString:self.thisUser.uid]) {
           cell.nameLabel.text = self.messageList[row-1][@"sender"][@"name"];
           cell.isMyMessage = NO;
         } else {
@@ -281,9 +281,9 @@
     NSTimeInterval interval = [[NSDate date] timeIntervalSince1970];
     NSString *timestamp = [NSString stringWithFormat:@"%lld", (long long)interval];
     NSDictionary *newMessage = @{ @"message"  : self.enterMessageTextField.text,
-                                  @"sender"   : @{ @"id"   : self.thisUser.userId,
-                                                   @"name" : self.thisUser.userName,
-                                                   @"phone": self.thisUser.userPhone
+                                  @"sender"   : @{ @"id"   : self.thisUser.uid,
+                                                   @"name" : self.thisUser.name,
+                                                   @"phone": self.thisUser.phone
                                                  },
                                   @"timestamp": timestamp,
                                 };

@@ -23,7 +23,7 @@
 
 @synthesize isSigningIn = isSigningIn_;
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(CCUser *)sender
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(CCProvider *)sender
 {
   UINavigationController *navVC = [segue destinationViewController];
   CCViewController *vc = (CCViewController *)navVC.topViewController;
@@ -151,9 +151,9 @@
                                    otherButtonTitles:nil];
               [theAlert show];
             } else {
-              CCUser *user = [[CCUser alloc] initWithUserId:faUser.userId];
-              [user updateNameAndPhoneWithBlock:^{
-                [self performSegueWithIdentifier:@"LoginSuccessful" sender:user];
+              CCProvider *provider = [[CCProvider alloc] initWithUserId:faUser.userId];
+              [provider updateDetailsWithBlock:^{
+                [self performSegueWithIdentifier:@"LoginSuccessful" sender:provider];
               }];
             }
          }];

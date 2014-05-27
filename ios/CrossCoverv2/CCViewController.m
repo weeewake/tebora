@@ -46,7 +46,7 @@
 - (void)loadAlertData
 {
   self.alertList = [[NSMutableArray alloc] init];
-  NSString *userId = self.thisUser.userId;
+  NSString *userId = self.thisUser.uid;
   if (userId != nil && ![userId isEqualToString:@""]) {
     Firebase *alertsListRef =
         [CCSettings firebaseForPathComponents:@[@"user", userId, @"channels"]];

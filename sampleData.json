@@ -6,13 +6,19 @@
   },
   "user": {
     "1": {
-      "name": "Doctor Jane",
-      "phone": "530-942-9432",
+      "details": {
+        "name": "Doctor Jane",
+        "phone": "530-942-9432",
+        "providerType": "md"
+      },
       "channels": {}
     },
     "3": {
-      "name": "Nurse Luke",
-      "phone": "510-934-9473",
+      "details": {
+        "name": "Nurse Luke",
+        "phone": "510-934-9473",
+        "providerType": "rn"
+      },
       "channels": {
         "abc": {
           "id": "002"
@@ -20,8 +26,11 @@
       }
     },
     "4": {
-      "name": "Doctor Debbie",
-      "phone": "408-247-9846",
+      "details": {
+        "name": "Doctor Debbie",
+        "phone": "408-247-9846",
+        "providerType": "md"
+      },
       "channels": {
         "abc": {
           "id": "001"
@@ -62,8 +71,11 @@
       }
     },
     "5": {
-      "name": "Nurse Marie",
-      "phone": "510-983-0283",
+      "details": {
+        "name": "Nurse Marie",
+        "phone": "510-983-0283",
+        "providerType": "rn"
+      },
       "channels": {}
     }
   },

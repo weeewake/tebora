@@ -10,7 +10,7 @@
 
 #import <UIKit/UIKit.h>
 
-#import "CCUser.h"
+#import "CCProvider.h"
 
 @interface CCViewController : UIViewController<UITableViewDataSource,
                                                UITableViewDelegate>
@@ -18,7 +18,7 @@
 @property (strong, nonatomic) NSMutableArray *alertList;
 
 // User Model
-@property (strong, nonatomic) CCUser *thisUser;
+@property (strong, nonatomic) CCProvider *thisUser;
 
 // Application State Model
 @property (copy, nonatomic) NSString *currentTypeFilter;

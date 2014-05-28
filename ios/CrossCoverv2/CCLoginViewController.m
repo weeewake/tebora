@@ -151,7 +151,7 @@
                                    otherButtonTitles:nil];
               [theAlert show];
             } else {
-              CCProvider *provider = [[CCProvider alloc] initWithUserId:faUser.userId];
+              CCProvider *provider = [CCProvider providerWithUserId:faUser.userId];
               [provider updateDetailsWithBlock:^{
                 [self performSegueWithIdentifier:@"LoginSuccessful" sender:provider];
               }];

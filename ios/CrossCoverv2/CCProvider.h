@@ -20,7 +20,8 @@ typedef enum {
 @property (strong, nonatomic) NSString *phone;
 @property (assign, nonatomic) CCProviderType type;
 
-- (id)initWithUserId:(NSString *)uid;
 - (void)updateDetailsWithBlock:(void (^)(void))block;
+
++ (CCProvider *)providerWithUserId:(NSString *)uid;
 
 @end

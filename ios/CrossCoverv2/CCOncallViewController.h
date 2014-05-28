@@ -12,7 +12,7 @@
 
 #import "CCProvider.h"
 
-@interface CCViewController : UIViewController<UITableViewDataSource,
+@interface CCOncallViewController : UIViewController<UITableViewDataSource,
                                                UITableViewDelegate>
 // Alert Model
 @property (strong, nonatomic) NSMutableArray *alertList;

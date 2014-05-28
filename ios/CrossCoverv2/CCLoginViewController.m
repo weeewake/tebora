@@ -11,7 +11,7 @@
 #import <FirebaseSimpleLogin/FirebaseSimpleLogin.h>
 
 #import "CCSettings.h"
-#import "CCViewController.h"
+#import "CCOncallViewController.h"
 
 @interface CCLoginViewController ()
 
@@ -26,7 +26,7 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(CCProvider *)sender
 {
   UINavigationController *navVC = [segue destinationViewController];
-  CCViewController *vc = (CCViewController *)navVC.topViewController;
+  CCOncallViewController *vc = (CCOncallViewController *)navVC.topViewController;
   vc.thisUser = sender;
 }
 

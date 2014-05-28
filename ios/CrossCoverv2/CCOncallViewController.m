@@ -9,9 +9,9 @@
 #import "CCAlertDetailsViewController.h"
 
 #import "CCSettings.h"
-#import "CCViewController.h"
+#import "CCOncallViewController.h"
 
-@implementation CCViewController
+@implementation CCOncallViewController
 
 #pragma mark - Initialization
 

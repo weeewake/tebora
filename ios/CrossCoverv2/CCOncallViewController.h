@@ -28,11 +28,9 @@
 
 // Views
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
-@property (strong, nonatomic) IBOutlet UIBarButtonItem *backButton;
 @property (strong, nonatomic) UISegmentedControl *segmentedControl;
 
 // Actions
-- (IBAction)backButtonPressed:(UIBarButtonItem *)sender;
 - (void)segmentedControlValueChanged:(UISegmentedControl *)sender;
 - (void)alertImageClicked:(id)sender;
 

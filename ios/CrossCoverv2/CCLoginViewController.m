@@ -26,8 +26,9 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(CCProvider *)sender
 {
-  UINavigationController *navVC = [segue destinationViewController];
+  UINavigationController *navVC = segue.destinationViewController;
   CCOncallViewController *vc = (CCOncallViewController *)navVC.topViewController;
+  vc.currentTypeFilter = CCAlertTypeUnknown;
   vc.thisUser = sender;
 }
 

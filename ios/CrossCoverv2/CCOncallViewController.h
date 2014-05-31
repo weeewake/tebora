@@ -10,19 +10,20 @@
 
 #import <UIKit/UIKit.h>
 
+#import "CCAlert.h"
 #import "CCProvider.h"
 
 @interface CCOncallViewController : UIViewController<UITableViewDataSource,
-                                               UITableViewDelegate>
+                                                     UITableViewDelegate>
 // Alert Model
-@property (strong, nonatomic) NSMutableArray *alertList;
+@property (strong, nonatomic) NSArray *alertList;
 
 // User Model
 @property (strong, nonatomic) CCProvider *thisUser;
 
 // Application State Model
-@property (copy, nonatomic) NSString *currentTypeFilter;
-@property (copy, nonatomic) NSString *currentStatusFilter;
+@property (assign, nonatomic) CCAlertType currentTypeFilter;
+@property (assign, nonatomic) CCAlertStatus currentStatusFilter;
 @property (strong, nonatomic) NSIndexSet *indexesOfCurrentlyDisplayedAlerts;
 
 // Views

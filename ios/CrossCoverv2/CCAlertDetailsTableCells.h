@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface CCTableViewPatientCell : UITableViewCell
+@interface CCAlertDetailsPatientCell : UITableViewCell
 
 @property (nonatomic, strong) UILabel *nameLabel;
 @property (nonatomic, strong) UILabel *mrnLabel;
@@ -22,7 +22,7 @@
 @end
 
 
-@interface CCTableViewNurseCell : UITableViewCell
+@interface CCAlertDetailsNurseCell : UITableViewCell
 
 @property (nonatomic, strong) UILabel *nameLabel;
 @property (nonatomic, strong) UILabel *phoneLabel;
@@ -34,7 +34,7 @@
 @end
 
 
-@interface CCTableViewConversationCell : UITableViewCell
+@interface CCAlertDetailsConversationCell : UITableViewCell
 
 @property (nonatomic, assign) BOOL isMyMessage;
 @property (nonatomic, assign) BOOL isAlertMessage;

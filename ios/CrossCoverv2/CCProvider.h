@@ -13,14 +13,33 @@ typedef enum {
   CCProviderType_MD
 } CCProviderType;
 
+@class CCProvider;
+@protocol CCProviderDelegate <NSObject>
+
+@optional
+
+- (void)providerDetailsChanged:(CCProvider *)provider;
+
+- (void)provider:(CCProvider *)provider
+     alertsAdded:(NSArray *)addedAlertIdList;
+
+- (void)provider:(CCProvider *)provider
+   alertsChanged:(NSArray *)changedAlertIdList;
+
+- (void)provider:(CCProvider *)provider
+   alertsRemoved:(NSArray *)removedAlertIdList;
+
+@end
+
 @interface CCProvider : NSObject
 
 @property (strong, nonatomic) NSString *uid;
-@property (strong, nonatomic) NSString *name;
+@property (strong, nonatomic) NSString *fullName;
+@property (strong, nonatomic) NSString *shortName;
 @property (strong, nonatomic) NSString *phone;
 @property (assign, nonatomic) CCProviderType type;
-
-- (void)updateDetailsWithBlock:(void (^)(void))block;
+@property (strong, nonatomic) NSArray *alerts;  // array of CCAlert
+@property (weak, nonatomic) id<CCProviderDelegate> delegate;
 
 + (CCProvider *)providerWithUserId:(NSString *)uid;
 

@@ -8,25 +8,28 @@
 
 #import "CCAlertDetailsViewController.h"
 
+#import "CCAlert.h"
 #import "CCSettings.h"
 #import "CCOncallViewController.h"
+#import "CCUtils.h"
+
+@interface CCOncallViewController () <CCProviderDelegate>
+@end
 
 @implementation CCOncallViewController
 
 #pragma mark - Initialization
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
   [super viewDidLoad];
-
-  // Load Data from Firebase
-  [self loadAlertData];
-
   self.navigationController.navigationBar.barTintColor = [CCSettings tintColor];
 
   // Initialize View
-  self.currentTypeFilter = @"HOME";
-  self.currentStatusFilter = @"OPEN";
+  self.currentTypeFilter = CCAlertTypeUnknown;
+  self.currentStatusFilter = CCAlertStatusUnknown;
+
+  self.alertList = [[NSMutableArray alloc] init];
+  [self loadAlertData];
 
   self.tableView.dataSource = self;
   self.tableView.delegate = self;
@@ -39,92 +42,67 @@
                   forControlEvents: UIControlEventValueChanged];
   [self.segmentedControl setTintColor:[UIColor whiteColor]];
   self.navigationItem.titleView = self.segmentedControl;
+}
 
+- (void)viewWillAppear:(BOOL)animated {
+  [super viewWillAppear:animated];
+  [self loadAlertData];
+  self.thisUser.delegate = self;
   [self updateView];
 }
 
-- (void)loadAlertData
-{
-  self.alertList = [[NSMutableArray alloc] init];
+- (void)viewDidDisappear:(BOOL)animated {
+  [super viewDidDisappear:animated];
+  if (self.thisUser.delegate == self) {
+    self.thisUser.delegate = nil;
+  }
+}
+
+- (void)loadAlertData {
   NSString *userId = self.thisUser.uid;
   if (userId != nil && ![userId isEqualToString:@""]) {
-    Firebase *alertsListRef =
-        [CCSettings firebaseForPathComponents:@[@"user", userId, @"channels"]];
-    [alertsListRef observeEventType:FEventTypeValue
-                          withBlock:^(FDataSnapshot *snapshot) {
-        [self alertListChangedTo:snapshot.value];
-    }];
+    [self alertListChangedTo:self.thisUser.alerts];
   }
 }
 
-- (void)alertListChangedTo:(NSDictionary *)newAlertList
-{
-  self.alertList = [newAlertList isMemberOfClass:[NSNull class]]
-                       ? [@[] mutableCopy]
-                       : [[newAlertList allValues] mutableCopy];
-
-  for (NSDictionary *alert in self.alertList) {
-    Firebase *alertRef = [CCSettings firebaseForPathComponents:@[@"channel", alert[@"id"]]];
-
-    [alertRef observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
-        NSMutableDictionary *changedAlert = [snapshot.value mutableCopy];
-        [changedAlert setValue:snapshot.name forKey:@"id"];
-
-        NSInteger index = [self.alertList indexOfObjectPassingTest:^BOOL(NSDictionary *alert,
-                                                                         NSUInteger idx,
-                                                                         BOOL *stop) {
-                              return [alert[@"id"] isEqualToString:changedAlert[@"id"]];
-                          }];
-
-        if (index == NSNotFound) {
-          [self.alertList addObject:changedAlert];
-        } else {
-          self.alertList[index] = changedAlert;
-        }
-
-        NSComparator sortALertList = ^(NSMutableDictionary *alert1, NSMutableDictionary *alert2) {
-            return [alert2[@"details"][@"timestamp"] compare:alert1[@"details"][@"timestamp"]];
-        };
-        self.alertList = [[self.alertList sortedArrayUsingComparator:sortALertList] mutableCopy];
-        [self updateView];
-    }];
-  }
+- (void)alertListChangedTo:(NSArray *)newAlertList {
+  NSComparator sortALertList = ^(CCAlert *alert1, CCAlert *alert2) {
+    return [alert2.lastUpdatedDate compare:alert1.lastUpdatedDate];
+  };
+  self.alertList = [newAlertList sortedArrayUsingComparator:sortALertList];
 }
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(NSString *)alertId {
   if ([segue.destinationViewController isKindOfClass:[CCAlertDetailsViewController class]]) {
+    self.thisUser.delegate = nil;
     CCAlertDetailsViewController *alertDetailsVC = segue.destinationViewController;
-    NSUInteger thisIndex = [self indexInAlertListForTableViewIndexPath:sender];
-    NSMutableDictionary *thisAlert = self.alertList[thisIndex];
-    alertDetailsVC.alert = thisAlert;
+    alertDetailsVC.alertId = alertId;
     alertDetailsVC.thisUser = self.thisUser;
   }
 }
 
-- (void)updateView
-{
-  [self setTitle:[self.currentTypeFilter capitalizedString]];
-  if([self.currentTypeFilter isEqualToString:@"HOME"]) {
+- (void)updateView {
+  if(self.currentTypeFilter == CCAlertTypeUnknown) {
+    [self setTitle:@"HOME"];
     [self.navigationItem setLeftBarButtonItems:nil];
   } else {
+    [self setTitle:[[CCAlert alertTypeStringForType:self.currentTypeFilter] uppercaseString]];
     [self.navigationItem setLeftBarButtonItem:self.backButton];
   }
 
   __block int openAlertCount = 0, resolvedAlertCount = 0;
   self.indexesOfCurrentlyDisplayedAlerts =
-      [self.alertList indexesOfObjectsPassingTest:^BOOL(NSDictionary *thisAlert,
+      [self.alertList indexesOfObjectsPassingTest:^BOOL(CCAlert *thisAlert,
                                                         NSUInteger idx,
                                                         BOOL *stop) {
-          NSString *status = thisAlert[@"details"][@"status"];
-          if ([self.currentTypeFilter isEqualToString:@"HOME"] ||
-              [thisAlert[@"details"][@"type"] isEqualToString:self.currentTypeFilter]) {
-            if ([status isEqualToString:@"OPEN"]) {
+          if ((self.currentTypeFilter == CCAlertTypeUnknown) ||
+              (thisAlert.type == self.currentTypeFilter)) {
+            if (thisAlert.status == CCAlertStatusOpen) {
               openAlertCount++;
             } else {
               resolvedAlertCount++;
             }
-            return [status isEqualToString:self.currentStatusFilter];
+            return (thisAlert.status == self.currentStatusFilter);
           }
           return NO;
       }];
@@ -139,18 +117,15 @@
 
 #pragma mark - UITableViewDataSource
 
-- (NSInteger)numberOfSectionsInTableView:tableView
-{
+- (NSInteger)numberOfSectionsInTableView:tableView {
   return 1;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
   return [self.indexesOfCurrentlyDisplayedAlerts count];
 }
 
-- (NSInteger)indexInAlertListForTableViewIndexPath:(NSIndexPath *)indexPath
-{
+- (NSInteger)indexInAlertListForTableViewIndexPath:(NSIndexPath *)indexPath {
   NSUInteger thisIndex = [self.indexesOfCurrentlyDisplayedAlerts firstIndex];
   for (NSUInteger i = 0; i < indexPath.row; i++) {
     thisIndex = [self.indexesOfCurrentlyDisplayedAlerts indexGreaterThanIndex:thisIndex];
@@ -159,33 +134,30 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
-         cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+         cellForRowAtIndexPath:(NSIndexPath *)indexPath {
   static NSString *CellIdentifier = @"AlertCell";
 
   UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier
                                                           forIndexPath:indexPath];
 
-  NSUInteger thisIndex = [self indexInAlertListForTableViewIndexPath: indexPath];
-  NSDictionary *thisAlert = self.alertList[thisIndex];
+  NSUInteger thisIndex = [self indexInAlertListForTableViewIndexPath:indexPath];
+  CCAlert *thisAlert = self.alertList[thisIndex];
 
   cell.textLabel.text = [NSString stringWithFormat:@"%@ - %@",
-                         thisAlert[@"patient"][@"bed"],
-                         thisAlert[@"patient"][@"name"]];
-  cell.detailTextLabel.text = thisAlert[@"details"][@"description"];
+                         thisAlert.patient.bed,
+                         thisAlert.patient.shortName];
+  cell.detailTextLabel.text = thisAlert.alertDescription;
 
-  NSString *imageName = [thisAlert[@"details"][@"type"] capitalizedString];
+  NSString *imageName = [[CCAlert alertTypeStringForType:thisAlert.type] capitalizedString];
   cell.imageView.image = [UIImage imageNamed:imageName];
   cell.imageView.userInteractionEnabled = YES;
   cell.imageView.tag = thisIndex;
   UITapGestureRecognizer *tapped =
-  [[UITapGestureRecognizer alloc] initWithTarget:self
-                                          action:@selector(alertImageClicked:)];
+      [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(alertImageClicked:)];
   tapped.numberOfTapsRequired = 1;
   [cell.imageView addGestureRecognizer:tapped];
 
   UILabel *timestampLabel;
-
   if ([[cell.contentView subviews] count] < 4) {
     timestampLabel = [[UILabel alloc] initWithFrame:CGRectMake(250, 20, 50, 20)];
     [cell.contentView addSubview:timestampLabel];
@@ -196,62 +168,60 @@
   } else {
     timestampLabel = [cell.contentView subviews][3];
   }
-
-  timestampLabel.text =
-  [self userVisibleDateStringFromTimestamp:thisAlert[@"details"][@"timestamp"]];
+  timestampLabel.text =  [CCUtils userVisibleDateStringFromDate:thisAlert.lastUpdatedDate];
   return cell;
 }
 
-- (NSString *)userVisibleDateStringFromTimestamp:(NSString *)timestampString
-{
-  long long timestamp = [timestampString longLongValue];
-  NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-  [dateFormatter setDateStyle:NSDateFormatterNoStyle];
-  [dateFormatter setTimeStyle:NSDateFormatterShortStyle];
-
-  // If timeago is
-  // 0-24 hours show 3:45 am
-  // 24-120 hours show Day of Week
-  // else show Date
-
-  NSDate *date = [NSDate dateWithTimeIntervalSince1970:timestamp];
-
-  NSString *formattedDateString = [dateFormatter stringFromDate:date];
-
-  return formattedDateString;
-}
-
-
 #pragma mark - UITableViewDelegate
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-  [self performSegueWithIdentifier:@"HomeToAlertDetails" sender:indexPath];
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+  NSUInteger thisIndex = [self indexInAlertListForTableViewIndexPath:indexPath];
+  CCAlert *alert = self.alertList[thisIndex];
+  [self performSegueWithIdentifier:@"HomeToAlertDetails" sender:alert.alertId];
   [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 #pragma mark - Action Handlers
 
-- (void)alertImageClicked:(id)sender
-{
+- (void)alertImageClicked:(id)sender {
   UITapGestureRecognizer *gesture = (UITapGestureRecognizer *)sender;
-  self.currentTypeFilter = self.alertList[gesture.view.tag][@"details"][@"type"];
+  CCAlert *alert = self.alertList[gesture.view.tag];
+  self.currentTypeFilter = alert.type;
   [self updateView];
 }
 
-- (IBAction)backButtonPressed:(UIBarButtonItem *)sender
-{
-  self.currentTypeFilter = @"HOME";
+- (IBAction)backButtonPressed:(UIBarButtonItem *)sender {
+  self.currentTypeFilter = CCAlertTypeUnknown;
   [self updateView];
 }
 
-- (void)segmentedControlValueChanged:(UISegmentedControl *)sender
-{
+- (void)segmentedControlValueChanged:(UISegmentedControl *)sender {
   if ([self.segmentedControl selectedSegmentIndex] == 0) {
-    self.currentStatusFilter = @"OPEN";
+    self.currentStatusFilter = CCAlertStatusOpen;
   } else {
-    self.currentStatusFilter = @"RESOLVED";
+    self.currentStatusFilter = CCAlertStatusResolved;
   }
+  [self updateView];
+}
+
+#pragma mark - CCProviderDelegate
+
+- (void)providerDetailsChanged:(CCProvider *)provider {
+  [self updateView];
+}
+
+- (void)provider:(CCProvider *)provider alertsAdded:(NSArray *)addedAlertIdList {
+  [self alertListChangedTo:self.thisUser.alerts];
+  [self updateView];
+}
+
+- (void)provider:(CCProvider *)provider alertsChanged:(NSArray *)changedAlertIdList {
+  [self alertListChangedTo:self.thisUser.alerts];
+  [self updateView];
+}
+
+- (void)provider:(CCProvider *)provider alertsRemoved:(NSArray *)removedAlertIdList {
+  [self alertListChangedTo:self.thisUser.alerts];
   [self updateView];
 }
 

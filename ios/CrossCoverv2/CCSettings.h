@@ -7,13 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <Firebase/Firebase.h>
 
 @interface CCSettings : NSObject
 
 + (UIColor *)alertTextColor;
 + (UIColor *)lightTintColor;
 + (UIColor *)tintColor;
-+ (Firebase *)firebaseForPathComponents:(NSArray *)pathComponents;
 
 @end

@@ -12,8 +12,9 @@
 
 #import "CCSettings.h"
 #import "CCOncallViewController.h"
+#import "CCUtils.h"
 
-@interface CCLoginViewController ()
+@interface CCLoginViewController () <CCProviderDelegate>
 
 @property (assign, nonatomic) BOOL isSigningIn;
 
@@ -136,7 +137,7 @@
 
   self.isSigningIn = YES;
 
-  Firebase* ref = [CCSettings firebaseForPathComponents:@[]];
+  Firebase* ref = [CCUtils firebaseForPathComponents:@[]];
   FirebaseSimpleLogin* authClient = [[FirebaseSimpleLogin alloc] initWithRef:ref];
   [authClient loginWithEmail:self.usernameTextField.text andPassword:self.passwordTextField.text
          withCompletionBlock:^(NSError* error, FAUser* faUser) {
@@ -152,11 +153,14 @@
               [theAlert show];
             } else {
               CCProvider *provider = [CCProvider providerWithUserId:faUser.userId];
-              [provider updateDetailsWithBlock:^{
-                [self performSegueWithIdentifier:@"LoginSuccessful" sender:provider];
-              }];
+              provider.delegate = self;  // Do the transition in delegate callback.
             }
          }];
+}
+
+- (void)providerDetailsChanged:(CCProvider *)provider {
+  provider.delegate = nil;
+  [self performSegueWithIdentifier:@"LoginSuccessful" sender:provider];
 }
 
 @end

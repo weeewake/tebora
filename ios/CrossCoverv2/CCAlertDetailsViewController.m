@@ -8,39 +8,53 @@
 
 #import "CCAlertDetailsViewController.h"
 
+#import "CCAlert.h"
 #import "CCAlertDetailsTableCells.h"
-#import "CCSettings.h"
+#import "CCProvider.h"
+#import "CCUtils.h"
 
-@interface CCAlertDetailsViewController ()
+@interface CCAlertDetailsViewController () <CCProviderDelegate>
 
+@property (strong, nonatomic) CCAlert *alert;
 @property (strong, nonatomic) NSArray *messageList;
 
 @end
 
 @implementation CCAlertDetailsViewController
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
   [super viewDidLoad];
-  [self.alertDetailsTableView registerClass:[CCTableViewPatientCell class]
+  [self.alertDetailsTableView registerClass:[CCAlertDetailsPatientCell class]
                      forCellReuseIdentifier:@"PatientCell"];
-  [self.alertDetailsTableView registerClass:[CCTableViewNurseCell class]
+  [self.alertDetailsTableView registerClass:[CCAlertDetailsNurseCell class]
                      forCellReuseIdentifier:@"NurseCell"];
-  [self.alertDetailsTableView registerClass:[CCTableViewConversationCell class]
+  [self.alertDetailsTableView registerClass:[CCAlertDetailsConversationCell class]
                      forCellReuseIdentifier:@"ConversationCell"];
 
   [self registerForKeyboardNotifications];
-  self.title = self.alert[@"details"][@"type"];
+
   self.enterMessageTextField.delegate = self;
   self.alertDetailsTableView.delegate = self;
   self.alertDetailsTableView.dataSource = self;
   self.alertDetailsTableView.sectionHeaderHeight = 30;
   self.alertDetailsTableView.estimatedRowHeight = self.alertDetailsTableView.rowHeight;
-  [self updateData];
 }
 
-- (void)registerForKeyboardNotifications
-{
+- (void)viewWillAppear:(BOOL)animated {
+  [super viewWillAppear:animated];
+  [self updateData];
+  self.thisUser.delegate = self;
+  [self updateView];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+  [super viewDidDisappear:animated];
+  if (self.thisUser.delegate == self) {
+    self.thisUser.delegate = nil;
+  }
+}
+
+- (void)registerForKeyboardNotifications {
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(keyboardWasShown:)
                                                name:UIKeyboardDidShowNotification object:nil];
@@ -49,25 +63,18 @@
                                                name:UIKeyboardWillHideNotification object:nil];
 }
 
-- (void)updateData
-{
-  Firebase* alertDetailsRef =
-      [CCSettings firebaseForPathComponents:@[@"channel", self.alert[@"id"]]];
-  [alertDetailsRef observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot){
-      [self.alert addEntriesFromDictionary: snapshot.value];
-      NSArray *messages = [snapshot.value[@"messages"] allValues];
-      NSComparator sortMessageList = ^(NSMutableDictionary *msg1, NSMutableDictionary *msg2) {
-          return [msg1[@"timestamp"] compare:msg2[@"timestamp"]];
-      };
-      self.messageList = [[messages sortedArrayUsingComparator:sortMessageList] mutableCopy];
-      [self updateView];
-  }];
+- (void)updateData {
+  self.alert = [CCAlert alertWithId:self.alertId];
+  NSComparator sortMessageList = ^(CCAlertMessage *msg1, CCAlertMessage *msg2) {
+    return [msg1.date compare:msg2.date];
+  };
+  self.messageList = [self.alert.messages sortedArrayUsingComparator:sortMessageList];
 }
 
-- (void)updateView
-{
+- (void)updateView {
+  self.title = [[CCAlert alertTypeStringForType:self.alert.type] capitalizedString];
   NSString *title = @"Reopen";
-  if ([self.alert[@"details"][@"status"] isEqualToString:@"OPEN"]) {
+  if (self.alert.status == CCAlertStatusOpen) {
     title = @"Resolve";
   }
   [self.toggleStatusButton setTitle:title
@@ -75,16 +82,15 @@
   [self.alertDetailsTableView reloadData];
 }
 
-- (void)callNursePressed:(UIGestureRecognizer *)gestureRecognizer
-{
-  NSString *phoneCallURL = [NSString stringWithFormat:@"tel:%@", self.alert[@"creator"][@"phone"]];
-  [[UIApplication sharedApplication] openURL:[NSURL URLWithString: phoneCallURL]];
+- (void)callNursePressed:(UIGestureRecognizer *)gestureRecognizer {
+  NSString *phoneCallURL =
+      [NSString stringWithFormat:@"tel:%@", self.alert.creator.phone];
+  [[UIApplication sharedApplication] openURL:[NSURL URLWithString:phoneCallURL]];
 }
 
-- (void)mrnPressed:(UIGestureRecognizer *)gestureRecognizer
-{
+- (void)mrnPressed:(UIGestureRecognizer *)gestureRecognizer {
   UIAlertView *alert =
-      [[UIAlertView alloc] initWithTitle:self.alert[@"patient"][@"mrn"]
+      [[UIAlertView alloc] initWithTitle:self.alert.patient.mrn
                                  message:@"In the future, this will take you to your EHR system"
                                 delegate:self
                        cancelButtonTitle:@"OK"
@@ -92,12 +98,23 @@
   [alert show];
 }
 
+#pragma mark - CCProviderDelegate
+
+- (void) provider:(CCProvider *)provider alertsChanged:(NSArray *)changedAlertIdList {
+  for (NSString *alertId in changedAlertIdList) {
+    if (alertId == self.alertId) {
+      [self updateData];
+      [self updateView];
+      return;
+    }
+  }
+}
+
 #pragma mark - UITableViewDelegate
 
 - (void)tableView:(UITableView *)tableView
     willDisplayHeaderView:(UIView *)view
-               forSection:(NSInteger)section
-{
+               forSection:(NSInteger)section {
   view.tintColor = [UIColor colorWithRed:(239.f/255.)
                                    green:(239.f/255.)
                                     blue:(244.f/255.)
@@ -110,38 +127,39 @@
   headerView.textLabel.font = [UIFont systemFontOfSize:14.0f];
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
   CGSize cellSize = CGSizeMake(tableView.bounds.size.width, tableView.rowHeight);
   CGSize constraintSize = CGSizeMake(tableView.bounds.size.width, FLT_MAX);
   if (indexPath.section == 0) {
-    cellSize = [CCTableViewPatientCell sizeThatFits:constraintSize
-                                           withName:self.alert[@"patient"][@"name"]
-                                                mrn:self.alert[@"patient"][@"mrn"]
-                                                bed:self.alert[@"patient"][@"bed"]];
+    CCPatient *patient = self.alert.patient;
+    cellSize = [CCAlertDetailsPatientCell sizeThatFits:constraintSize
+                                           withName:patient.fullName
+                                                mrn:patient.mrn
+                                                bed:patient.bed];
   } else if (indexPath.section == 1) {
-    cellSize = [CCTableViewNurseCell sizeThatFits:constraintSize
-                                         withName:self.alert[@"creator"][@"name"]
-                                            phone:self.alert[@"creator"][@"phone"]];
+    CCProvider *creator = self.alert.creator;
+    cellSize = [CCAlertDetailsNurseCell sizeThatFits:constraintSize
+                                         withName:creator.fullName
+                                            phone:creator.phone];
   } else if (indexPath.section == 2) {
     NSInteger row = indexPath.row;
     NSString *message = nil, *timestamp = nil, *name = nil;
     BOOL isAlertMessage = NO;
     if (row == 0) {
-      message = self.alert[@"details"][@"description"];
-      timestamp = [self userVisibleDateStringFromTimestamp:
-                      self.alert[@"details"][@"creation_timestamp"]];
-      name = self.alert[@"creator"][@"name"];
+      message = self.alert.alertDescription;
+      timestamp = [CCUtils userVisibleDateStringFromDate:self.alert.creationDate];
+      name = self.alert.creator.shortName;
       isAlertMessage = YES;
     } else {
-      message = self.messageList[row-1][@"message"];
-      timestamp = [self userVisibleDateStringFromTimestamp:self.messageList[row-1][@"timestamp"]];
-      if (![self.messageList[row-1][@"sender"][@"id"] isEqualToString:self.thisUser.uid]) {
-        name = self.messageList[row-1][@"sender"][@"name"];
+      CCAlertMessage *alertMessage = self.messageList[row-1];
+      message = alertMessage.message;
+      timestamp = [CCUtils userVisibleDateStringFromDate:alertMessage.date];
+      if (![alertMessage.sender.uid isEqualToString:self.thisUser.uid]) {
+        name = alertMessage.sender.shortName;
       }
     }
 
-    cellSize = [CCTableViewConversationCell sizeThatFits:constraintSize
+    cellSize = [CCAlertDetailsConversationCell sizeThatFits:constraintSize
                                                 withName:name
                                                  message:message
                                                timestamp:timestamp
@@ -173,10 +191,11 @@
 {
   switch(indexPath.section) {
     case 0: {
-      CCTableViewPatientCell *cell = [tableView dequeueReusableCellWithIdentifier:@"PatientCell"];
-      cell.nameLabel.text = self.alert[@"patient"][@"name"];
-      cell.mrnLabel.text = self.alert[@"patient"][@"mrn"];
-      cell.bedLabel.text = self.alert[@"patient"][@"bed"];
+      CCAlertDetailsPatientCell *cell = [tableView dequeueReusableCellWithIdentifier:@"PatientCell"];
+      CCPatient *patient = self.alert.patient;
+      cell.nameLabel.text = patient.fullName;
+      cell.mrnLabel.text = patient.mrn;
+      cell.bedLabel.text = patient.bed;
       UITapGestureRecognizer *tapped =
           [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(mrnPressed:)];
       tapped.numberOfTapsRequired = 1;
@@ -185,9 +204,10 @@
     }
 
     case 1: {
-      CCTableViewNurseCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NurseCell"];
-      cell.nameLabel.text = self.alert[@"creator"][@"name"];
-      cell.phoneLabel.text = self.alert[@"creator"][@"phone"];
+      CCAlertDetailsNurseCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NurseCell"];
+      CCProvider *creator = self.alert.creator;
+      cell.nameLabel.text = creator.fullName;
+      cell.phoneLabel.text = creator.phone;
       UITapGestureRecognizer *tapped =
           [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(callNursePressed:)];
       tapped.numberOfTapsRequired = 1;
@@ -196,55 +216,31 @@
     }
 
     case 2: {
-      CCTableViewConversationCell *cell =
+      CCAlertDetailsConversationCell *cell =
           [tableView dequeueReusableCellWithIdentifier:@"ConversationCell"];
       NSInteger row = indexPath.row;
       cell.isAlertMessage = (row == 0);
       if (row == 0) {
-        cell.nameLabel.text = self.alert[@"creator"][@"name"];
-        cell.messageLabel.text = self.alert[@"details"][@"description"];
-        cell.timestampLabel.text = [self userVisibleDateStringFromTimestamp:
-                                        self.alert[@"details"][@"creation_timestamp"]];
+        cell.nameLabel.text = self.alert.creator.shortName;
+        cell.messageLabel.text = self.alert.alertDescription;
+        cell.timestampLabel.text = [CCUtils userVisibleDateStringFromDate:self.alert.creationDate];
 
       } else {
-        if (![self.messageList[row-1][@"sender"][@"id"] isEqualToString:self.thisUser.uid]) {
-          cell.nameLabel.text = self.messageList[row-1][@"sender"][@"name"];
+        CCAlertMessage *alertMessage = self.messageList[row-1];
+        if (![alertMessage.sender.uid isEqualToString:self.thisUser.uid]) {
+          cell.nameLabel.text = alertMessage.sender.shortName;
           cell.isMyMessage = NO;
         } else {
           cell.nameLabel.text = @"";
           cell.isMyMessage = YES;
         }
-        cell.messageLabel.text = self.messageList[row-1][@"message"];
-        cell.timestampLabel.text = [self userVisibleDateStringFromTimestamp:
-                                        self.messageList[row-1][@"timestamp"]];
+        cell.messageLabel.text = alertMessage.message;
+        cell.timestampLabel.text = [CCUtils userVisibleDateStringFromDate:alertMessage.date];
       }
       return cell;
     }
   }
   return nil;
-}
-
-- (NSString *)userVisibleDateStringFromTimestamp:(NSString *)timestampString
-{
-  NSDate *date = [NSDate dateWithTimeIntervalSince1970:[timestampString longLongValue]];
-  NSTimeInterval interval = -[date timeIntervalSinceNow];
-  if (interval < 45) {  // show "%d mins ago" upto 1 hr.
-    return @"a moment ago";
-  } else if (interval < 3600) {  // show "%d mins ago" upto 1 hr.
-    int mins = 1;
-    if (interval > 60) mins = (int)(interval / 60.);
-    return [NSString stringWithFormat:@"%d min ago", mins];
-  } else if (interval < (24 * 60 * 60)) {
-    int hrs = (int)(interval / 3600);
-    return [NSString stringWithFormat:@"%d hr ago", hrs];
-  } else {
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    NSString *formatString = [NSDateFormatter dateFormatFromTemplate:@"dMMM"
-                                                             options:0
-                                                              locale:[NSLocale currentLocale]];
-    [dateFormatter setDateFormat:formatString];
-    return [dateFormatter stringFromDate:date];
-  }
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -262,8 +258,10 @@
 - (IBAction)toggleStatusButtonPressed:(UIButton *)sender
 {
   Firebase* alertDetailsRef =
-      [CCSettings firebaseForPathComponents:@[@"channel", self.alert[@"id"], @"details"]];
-  if ([self.alert[@"details"][@"status"] isEqualToString:@"OPEN"]) {
+      [CCUtils firebaseForPathComponents:@[@"channel",
+                                           self.alert.alertId,
+                                           @"details"]];
+  if (self.alert.status == CCAlertStatusOpen) {
     [alertDetailsRef updateChildValues:@{ @"status" : @"RESOLVED" }];
   } else {
     [alertDetailsRef updateChildValues:@{ @"status" : @"OPEN" }];
@@ -276,13 +274,13 @@
   if (![self.enterMessageTextField.text isEqualToString:@""])
   {
     Firebase* messagesRef =
-        [CCSettings firebaseForPathComponents:@[@"channel", self.alert[@"id"], @"messages"]];
+        [CCUtils firebaseForPathComponents:@[@"channel", self.alert.alertId, @"messages"]];
     Firebase* newMessageRef = [messagesRef childByAutoId];
     NSTimeInterval interval = [[NSDate date] timeIntervalSince1970];
     NSString *timestamp = [NSString stringWithFormat:@"%lld", (long long)interval];
     NSDictionary *newMessage = @{ @"message"  : self.enterMessageTextField.text,
                                   @"sender"   : @{ @"id"   : self.thisUser.uid,
-                                                   @"name" : self.thisUser.name,
+                                                   @"name" : self.thisUser.fullName,
                                                    @"phone": self.thisUser.phone
                                                  },
                                   @"timestamp": timestamp,

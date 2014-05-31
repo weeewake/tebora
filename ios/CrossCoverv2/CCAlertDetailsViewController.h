@@ -22,7 +22,7 @@
 @property (strong, nonatomic) UITextField *activeField;
 
 // Model
-@property (strong, nonatomic) NSMutableDictionary *alert;
+@property (strong, nonatomic) NSString *alertId;
 @property (strong, nonatomic) CCProvider *thisUser;
 
 // Actions

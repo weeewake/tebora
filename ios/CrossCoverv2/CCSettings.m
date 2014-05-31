@@ -11,7 +11,6 @@
 static UIColor *alertTextColor;
 static UIColor *lightTintColor;
 static UIColor *tintColor;
-static NSURL *fbBaseUrl;
 
 @implementation CCSettings
 
@@ -34,18 +33,6 @@ static NSURL *fbBaseUrl;
     lightTintColor = [UIColor colorWithRed:74.0/255 green:144.0/255 blue:226.0/255 alpha:0.1];
   }
   return lightTintColor;
-}
-
-+ (Firebase *)firebaseForPathComponents:(NSArray *)pathComponents {
-  if (fbBaseUrl == nil) {
-    fbBaseUrl = [NSURL URLWithString:@"https://tebora.firebaseio.com"];
-  }
-
-  NSURL *pathUrl = fbBaseUrl;
-  for (NSString *pathComponent in pathComponents) {
-    pathUrl = [pathUrl URLByAppendingPathComponent:pathComponent];
-  }
-  return [[Firebase alloc] initWithUrl:[pathUrl absoluteString]];
 }
 
 @end

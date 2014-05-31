@@ -34,10 +34,16 @@
 		47EC811B191C066200E74CFA /* CCLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 47EC811A191C066200E74CFA /* CCLoginViewController.m */; };
 		7140221D1924260700685482 /* CCSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 7140221C1924260700685482 /* CCSettings.m */; };
 		7140221E1924260700685482 /* CCSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 7140221C1924260700685482 /* CCSettings.m */; };
+		714176511939D5280060CEE3 /* CCUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 714176501939D5280060CEE3 /* CCUtils.m */; };
+		714176521939D5280060CEE3 /* CCUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 714176501939D5280060CEE3 /* CCUtils.m */; };
 		71AD70F8193078880058A928 /* CCProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 71AD70F7193078880058A928 /* CCProvider.m */; };
 		71AD70F9193078880058A928 /* CCProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 71AD70F7193078880058A928 /* CCProvider.m */; };
 		71E96B09192B2BFE00DBA9E0 /* CCAlertDetailsTableCells.m in Sources */ = {isa = PBXBuildFile; fileRef = 71E96B08192B2BFE00DBA9E0 /* CCAlertDetailsTableCells.m */; };
 		71E96B0A192B2BFE00DBA9E0 /* CCAlertDetailsTableCells.m in Sources */ = {isa = PBXBuildFile; fileRef = 71E96B08192B2BFE00DBA9E0 /* CCAlertDetailsTableCells.m */; };
+		71EA925219369F7700E6DFBA /* CCAlertTableCells.m in Sources */ = {isa = PBXBuildFile; fileRef = 71EA925119369F7700E6DFBA /* CCAlertTableCells.m */; };
+		71EA925319369F7700E6DFBA /* CCAlertTableCells.m in Sources */ = {isa = PBXBuildFile; fileRef = 71EA925119369F7700E6DFBA /* CCAlertTableCells.m */; };
+		71F753531939B92800D3EF19 /* CCAlert.m in Sources */ = {isa = PBXBuildFile; fileRef = 71F753521939B92800D3EF19 /* CCAlert.m */; };
+		71F753541939B92800D3EF19 /* CCAlert.m in Sources */ = {isa = PBXBuildFile; fileRef = 71F753521939B92800D3EF19 /* CCAlert.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -84,10 +90,16 @@
 		47EC811A191C066200E74CFA /* CCLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCLoginViewController.m; sourceTree = "<group>"; };
 		7140221B1924260700685482 /* CCSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSettings.h; sourceTree = "<group>"; };
 		7140221C1924260700685482 /* CCSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCSettings.m; sourceTree = "<group>"; };
+		7141764F1939D5280060CEE3 /* CCUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCUtils.h; sourceTree = "<group>"; };
+		714176501939D5280060CEE3 /* CCUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCUtils.m; sourceTree = "<group>"; };
 		71AD70F6193078880058A928 /* CCProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCProvider.h; sourceTree = "<group>"; };
 		71AD70F7193078880058A928 /* CCProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCProvider.m; sourceTree = "<group>"; };
 		71E96B07192B2BC800DBA9E0 /* CCAlertDetailsTableCells.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAlertDetailsTableCells.h; sourceTree = "<group>"; };
 		71E96B08192B2BFE00DBA9E0 /* CCAlertDetailsTableCells.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCAlertDetailsTableCells.m; sourceTree = "<group>"; };
+		71EA925019369F7700E6DFBA /* CCAlertTableCells.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAlertTableCells.h; sourceTree = "<group>"; };
+		71EA925119369F7700E6DFBA /* CCAlertTableCells.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCAlertTableCells.m; sourceTree = "<group>"; };
+		71F753511939B92800D3EF19 /* CCAlert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAlert.h; sourceTree = "<group>"; };
+		71F753521939B92800D3EF19 /* CCAlert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCAlert.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -166,6 +178,8 @@
 			isa = PBXGroup;
 			children = (
 				476654F918FB02E700D994B1 /* Main.storyboard */,
+				71F753511939B92800D3EF19 /* CCAlert.h */,
+				71F753521939B92800D3EF19 /* CCAlert.m */,
 				4766552118FB321000D994B1 /* CCAlertDetailsViewController.h */,
 				4766552218FB321000D994B1 /* CCAlertDetailsViewController.m */,
 				476654F618FB02E700D994B1 /* CCAppDelegate.h */,
@@ -178,8 +192,12 @@
 				476654FD18FB02E700D994B1 /* CCOncallViewController.m */,
 				71E96B07192B2BC800DBA9E0 /* CCAlertDetailsTableCells.h */,
 				71E96B08192B2BFE00DBA9E0 /* CCAlertDetailsTableCells.m */,
+				71EA925019369F7700E6DFBA /* CCAlertTableCells.h */,
+				71EA925119369F7700E6DFBA /* CCAlertTableCells.m */,
 				71AD70F6193078880058A928 /* CCProvider.h */,
 				71AD70F7193078880058A928 /* CCProvider.m */,
+				7141764F1939D5280060CEE3 /* CCUtils.h */,
+				714176501939D5280060CEE3 /* CCUtils.m */,
 				476654FF18FB02E700D994B1 /* Images.xcassets */,
 				476654EE18FB02E700D994B1 /* Supporting Files */,
 			);
@@ -316,11 +334,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				71AD70F8193078880058A928 /* CCProvider.m in Sources */,
+				71EA925219369F7700E6DFBA /* CCAlertTableCells.m in Sources */,
 				7140221D1924260700685482 /* CCSettings.m in Sources */,
 				71E96B09192B2BFE00DBA9E0 /* CCAlertDetailsTableCells.m in Sources */,
 				476654F818FB02E700D994B1 /* CCAppDelegate.m in Sources */,
 				47EC811B191C066200E74CFA /* CCLoginViewController.m in Sources */,
+				71F753531939B92800D3EF19 /* CCAlert.m in Sources */,
 				476654F418FB02E700D994B1 /* main.m in Sources */,
+				714176511939D5280060CEE3 /* CCUtils.m in Sources */,
 				476654FE18FB02E700D994B1 /* CCOncallViewController.m in Sources */,
 				4766552318FB321000D994B1 /* CCAlertDetailsViewController.m in Sources */,
 			);
@@ -330,7 +351,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				714176521939D5280060CEE3 /* CCUtils.m in Sources */,
+				71F753541939B92800D3EF19 /* CCAlert.m in Sources */,
 				71AD70F9193078880058A928 /* CCProvider.m in Sources */,
+				71EA925319369F7700E6DFBA /* CCAlertTableCells.m in Sources */,
 				7140221E1924260700685482 /* CCSettings.m in Sources */,
 				71E96B0A192B2BFE00DBA9E0 /* CCAlertDetailsTableCells.m in Sources */,
 				4766551318FB02E700D994B1 /* CrossCoverv2Tests.m in Sources */,

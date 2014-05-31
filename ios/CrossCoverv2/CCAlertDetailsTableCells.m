@@ -16,7 +16,7 @@ static const CGFloat kConversationDefaultPadding = 5.f;
 static const CGFloat kConversationBubbleViewShorterPadding = 10.f;
 static const CGFloat kConversationBubbleViewWidth = 210.f;
 
-@implementation CCTableViewPatientCell
+@implementation CCAlertDetailsPatientCell
 
 @synthesize nameLabel = nameLabel_,
              mrnLabel = mrnLabel_,
@@ -134,7 +134,7 @@ static const CGFloat kConversationBubbleViewWidth = 210.f;
 
 #pragma mark - CCTableViewNurseCell
 
-@implementation CCTableViewNurseCell
+@implementation CCAlertDetailsNurseCell
 
 @synthesize nameLabel = nameLabel_,
            phoneLabel = phoneLabel_;
@@ -219,13 +219,13 @@ static const CGFloat kConversationBubbleViewWidth = 210.f;
 
 #pragma mark - CCTableViewConversationCell
 
-@interface CCTableViewConversationCell ()
+@interface CCAlertDetailsConversationCell ()
 
 @property (nonatomic, strong) UIView *bubbleView;
 
 @end
 
-@implementation CCTableViewConversationCell
+@implementation CCAlertDetailsConversationCell
 
 @synthesize isMyMessage = isMyMessage_,
               nameLabel = nameLabel_,

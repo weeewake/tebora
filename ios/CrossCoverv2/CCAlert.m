@@ -162,6 +162,27 @@
   return messagesChanged;
 }
 
+- (void)toggleAlertStatus {
+  [[self.alertRef childByAppendingPath:@"details"] updateChildValues:
+      @{ @"status" : ((self.status == CCAlertStatusOpen) ? @"RESOLVED" : @"OPEN") }];
+  self.status = ((self.status == CCAlertStatusOpen) ? CCAlertStatusResolved : CCAlertStatusOpen);
+}
+
+- (void)sendMessage:(NSString *)message fromProvider:(CCProvider *)provider {
+  if ((message == nil) || [message isEqualToString:@""] || (provider == nil)) {
+    return;
+  }
+  NSString *timestamp =
+      [NSString stringWithFormat:@"%lld", (long long)[[NSDate date] timeIntervalSince1970]];
+  NSDictionary *newMessage =
+      @{ @"message"  : message,
+         @"sender"   : @{ @"id"   : provider.uid,
+                          @"name" : provider.fullName,
+                          @"phone": provider.phone },
+         @"timestamp": timestamp };
+  [[[self.alertRef childByAppendingPath:@"messages"] childByAutoId] setValue:newMessage];
+}
+
 - (NSArray *)messages {
   return [self.messagesDict allValues];
 }

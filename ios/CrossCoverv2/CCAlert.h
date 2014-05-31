@@ -73,6 +73,9 @@ typedef enum {
 @property (strong, nonatomic) NSArray *messages;
 @property (weak, nonatomic) id<CCAlertDelegate> delegate;
 
+- (void)toggleAlertStatus;
+- (void)sendMessage:(NSString *)message fromProvider:(CCProvider *)provider;
+
 + (CCAlert *)alertWithId:(NSString *)alertId;
 + (NSString *)alertTypeStringForType:(CCAlertType)type;
 

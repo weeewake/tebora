@@ -258,36 +258,13 @@
 
 - (IBAction)toggleStatusButtonPressed:(UIButton *)sender
 {
-  Firebase* alertDetailsRef =
-      [CCUtils firebaseForPathComponents:@[@"channel",
-                                           self.alert.alertId,
-                                           @"details"]];
-  if (self.alert.status == CCAlertStatusOpen) {
-    [alertDetailsRef updateChildValues:@{ @"status" : @"RESOLVED" }];
-  } else {
-    [alertDetailsRef updateChildValues:@{ @"status" : @"OPEN" }];
-  }
+  [self.alert toggleAlertStatus];
   [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (IBAction)sendMessageButtonPressed:(UIButton *)sender
 {
-  if (![self.enterMessageTextField.text isEqualToString:@""])
-  {
-    Firebase* messagesRef =
-        [CCUtils firebaseForPathComponents:@[@"channel", self.alert.alertId, @"messages"]];
-    Firebase* newMessageRef = [messagesRef childByAutoId];
-    NSTimeInterval interval = [[NSDate date] timeIntervalSince1970];
-    NSString *timestamp = [NSString stringWithFormat:@"%lld", (long long)interval];
-    NSDictionary *newMessage = @{ @"message"  : self.enterMessageTextField.text,
-                                  @"sender"   : @{ @"id"   : self.thisUser.uid,
-                                                   @"name" : self.thisUser.fullName,
-                                                   @"phone": self.thisUser.phone
-                                                 },
-                                  @"timestamp": timestamp,
-                                };
-    [newMessageRef setValue:newMessage];
-  }
+  [self.alert sendMessage:self.enterMessageTextField.text fromProvider:self.thisUser];
   [self.enterMessageTextField resignFirstResponder];
   self.enterMessageTextField.text = @"";
   [self updateView];

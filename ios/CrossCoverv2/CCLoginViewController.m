@@ -36,13 +36,25 @@
 {
   [super viewDidLoad];
 
-  self.isSigningIn = NO;
+  self.isSigningIn = YES;
   self.overlayView.userInteractionEnabled = YES;
   UITapGestureRecognizer *tapped =
       [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(overlayTouched:)];
   tapped.numberOfTapsRequired = 1;
   [self.overlayView addGestureRecognizer:tapped];
 
+  Firebase* ref = [CCUtils firebaseForPathComponents:@[]];
+  FirebaseSimpleLogin* authClient = [[FirebaseSimpleLogin alloc] initWithRef:ref];
+  [authClient checkAuthStatusWithBlock:^(NSError* error, FAUser* faUser) {
+    if ((error == nil) && (faUser != nil)) {
+      // There is a logged in user
+      self.isSigningIn = YES;
+      CCProvider *provider = [CCProvider providerWithUserId:faUser.userId];
+      provider.delegate = self;  // Do the transition in delegate callback.
+    } else {
+      self.isSigningIn = NO;
+    }
+  }];
 
   // Set the background to be our blue.
   self.backgroundView.backgroundColor = [CCSettings tintColor];

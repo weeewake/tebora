@@ -40,6 +40,8 @@ typedef enum {
 @property (strong, nonatomic) NSString *phone;
 @property (assign, nonatomic) CCProviderType type;
 @property (strong, nonatomic) NSArray *alerts;  // array of CCAlert
+@property (assign, nonatomic, getter = isOnCall) BOOL oncall;
+
 @property (weak, nonatomic) id<CCProviderDelegate> delegate;
 
 + (CCProvider *)providerWithUserId:(NSString *)uid;

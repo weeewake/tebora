@@ -67,34 +67,38 @@
     return;
   }
 
-  bool detailsChanged = false;
+  BOOL detailsChanged = NO;
   NSString *name = details[@"name"];
   if (![name isEqualToString:self.fullName]) {
     self.fullName = name;
-    detailsChanged = true;
+    detailsChanged = YES;
   }
   NSString *shortName = details[@"shortName"];
   if (![shortName isEqualToString:self.shortName]) {
     self.shortName = shortName;
-    detailsChanged = true;
+    detailsChanged = YES;
   }
   if (self.shortName == nil || [self.shortName isEqualToString:@""]) {
     self.shortName = [[self.fullName componentsSeparatedByString:@" "] lastObject];
-    detailsChanged = true;
+    detailsChanged = YES;
   }
-
   NSString *phone = details[@"phone"];
   if (![phone isEqualToString:self.phone]) {
     self.phone = phone;
-    detailsChanged = true;
+    detailsChanged = YES;
   }
   CCProviderType type = [[self class] providerTypeFromString:details[@"providerType"]];
   if (type != self.type) {
     self.type = type;
-    detailsChanged = true;
+    detailsChanged = YES;
   }
   self.displayName =
       [self.shortName stringByAppendingString:(type == CCProviderTypeMD ? @" - MD" : @" - RN")];
+  bool isOncall = [details[@"oncall"] boolValue];
+  if (isOncall != self.isOnCall) {
+    self.oncall = isOncall;
+    detailsChanged = YES;
+  }
   if (detailsChanged && [self.delegate respondsToSelector:@selector(providerDetailsChanged:)]) {
     [self.delegate providerDetailsChanged:self];
   }

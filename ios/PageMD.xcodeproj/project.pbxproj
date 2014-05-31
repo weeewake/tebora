@@ -182,8 +182,6 @@
 				71F753521939B92800D3EF19 /* CCAlert.m */,
 				4766552118FB321000D994B1 /* CCAlertDetailsViewController.h */,
 				4766552218FB321000D994B1 /* CCAlertDetailsViewController.m */,
-				476654F618FB02E700D994B1 /* CCAppDelegate.h */,
-				476654F718FB02E700D994B1 /* CCAppDelegate.m */,
 				47EC8119191C066200E74CFA /* CCLoginViewController.h */,
 				47EC811A191C066200E74CFA /* CCLoginViewController.m */,
 				7140221B1924260700685482 /* CCSettings.h */,
@@ -207,9 +205,11 @@
 		476654EE18FB02E700D994B1 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				476654F618FB02E700D994B1 /* CCAppDelegate.h */,
+				476654F718FB02E700D994B1 /* CCAppDelegate.m */,
+				476654F318FB02E700D994B1 /* main.m */,
 				476654EF18FB02E700D994B1 /* PageMD-Info.plist */,
 				476654F018FB02E700D994B1 /* InfoPlist.strings */,
-				476654F318FB02E700D994B1 /* main.m */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";

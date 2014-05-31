@@ -30,6 +30,8 @@
   self.alertList = @[];
   self.tableView.dataSource = self;
   self.tableView.delegate = self;
+  // Remove extra separators at the end of the table view.
+  self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
   self.segmentedControl = [[UISegmentedControl alloc] initWithItems:
                                [NSArray arrayWithObjects:@"Open", @"Resolved", nil]];
   [self.segmentedControl setSelectedSegmentIndex:0];

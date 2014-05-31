@@ -93,6 +93,8 @@
     self.type = type;
     detailsChanged = true;
   }
+  self.displayName =
+      [self.shortName stringByAppendingString:(type == CCProviderTypeMD ? @" - MD" : @" - RN")];
   if (detailsChanged && [self.delegate respondsToSelector:@selector(providerDetailsChanged:)]) {
     [self.delegate providerDetailsChanged:self];
   }
@@ -178,13 +180,13 @@
 }
 
 + (CCProviderType)providerTypeFromString:(NSString *)type {
-  type = [type uppercaseString];
-  if ([type isEqualToString:@"RN"]) {
-    return CCProviderType_RN;
-  } else if ([type isEqualToString:@"MD"]) {
-      return CCProviderType_MD;
+  type = [type lowercaseString];
+  if ([type isEqualToString:@"rn"]) {
+    return CCProviderTypeRN;
+  } else if ([type isEqualToString:@"md"]) {
+      return CCProviderTypeMD;
   }
-  return CCProviderType_UNKNOWN;
+  return CCProviderTypeUnknown;
 }
 
 + (CCProvider *)providerWithUserId:(NSString *)uid {

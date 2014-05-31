@@ -205,25 +205,25 @@
 + (NSString *)alertTypeStringForType:(CCAlertType)type {
   switch (type) {
     case CCAlertTypeCritical:
-      return @"critical";
+      return @"Critical";
     case CCAlertTypeConsult:
-      return @"consult";
+      return @"Consult";
     case CCAlertTypeIo:
-      return @"io";
+      return @"IO";
     case CCAlertTypeLab:
-      return @"lab";
+      return @"Lab";
     case CCAlertTypeRadiology:
-      return @"radiology";
+      return @"Radiology";
     case CCAlertTypeRx:
-      return @"prescription";
+      return @"Prescription";
     case CCAlertTypeVital:
-      return @"vital";
+      return @"Vital";
     case CCAlertTypeOther:
-      return @"other";
+      return @"Other";
     default:
       break;
   }
-  return @"unknown";
+  return @"Unknown";
 }
 
 + (CCAlert *)alertWithId:(NSString *)alertId {

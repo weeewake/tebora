@@ -8,9 +8,9 @@
 #import <Foundation/Foundation.h>
 
 typedef enum {
-  CCProviderType_UNKNOWN = 0,
-  CCProviderType_RN,
-  CCProviderType_MD
+  CCProviderTypeUnknown = 0,
+  CCProviderTypeRN,
+  CCProviderTypeMD
 } CCProviderType;
 
 @class CCProvider;
@@ -36,6 +36,7 @@ typedef enum {
 @property (strong, nonatomic) NSString *uid;
 @property (strong, nonatomic) NSString *fullName;
 @property (strong, nonatomic) NSString *shortName;
+@property (strong, nonatomic) NSString *displayName;
 @property (strong, nonatomic) NSString *phone;
 @property (assign, nonatomic) CCProviderType type;
 @property (strong, nonatomic) NSArray *alerts;  // array of CCAlert

@@ -72,7 +72,7 @@
 }
 
 - (void)updateView {
-  self.title = [[CCAlert alertTypeStringForType:self.alert.type] capitalizedString];
+  self.title = [CCAlert alertTypeStringForType:self.alert.type];
   NSString *title = @"Reopen";
   if (self.alert.status == CCAlertStatusOpen) {
     title = @"Resolve";
@@ -148,14 +148,14 @@
     if (row == 0) {
       message = self.alert.alertDescription;
       timestamp = [CCUtils userVisibleDateStringFromDate:self.alert.creationDate];
-      name = self.alert.creator.shortName;
+      name = self.alert.creator.displayName;
       isAlertMessage = YES;
     } else {
       CCAlertMessage *alertMessage = self.messageList[row-1];
       message = alertMessage.message;
       timestamp = [CCUtils userVisibleDateStringFromDate:alertMessage.date];
       if (![alertMessage.sender.uid isEqualToString:self.thisUser.uid]) {
-        name = alertMessage.sender.shortName;
+        name = alertMessage.sender.displayName;
       }
     }
 
@@ -220,19 +220,20 @@
           [tableView dequeueReusableCellWithIdentifier:@"ConversationCell"];
       NSInteger row = indexPath.row;
       cell.isAlertMessage = (row == 0);
+      cell.nameLabel.text = @"";
+      cell.isMyMessage = YES;
       if (row == 0) {
-        cell.nameLabel.text = self.alert.creator.shortName;
         cell.messageLabel.text = self.alert.alertDescription;
         cell.timestampLabel.text = [CCUtils userVisibleDateStringFromDate:self.alert.creationDate];
-
+        if (![self.alert.creator.uid isEqualToString:self.thisUser.uid]) {
+          cell.nameLabel.text = self.alert.creator.displayName;
+          cell.isMyMessage = NO;
+        }
       } else {
         CCAlertMessage *alertMessage = self.messageList[row-1];
         if (![alertMessage.sender.uid isEqualToString:self.thisUser.uid]) {
-          cell.nameLabel.text = alertMessage.sender.shortName;
+          cell.nameLabel.text = alertMessage.sender.displayName;
           cell.isMyMessage = NO;
-        } else {
-          cell.nameLabel.text = @"";
-          cell.isMyMessage = YES;
         }
         cell.messageLabel.text = alertMessage.message;
         cell.timestampLabel.text = [CCUtils userVisibleDateStringFromDate:alertMessage.date];

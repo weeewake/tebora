@@ -140,7 +140,7 @@
                          thisAlert.patient.shortName];
   cell.detailTextLabel.text = thisAlert.alertDescription;
 
-  NSString *imageName = [[CCAlert alertTypeStringForType:thisAlert.type] capitalizedString];
+  NSString *imageName = [CCAlert alertTypeStringForType:thisAlert.type];
   cell.imageView.image = [UIImage imageNamed:imageName];
   cell.imageView.userInteractionEnabled = YES;
   cell.imageView.tag = thisIndex;

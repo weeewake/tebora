@@ -106,7 +106,8 @@
                     </navigationItem>
                     <connections>
                         <outlet property="alertDetailsTableView" destination="b9E-Ym-ePK" id="Q97-Ah-aNW"/>
-                        <outlet property="enterMessageTextField" destination="6up-li-iqt" id="yWH-QL-lPI"/>
+                        <outlet property="enterMessageView" destination="Uah-jt-dML" id="aHb-7A-FT3"/>
+                        <outlet property="messageTextField" destination="6up-li-iqt" id="iiJ-fj-fBa"/>
                         <outlet property="toggleStatusButton" destination="szr-j5-5dN" id="UUk-bV-9BV"/>
                     </connections>
                 </viewController>

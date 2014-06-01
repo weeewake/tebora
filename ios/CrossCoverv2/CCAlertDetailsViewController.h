@@ -16,7 +16,8 @@
 // Views
 @property (strong, nonatomic) IBOutlet UITableView *alertDetailsTableView;
 @property (strong, nonatomic) IBOutlet UIButton *toggleStatusButton;
-@property (strong, nonatomic) IBOutlet UITextField *enterMessageTextField;
+@property (strong, nonatomic) IBOutlet UITextField *messageTextField;
+@property (strong, nonatomic) IBOutlet UIView *enterMessageView;
 
 // View State
 @property (strong, nonatomic) UITextField *activeField;

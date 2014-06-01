@@ -17,6 +17,7 @@
 
 @property (strong, nonatomic) CCAlert *alert;
 @property (strong, nonatomic) NSArray *messageList;
+@property (strong, nonatomic) UITapGestureRecognizer *dismissKeyboardRecognizer;
 
 @end
 
@@ -24,8 +25,7 @@
 
 - (void)viewDidLoad {
   [super viewDidLoad];
-  [self registerForKeyboardNotifications];
-  self.enterMessageTextField.delegate = self;
+  self.messageTextField.delegate = self;
 
   UITableView *tableView = self.alertDetailsTableView;
   [tableView registerClass:[CCAlertDetailsPatientCell class] forCellReuseIdentifier:@"PatientCell"];
@@ -40,24 +40,26 @@
   // so we can't automatically scroll the last message!
   //     tableView.estimatedRowHeight = tableView.rowHeight;
 
-  UITapGestureRecognizer *tap =
+  self.dismissKeyboardRecognizer =
     [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissKeyboard:)];
-  tap.cancelsTouchesInView = NO;
-  [self.navigationController.view addGestureRecognizer:tap];
+  self.dismissKeyboardRecognizer.cancelsTouchesInView = NO;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
+  [self registerForKeyboardNotifications];
   [self updateData];
   self.thisUser.delegate = self;
   [self updateView];
 }
 
-- (void)viewDidDisappear:(BOOL)animated {
-  [super viewDidDisappear:animated];
+- (void)viewWillDisappear:(BOOL)animated {
+  [super viewWillDisappear:animated];
   if (self.thisUser.delegate == self) {
     self.thisUser.delegate = nil;
   }
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
+  [self.navigationController.view removeGestureRecognizer:self.dismissKeyboardRecognizer];
 }
 
 - (void)registerForKeyboardNotifications {
@@ -111,7 +113,13 @@
 }
 
 - (void)dismissKeyboard:(UITapGestureRecognizer *)gestureRecognizer {
-  [self.enterMessageTextField resignFirstResponder];
+  // Dismiss the keyboard only if the touch is not on the enterMessageView.
+  CGPoint touchPoint = [gestureRecognizer locationInView:nil];
+  CGRect enterMessageViewFrame = [self.enterMessageView convertRect:self.enterMessageView.bounds
+                                                             toView:nil];
+  if (!CGRectContainsPoint(enterMessageViewFrame, touchPoint)) {
+    [self.messageTextField resignFirstResponder];
+  }
 }
 
 #pragma mark - CCProviderDelegate
@@ -280,12 +288,14 @@
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
-  [self.alert sendMessage:self.enterMessageTextField.text fromProvider:self.thisUser];
-  self.enterMessageTextField.text = @"";
+  [self.alert sendMessage:self.messageTextField.text fromProvider:self.thisUser];
+  self.messageTextField.text = @"";
   return NO;
 }
 
 - (void)keyboardWillShow:(NSNotification*)aNotification {
+  [self.navigationController.view addGestureRecognizer:self.dismissKeyboardRecognizer];
+
   NSDictionary* info = [aNotification userInfo];
   CGFloat kbHeight = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size.height;
   NSTimeInterval duration = [[info objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
@@ -293,8 +303,8 @@
   UIViewAnimationOptions options = (curve << 16) | UIViewAnimationOptionBeginFromCurrentState;
 
   // Adjust the text entry field, tableview
-  CGRect textFieldFrame = self.enterMessageTextField.superview.frame;
-  textFieldFrame.origin.y -= kbHeight;
+  CGRect enterMessageViewFrame = self.enterMessageView.frame;
+  enterMessageViewFrame.origin.y -= kbHeight;
 
   UITableView *tableView = self.alertDetailsTableView;
   UIEdgeInsets contentInsets = tableView.contentInset;
@@ -311,7 +321,7 @@
                         delay:0.
                       options:options
                    animations:^{
-                     self.enterMessageTextField.superview.frame = textFieldFrame;
+                     self.enterMessageView.frame = enterMessageViewFrame;
                      tableView.contentOffset = contentOffset;
                    }
                    completion:^(BOOL finished) {
@@ -325,6 +335,8 @@
 }
 
 - (void)keyboardWillHide:(NSNotification*)aNotification {
+  [self.navigationController.view removeGestureRecognizer:self.dismissKeyboardRecognizer];
+
   NSDictionary* info = [aNotification userInfo];
   CGFloat kbHeight = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size.height;
   NSTimeInterval duration = [[info objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
@@ -332,8 +344,8 @@
   UIViewAnimationOptions options = (curve << 16) | UIViewAnimationOptionBeginFromCurrentState;
 
   // Adjust the text entry field, tableview
-  CGRect textFieldFrame = self.enterMessageTextField.superview.frame;
-  textFieldFrame.origin.y += kbHeight;
+  CGRect enterMessageViewFrame = self.enterMessageView.frame;
+  enterMessageViewFrame.origin.y += kbHeight;
   UITableView *tableView = self.alertDetailsTableView;
   UIEdgeInsets contentInsets = tableView.contentInset;
   contentInsets.bottom -= kbHeight;
@@ -346,7 +358,7 @@
                         delay:0.
                       options:options
                    animations:^{
-                     self.enterMessageTextField.superview.frame = textFieldFrame;
+                     self.enterMessageView.frame = enterMessageViewFrame;
                      tableView.contentOffset = contentOffset;
                      tableView.contentInset = contentInsets;
                      tableView.scrollIndicatorInsets = scrollIndicatorInsets;

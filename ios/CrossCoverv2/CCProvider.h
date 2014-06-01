@@ -45,5 +45,7 @@ typedef enum {
 @property (weak, nonatomic) id<CCProviderDelegate> delegate;
 
 + (CCProvider *)providerWithUserId:(NSString *)uid;
++ (CCProvider *)loggedInProvider;
++ (void)setLoggedInProvider:(CCProvider *)provider;
 
 @end

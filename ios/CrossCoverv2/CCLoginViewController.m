@@ -47,10 +47,7 @@
   FirebaseSimpleLogin* authClient = [[FirebaseSimpleLogin alloc] initWithRef:ref];
   [authClient checkAuthStatusWithBlock:^(NSError* error, FAUser* faUser) {
     if ((error == nil) && (faUser != nil)) {
-      // There is a logged in user
-      self.isSigningIn = YES;
-      CCProvider *provider = [CCProvider providerWithUserId:faUser.userId];
-      provider.delegate = self;  // Do the transition in delegate callback.
+      [self logInWithFAUser:faUser];
     } else {
       self.isSigningIn = NO;
     }
@@ -165,8 +162,7 @@
                                    otherButtonTitles:nil];
               [theAlert show];
             } else {
-              CCProvider *provider = [CCProvider providerWithUserId:faUser.userId];
-              provider.delegate = self;  // Do the transition in delegate callback.
+              [self logInWithFAUser:faUser];
             }
          }];
 }
@@ -174,6 +170,13 @@
 - (void)providerDetailsChanged:(CCProvider *)provider {
   provider.delegate = nil;
   [self performSegueWithIdentifier:@"LoginSuccessful" sender:provider];
+}
+
+- (void)logInWithFAUser:(FAUser *)faUser {
+  // There is a logged in user
+  CCProvider *provider = [CCProvider providerWithUserId:faUser.userId];
+  [CCProvider setLoggedInProvider:provider];
+  provider.delegate = self;  // Do the transition in delegate callback.
 }
 
 @end

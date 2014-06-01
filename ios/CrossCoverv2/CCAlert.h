@@ -69,9 +69,11 @@ typedef enum {
 @property (strong, nonatomic) CCProvider *creator;
 @property (strong, nonatomic) CCPatient *patient;
 
-@property (strong, nonatomic) NSArray *participants;  // array of CCProvider
-@property (strong, nonatomic) NSArray *messages;
-@property (weak, nonatomic) id<CCAlertDelegate> delegate;
+@property (strong, nonatomic, readonly) NSArray *participants;  // array of CCProvider
+@property (strong, nonatomic, readonly) NSArray *messages;
+
+- (void)addDelegate:(__weak id<CCAlertDelegate>)delegate;
+- (void)removeDelegate:(__weak id<CCAlertDelegate>)delegate;
 
 - (void)toggleAlertStatus;
 - (void)sendMessage:(NSString *)message fromProvider:(CCProvider *)provider;

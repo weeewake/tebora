@@ -18,10 +18,41 @@
 @implementation CCAlertMessage
 @end
 
+@interface WeakRefHolder : NSObject
+@property (weak, nonatomic) id ref;
+- (WeakRefHolder *)initWithObject:(id)object;
+@end
+
+@implementation WeakRefHolder
+
+- (WeakRefHolder *)initWithObject:(id)object {
+  self = [super init];
+  if (self) {
+    self.ref = object;
+  }
+  return self;
+}
+
+- (BOOL)isEqual:(id)object {
+  if ([object isMemberOfClass:[self class]]) {
+    WeakRefHolder *holder = (WeakRefHolder *)object;
+    return [self.ref isEqual:holder.ref];
+  }
+  return NO;
+}
+
+- (NSUInteger)hash {
+  return [self.ref hash];
+}
+
+@end
+
 @interface CCAlert ()
 
 @property (strong, nonatomic) Firebase *alertRef;
 @property (strong, nonatomic) NSMutableDictionary *messagesDict;
+@property (strong, nonatomic) NSMutableSet *delegates;
+@property (strong, nonatomic) NSMutableSet *participantsSet;
 
 - (CCAlert *)initWithAlertId:(NSString *)alertId;
 
@@ -34,6 +65,8 @@
   if (self) {
     self.alertId = alertId;
     self.messagesDict = [[NSMutableDictionary alloc] init];
+    self.delegates = [[NSMutableSet alloc] init];
+    self.participantsSet = [[NSMutableSet alloc] init];
     [self subscribeToAlertUpdates];
   }
   return self;
@@ -45,26 +78,30 @@
       NSDictionary *value = snapshot.value;
       if (![value isKindOfClass:[NSNull class]]) {
         BOOL detailsChanged = [self updateAlertDetailsFromDictionary:value[@"details"]];
-
         NSString *creatorId = value[@"creator"][@"id"];
         if (![creatorId isEqualToString:self.creator.uid]) {
           self.creator = [CCProvider providerWithUserId:creatorId];
+          [self addDelegate:(id<CCAlertDelegate>)self.creator];
           detailsChanged = YES;
         }
-
         if ([self updatePatientFromDictionary:value[@"patient"]]) {
           detailsChanged = YES;
         }
-
-        // TODO: update participants
-
-        if (detailsChanged && [self.delegate respondsToSelector:@selector(alertDetailsChanged:)]) {
-          [self.delegate alertDetailsChanged:self];
+        if ([self updateParticipantsFromDictionary:value[@"participants"]]) {
+          detailsChanged = YES;
         }
+        BOOL messagesChanged = [self updateMessagesFromDictionary:value[@"messages"]];
 
-        if ([self updateMessagesFromDictionary:value[@"messages"]] &&
-            [self.delegate respondsToSelector:@selector(alertMessagesChanged:)]) {
-          [self.delegate alertMessagesChanged:self];
+        // Inform the delegates
+        for (WeakRefHolder *holder in self.delegates) {
+          if (detailsChanged &&
+              [holder.ref respondsToSelector:@selector(alertDetailsChanged:)]) {
+            [holder.ref alertDetailsChanged:self];
+          }
+          if (messagesChanged &&
+              [holder.ref respondsToSelector:@selector(alertMessagesChanged:)]) {
+            [holder.ref alertMessagesChanged:self];
+          }
         }
       }
   }];
@@ -126,15 +163,13 @@
     detailsChanged = YES;
   }
   NSString *newShortName = patient[@"shortName"];
+  if (newShortName == nil || [newShortName isEqualToString:@""]) {
+    newShortName = [[self.patient.fullName componentsSeparatedByString:@" "] lastObject];
+  }
   if (![newShortName isEqualToString:self.patient.shortName]) {
     self.patient.shortName = newShortName;
     detailsChanged = YES;
   }
-  if (self.patient.shortName == nil || [self.patient.shortName isEqualToString:@""]) {
-    self.patient.shortName = [[self.patient.fullName componentsSeparatedByString:@" "] lastObject];
-    detailsChanged = YES;
-  }
-
   return detailsChanged;
 }
 
@@ -162,6 +197,19 @@
   return messagesChanged;
 }
 
+- (BOOL)updateParticipantsFromDictionary:(NSDictionary *)participants {
+  BOOL participantsChanged = NO;
+  for (NSString *uid in participants) {
+    CCProvider *provider = [CCProvider providerWithUserId:uid];
+    if (![self.participantsSet member:provider]) {
+      [self.participantsSet addObject:provider];
+      [self addDelegate:(id<CCAlertDelegate>)provider];
+      participantsChanged = YES;
+    }
+  }
+  return participantsChanged;
+}
+
 - (void)toggleAlertStatus {
   [[self.alertRef childByAppendingPath:@"details"] updateChildValues:
       @{ @"status" : ((self.status == CCAlertStatusOpen) ? @"RESOLVED" : @"OPEN") }];
@@ -187,8 +235,21 @@
   return [self.messagesDict allValues];
 }
 
+- (NSArray *)participants {
+  return [self.participantsSet allObjects];
+}
+
 - (void)dealloc {
   [self.alertRef removeAllObservers];
+  [self.delegates removeAllObjects];
+}
+
+- (void)addDelegate:(__weak id<CCAlertDelegate>)delegate {
+  [self.delegates addObject:[[WeakRefHolder alloc] initWithObject:delegate]];
+}
+
+- (void)removeDelegate:(__weak id<CCAlertDelegate>)delegate {
+  [self.delegates removeObject:[[WeakRefHolder alloc] initWithObject:delegate]];
 }
 
 + (CCAlertType)alertTypeFromString:(NSString *)typeStr {

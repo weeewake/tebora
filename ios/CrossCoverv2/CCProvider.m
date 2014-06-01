@@ -12,6 +12,8 @@
 #import "CCAlert.h"
 #import "CCUtils.h"
 
+static CCProvider *g_loggedInProvider = nil;
+
 @interface CCProvider () <CCAlertDelegate>
 
 @property (strong, nonatomic) NSMutableArray *firebaseRefs;
@@ -74,12 +76,11 @@
     detailsChanged = YES;
   }
   NSString *shortName = details[@"shortName"];
+  if (shortName == nil || [shortName isEqualToString:@""]) {
+    shortName = [[self.fullName componentsSeparatedByString:@" "] lastObject];
+  }
   if (![shortName isEqualToString:self.shortName]) {
     self.shortName = shortName;
-    detailsChanged = YES;
-  }
-  if (self.shortName == nil || [self.shortName isEqualToString:@""]) {
-    self.shortName = [[self.fullName componentsSeparatedByString:@" "] lastObject];
     detailsChanged = YES;
   }
   NSString *phone = details[@"phone"];
@@ -124,7 +125,7 @@
   }
   CCAlert *alert = [CCAlert alertWithId:alertId];
   [self.queuesAlertsDict setObject:alert forKey:alertId];
-  alert.delegate = self;
+  [alert addDelegate:self];
 }
 
 - (void)alertDetailsChanged:(CCAlert *)alert {
@@ -134,7 +135,7 @@
     if ([self.delegate respondsToSelector:@selector(provider:alertsAdded:)]) {
       [self.delegate provider:self alertsAdded:@[alert.alertId]];
     }
-  } else {
+  } else if ([self.allAlertsDict objectForKey:alert.alertId]) {
     if ([self.delegate respondsToSelector:@selector(provider:alertsChanged:)]) {
       [self.delegate provider:self alertsChanged:@[alert.alertId]];
     }
@@ -156,7 +157,7 @@
   NSString *alertId = alertDict[@"id"];
   CCAlert *alert = [self.allAlertsDict objectForKey:alertId];
   if (alert) {
-    alert.delegate = nil;
+    [alert removeDelegate:self];
     [self.allAlertsDict removeObjectForKey:alertId];
     if ([self.delegate respondsToSelector:@selector(provider:alertsRemoved:)]) {
       [self.delegate provider:self alertsRemoved:@[alertId]];
@@ -164,7 +165,7 @@
   } else {
     alert = [self.queuesAlertsDict objectForKey:alertId];
     if (alert) {
-      alert.delegate = nil;
+      [alert removeDelegate:self];
       [self.queuesAlertsDict removeObjectForKey:alertId];
     }
   }
@@ -205,6 +206,14 @@
     [userId2ProviderMap setObject:provider forKey:uid];
   }
   return provider;
+}
+
++ (CCProvider *)loggedInProvider {
+  return g_loggedInProvider;
+}
+
++ (void)setLoggedInProvider:(CCProvider *)provider {
+  g_loggedInProvider = provider;
 }
 
 @end

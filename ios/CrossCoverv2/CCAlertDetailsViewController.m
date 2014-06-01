@@ -39,6 +39,11 @@
   // but it messes with scrollToRowAtIndexPath:atScrollPosition:animated:
   // so we can't automatically scroll the last message!
   //     tableView.estimatedRowHeight = tableView.rowHeight;
+
+  UITapGestureRecognizer *tap =
+    [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissKeyboard:)];
+  tap.cancelsTouchesInView = NO;
+  [self.navigationController.view addGestureRecognizer:tap];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -85,7 +90,7 @@
   [self.alertDetailsTableView reloadData];
   if (isUserAtBottom) {
     // Automatically scroll to the bottom
-    [self scrollToBottomOfTableView:self.alertDetailsTableView];
+    [self scrollToBottomOfTableView:self.alertDetailsTableView animated:YES];
   }
 }
 
@@ -103,6 +108,10 @@
                        cancelButtonTitle:@"OK"
                        otherButtonTitles:nil];
   [alert show];
+}
+
+- (void)dismissKeyboard:(UITapGestureRecognizer *)gestureRecognizer {
+  [self.enterMessageTextField resignFirstResponder];
 }
 
 #pragma mark - CCProviderDelegate
@@ -311,7 +320,7 @@
                      // Fix the contentOffset by scrolling to the end.
                      // This shouldn't cause any visual position change,
                      // only UITableView internal data update.
-                     [self scrollToBottomOfTableView:tableView];
+                     [self scrollToBottomOfTableView:tableView animated:NO];
                    }];
 }
 
@@ -354,12 +363,13 @@
   return NO;
 }
 
-- (void)scrollToBottomOfTableView:(UITableView *)tableView {
+- (void)scrollToBottomOfTableView:(UITableView *)tableView
+                         animated:(BOOL)animated {
   NSInteger maxSection = [self numberOfSectionsInTableView:tableView] - 1;
   NSInteger maxRow = [self tableView:tableView numberOfRowsInSection:maxSection] - 1;
   [tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:maxRow inSection:maxSection]
                    atScrollPosition:UITableViewScrollPositionTop
-                           animated:YES];
+                           animated:animated];
 }
 
 @end

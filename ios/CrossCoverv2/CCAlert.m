@@ -94,13 +94,14 @@
 
         // Inform the delegates
         for (WeakRefHolder *holder in self.delegates) {
+          id delegate = holder.ref;
           if (detailsChanged &&
-              [holder.ref respondsToSelector:@selector(alertDetailsChanged:)]) {
-            [holder.ref alertDetailsChanged:self];
+              [delegate respondsToSelector:@selector(alertDetailsChanged:)]) {
+            [delegate alertDetailsChanged:self];
           }
           if (messagesChanged &&
-              [holder.ref respondsToSelector:@selector(alertMessagesChanged:)]) {
-            [holder.ref alertMessagesChanged:self];
+              [delegate respondsToSelector:@selector(alertMessagesChanged:)]) {
+            [delegate alertMessagesChanged:self];
           }
         }
       }

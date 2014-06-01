@@ -193,8 +193,7 @@
   return @"UNKNOWN";
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
   switch(section) {
     case 0: return 1;
     case 1: return 1;
@@ -204,8 +203,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
-         cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+         cellForRowAtIndexPath:(NSIndexPath *)indexPath {
   UITableViewCell *tableViewCell = nil;
   switch(indexPath.section) {
     case 0: {
@@ -267,22 +265,18 @@
 
 #pragma mark - Actions
 
-- (IBAction)toggleStatusButtonPressed:(UIButton *)sender
-{
+- (IBAction)toggleStatusButtonPressed:(UIButton *)sender {
   [self.alert toggleAlertStatus];
   [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (IBAction)sendMessageButtonPressed:(UIButton *)sender
-{
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
   [self.alert sendMessage:self.enterMessageTextField.text fromProvider:self.thisUser];
-  [self.enterMessageTextField resignFirstResponder];
   self.enterMessageTextField.text = @"";
-  [self updateView];
+  return NO;
 }
 
-- (void)keyboardWillShow:(NSNotification*)aNotification
-{
+- (void)keyboardWillShow:(NSNotification*)aNotification {
   NSDictionary* info = [aNotification userInfo];
   CGFloat kbHeight = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size.height;
   NSTimeInterval duration = [[info objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
@@ -321,8 +315,7 @@
                    }];
 }
 
-- (void)keyboardWillHide:(NSNotification*)aNotification
-{
+- (void)keyboardWillHide:(NSNotification*)aNotification {
   NSDictionary* info = [aNotification userInfo];
   CGFloat kbHeight = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size.height;
   NSTimeInterval duration = [[info objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];

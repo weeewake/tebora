@@ -27,6 +27,5 @@
 
 // Actions
 - (IBAction)toggleStatusButtonPressed:(UIButton *)sender;
-- (IBAction)sendMessageButtonPressed:(UIButton *)sender;
 
 @end

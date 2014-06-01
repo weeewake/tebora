@@ -57,10 +57,10 @@
 
 - (void)registerForKeyboardNotifications {
   [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(keyboardWasShown:)
-                                               name:UIKeyboardDidShowNotification object:nil];
+                                           selector:@selector(keyboardWillShow:)
+                                               name:UIKeyboardWillShowNotification object:nil];
   [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(keyboardWillBeHidden:)
+                                           selector:@selector(keyboardWillHide:)
                                                name:UIKeyboardWillHideNotification object:nil];
 }
 
@@ -281,28 +281,81 @@
   [self updateView];
 }
 
-- (void)keyboardWasShown:(NSNotification*)aNotification
+- (void)keyboardWillShow:(NSNotification*)aNotification
 {
   NSDictionary* info = [aNotification userInfo];
-  CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
-  CGRect bgRect = self.enterMessageTextField.superview.frame;
-  bgRect.origin.y -= kbSize.height;
+  CGFloat kbHeight = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size.height;
+  NSTimeInterval duration = [[info objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+  UIViewAnimationCurve curve = [[info objectForKey:UIKeyboardAnimationCurveUserInfoKey] integerValue];
+  UIViewAnimationOptions options = (curve << 16) | UIViewAnimationOptionBeginFromCurrentState;
 
-  [self.enterMessageTextField.superview setFrame:bgRect];
+  // Adjust the text entry field, tableview
+  CGRect textFieldFrame = self.enterMessageTextField.superview.frame;
+  textFieldFrame.origin.y -= kbHeight;
+
+  UITableView *tableView = self.alertDetailsTableView;
+  UIEdgeInsets contentInsets = tableView.contentInset;
+  contentInsets.bottom += kbHeight;
+  UIEdgeInsets scrollIndicatorInsets = tableView.scrollIndicatorInsets;
+  scrollIndicatorInsets.bottom += kbHeight;
+
+  // Changing the contentOffset seems to animate the tableview.
+  // Changing insets doesn't seem to animate when keyboard comes up.
+  CGPoint contentOffset = tableView.contentOffset;
+  contentOffset.y = tableView.contentSize.height - tableView.frame.size.height + kbHeight;
+
+  [UIView animateWithDuration:duration
+                        delay:0.
+                      options:options
+                   animations:^{
+                     self.enterMessageTextField.superview.frame = textFieldFrame;
+                     tableView.contentOffset = contentOffset;
+                   }
+                   completion:^(BOOL finished) {
+                     tableView.contentInset = contentInsets;
+                     tableView.scrollIndicatorInsets = scrollIndicatorInsets;
+                     // Fix the contentOffset by scrolling to the end.
+                     // This shouldn't cause any visual position change,
+                     // only UITableView internal data update.
+                     [self scrollToBottomOfTableView:tableView];
+                   }];
 }
 
-- (void)keyboardWillBeHidden:(NSNotification*)aNotification
+- (void)keyboardWillHide:(NSNotification*)aNotification
 {
   NSDictionary* info = [aNotification userInfo];
-  CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
-  CGRect bgRect = self.enterMessageTextField.superview.frame;
-  bgRect.origin.y += kbSize.height;
-  [self.enterMessageTextField.superview setFrame:bgRect];
+  CGFloat kbHeight = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size.height;
+  NSTimeInterval duration = [[info objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+  UIViewAnimationCurve curve = [[info objectForKey:UIKeyboardAnimationCurveUserInfoKey] integerValue];
+  UIViewAnimationOptions options = (curve << 16) | UIViewAnimationOptionBeginFromCurrentState;
+
+  // Adjust the text entry field, tableview
+  CGRect textFieldFrame = self.enterMessageTextField.superview.frame;
+  textFieldFrame.origin.y += kbHeight;
+  UITableView *tableView = self.alertDetailsTableView;
+  UIEdgeInsets contentInsets = tableView.contentInset;
+  contentInsets.bottom -= kbHeight;
+  UIEdgeInsets scrollIndicatorInsets = tableView.scrollIndicatorInsets;
+  scrollIndicatorInsets.bottom -= kbHeight;
+
+  CGPoint contentOffset = tableView.contentOffset;
+  contentOffset.y -= kbHeight;
+  [UIView animateWithDuration:duration
+                        delay:0.
+                      options:options
+                   animations:^{
+                     self.enterMessageTextField.superview.frame = textFieldFrame;
+                     tableView.contentOffset = contentOffset;
+                     tableView.contentInset = contentInsets;
+                     tableView.scrollIndicatorInsets = scrollIndicatorInsets;
+                   }
+                   completion:nil];
 }
 
 - (BOOL)hasUserScrolledToBottomOfTableView:(UITableView *)tableView {
-  if((tableView.contentSize.height > tableView.frame.size.height) &&
-     ((tableView.contentOffset.y + tableView.frame.size.height) >= tableView.contentSize.height)) {
+  CGFloat contentHeight = tableView.contentSize.height + tableView.contentInset.bottom;
+  if((contentHeight > tableView.frame.size.height) &&
+     ((tableView.contentOffset.y + tableView.frame.size.height) >= contentHeight)) {
     return YES;
   }
   return NO;

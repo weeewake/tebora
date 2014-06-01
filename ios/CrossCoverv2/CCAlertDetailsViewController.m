@@ -24,20 +24,21 @@
 
 - (void)viewDidLoad {
   [super viewDidLoad];
-  [self.alertDetailsTableView registerClass:[CCAlertDetailsPatientCell class]
-                     forCellReuseIdentifier:@"PatientCell"];
-  [self.alertDetailsTableView registerClass:[CCAlertDetailsNurseCell class]
-                     forCellReuseIdentifier:@"NurseCell"];
-  [self.alertDetailsTableView registerClass:[CCAlertDetailsConversationCell class]
-                     forCellReuseIdentifier:@"ConversationCell"];
-
   [self registerForKeyboardNotifications];
-
   self.enterMessageTextField.delegate = self;
-  self.alertDetailsTableView.delegate = self;
-  self.alertDetailsTableView.dataSource = self;
-  self.alertDetailsTableView.sectionHeaderHeight = 30;
-  self.alertDetailsTableView.estimatedRowHeight = self.alertDetailsTableView.rowHeight;
+
+  UITableView *tableView = self.alertDetailsTableView;
+  [tableView registerClass:[CCAlertDetailsPatientCell class] forCellReuseIdentifier:@"PatientCell"];
+  [tableView registerClass:[CCAlertDetailsNurseCell class] forCellReuseIdentifier:@"NurseCell"];
+  [tableView registerClass:[CCAlertDetailsConversationCell class]
+    forCellReuseIdentifier:@"ConversationCell"];
+  tableView.delegate = self;
+  tableView.dataSource = self;
+  tableView.sectionHeaderHeight = 30;
+  // Warning: Don't set the estimatedRowHeight. The perf improvement is negligible for us
+  // but it messes with scrollToRowAtIndexPath:atScrollPosition:animated:
+  // so we can't automatically scroll the last message!
+  //     tableView.estimatedRowHeight = tableView.rowHeight;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -79,7 +80,13 @@
   }
   [self.toggleStatusButton setTitle:title
                            forState:UIControlStateNormal];
+
+  BOOL isUserAtBottom = [self hasUserScrolledToBottomOfTableView:self.alertDetailsTableView];
   [self.alertDetailsTableView reloadData];
+  if (isUserAtBottom) {
+    // Automatically scroll to the bottom
+    [self scrollToBottomOfTableView:self.alertDetailsTableView];
+  }
 }
 
 - (void)callNursePressed:(UIGestureRecognizer *)gestureRecognizer {
@@ -148,7 +155,9 @@
     if (row == 0) {
       message = self.alert.alertDescription;
       timestamp = [CCUtils userVisibleDateStringFromDate:self.alert.creationDate];
-      name = self.alert.creator.displayName;
+      if (![self.alert.creator.uid isEqualToString:self.thisUser.uid]) {
+        name = self.alert.creator.displayName;
+      }
       isAlertMessage = YES;
     } else {
       CCAlertMessage *alertMessage = self.messageList[row-1];
@@ -184,11 +193,20 @@
   return @"UNKNOWN";
 }
 
-//Add subviews to a cell’s content view.
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+  switch(section) {
+    case 0: return 1;
+    case 1: return 1;
+    case 2: return 1 + [self.messageList count];
+  }
+  return 0;
+}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+  UITableViewCell *tableViewCell = nil;
   switch(indexPath.section) {
     case 0: {
       CCAlertDetailsPatientCell *cell = [tableView dequeueReusableCellWithIdentifier:@"PatientCell"];
@@ -200,7 +218,8 @@
           [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(mrnPressed:)];
       tapped.numberOfTapsRequired = 1;
       [cell.mrnLabel addGestureRecognizer:tapped];
-      return cell;
+      tableViewCell = cell;
+      break;
     }
 
     case 1: {
@@ -212,7 +231,8 @@
           [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(callNursePressed:)];
       tapped.numberOfTapsRequired = 1;
       [cell.phoneLabel addGestureRecognizer:tapped];
-      return cell;
+      tableViewCell = cell;
+      break;
     }
 
     case 2: {
@@ -238,20 +258,11 @@
         cell.messageLabel.text = alertMessage.message;
         cell.timestampLabel.text = [CCUtils userVisibleDateStringFromDate:alertMessage.date];
       }
-      return cell;
+      tableViewCell = cell;
+      break;
     }
   }
-  return nil;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-  switch(section) {
-    case 0: return 1;
-    case 1: return 1;
-    case 2: return 1 + [self.messageList count];
-  }
-  return 0;
+  return tableViewCell;
 }
 
 #pragma mark - Actions
@@ -287,6 +298,22 @@
   CGRect bgRect = self.enterMessageTextField.superview.frame;
   bgRect.origin.y += kbSize.height;
   [self.enterMessageTextField.superview setFrame:bgRect];
+}
+
+- (BOOL)hasUserScrolledToBottomOfTableView:(UITableView *)tableView {
+  if((tableView.contentSize.height > tableView.frame.size.height) &&
+     ((tableView.contentOffset.y + tableView.frame.size.height) >= tableView.contentSize.height)) {
+    return YES;
+  }
+  return NO;
+}
+
+- (void)scrollToBottomOfTableView:(UITableView *)tableView {
+  NSInteger maxSection = [self numberOfSectionsInTableView:tableView] - 1;
+  NSInteger maxRow = [self tableView:tableView numberOfRowsInSection:maxSection] - 1;
+  [tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:maxRow inSection:maxSection]
+                   atScrollPosition:UITableViewScrollPositionTop
+                           animated:YES];
 }
 
 @end

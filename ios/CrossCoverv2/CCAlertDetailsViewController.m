@@ -312,10 +312,13 @@
   UIEdgeInsets scrollIndicatorInsets = tableView.scrollIndicatorInsets;
   scrollIndicatorInsets.bottom += kbHeight;
 
-  // Changing the contentOffset seems to animate the tableview.
-  // Changing insets doesn't seem to animate when keyboard comes up.
+  // Change the contentOffset only when the user is at bottom.
+  // In that case, the animation is nice as if the keyboard is pushing the tableview up.
+  // If the user is not at bottom, we depend on scrollToBottomOfTableView:animated:
   CGPoint contentOffset = tableView.contentOffset;
-  contentOffset.y = tableView.contentSize.height - tableView.frame.size.height + kbHeight;
+  if ([self hasUserScrolledToBottomOfTableView:tableView]) {
+    contentOffset.y = tableView.contentSize.height - tableView.frame.size.height + kbHeight;
+  }
 
   [UIView animateWithDuration:duration
                         delay:0.
@@ -323,14 +326,11 @@
                    animations:^{
                      self.enterMessageView.frame = enterMessageViewFrame;
                      tableView.contentOffset = contentOffset;
-                   }
-                   completion:^(BOOL finished) {
                      tableView.contentInset = contentInsets;
                      tableView.scrollIndicatorInsets = scrollIndicatorInsets;
-                     // Fix the contentOffset by scrolling to the end.
-                     // This shouldn't cause any visual position change,
-                     // only UITableView internal data update.
-                     [self scrollToBottomOfTableView:tableView animated:NO];
+                   }
+                   completion:^(BOOL finished) {
+                     [self scrollToBottomOfTableView:tableView animated:YES];
                    }];
 }
 
@@ -345,15 +345,18 @@
 
   // Adjust the text entry field, tableview
   CGRect enterMessageViewFrame = self.enterMessageView.frame;
-  enterMessageViewFrame.origin.y += kbHeight;
+  enterMessageViewFrame.origin.y =
+      CGRectGetMaxY(self.view.bounds) - enterMessageViewFrame.size.height;
   UITableView *tableView = self.alertDetailsTableView;
   UIEdgeInsets contentInsets = tableView.contentInset;
-  contentInsets.bottom -= kbHeight;
+  contentInsets.bottom = 0;
   UIEdgeInsets scrollIndicatorInsets = tableView.scrollIndicatorInsets;
-  scrollIndicatorInsets.bottom -= kbHeight;
+  scrollIndicatorInsets.bottom = 0;
 
   CGPoint contentOffset = tableView.contentOffset;
   contentOffset.y -= kbHeight;
+  if (contentOffset.y < 0) contentOffset.y = 0;
+
   [UIView animateWithDuration:duration
                         delay:0.
                       options:options

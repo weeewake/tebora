@@ -14,6 +14,7 @@ static const CGFloat kConversationTopPadding = 2.f;
 static const CGFloat kConversationBottomPadding = 3.f;
 static const CGFloat kConversationDefaultPadding = 5.f;
 static const CGFloat kConversationBubbleViewShorterPadding = 10.f;
+static const CGFloat kConversationDividerHeight = 1.f;
 static const CGFloat kConversationBubbleViewWidth = 210.f;
 
 @implementation CCAlertDetailsPatientCell
@@ -221,6 +222,7 @@ static const CGFloat kConversationBubbleViewWidth = 210.f;
 
 @interface CCAlertDetailsConversationCell ()
 
+@property (nonatomic, strong) UIView *dividerView;
 @property (nonatomic, strong) UIView *bubbleView;
 
 @end
@@ -231,6 +233,7 @@ static const CGFloat kConversationBubbleViewWidth = 210.f;
               nameLabel = nameLabel_,
            messageLabel = messageLabel_,
          timestampLabel = timestampLabel_,
+            dividerView = dividerView_,
              bubbleView = bubbleView_;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -273,6 +276,9 @@ static const CGFloat kConversationBubbleViewWidth = 210.f;
     timestampLabel_.font = [UIFont systemFontOfSize:12.f];
     [bubbleView_ addSubview:timestampLabel_];
 
+    dividerView_ = [[UIView alloc] initWithFrame:CGRectZero];
+    [bubbleView_ addSubview:dividerView_];
+
     [self.contentView addSubview:bubbleView_];
   }
   return self;
@@ -291,6 +297,7 @@ static const CGFloat kConversationBubbleViewWidth = 210.f;
                                                     green:(216./255.)
                                                      blue:(216./255.)
                                                     alpha:1.f];
+    self.dividerView.backgroundColor = [UIColor clearColor];
   } else {
     self.bubbleView.backgroundColor = [UIColor colorWithRed:(246./255.)
                                                       green:(246./255.)
@@ -302,6 +309,10 @@ static const CGFloat kConversationBubbleViewWidth = 210.f;
                                                alpha:1.f];
     self.messageLabel.textColor = [UIColor blackColor];
     self.timestampLabel.textColor = self.nameLabel.textColor;
+    self.dividerView.backgroundColor = [UIColor colorWithRed:(225./255.)
+                                                       green:(225./255.)
+                                                        blue:(225./255.)
+                                                       alpha:1.f];
   }
   [self setNeedsDisplay];
 }
@@ -379,7 +390,12 @@ static const CGFloat kConversationBubbleViewWidth = 210.f;
                                       currentY,
                                       constraintSize.width,
                                       ceil(nameSize.height));
-    currentY += ceil(nameSize.height) + kConversationDefaultPadding;
+    currentY += ceil(nameSize.height);
+    self.dividerView.frame = CGRectMake(kConversationDefaultPadding,
+                                        currentY + (kConversationDefaultPadding - kConversationDividerHeight) / 2.0,
+                                        nameSize.width,
+                                        kConversationDividerHeight);
+    currentY += kConversationDefaultPadding;
   }
 
   CGSize messageSize =

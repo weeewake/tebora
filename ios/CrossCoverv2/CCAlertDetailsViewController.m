@@ -316,7 +316,7 @@
   // In that case, the animation is nice as if the keyboard is pushing the tableview up.
   // If the user is not at bottom, we depend on scrollToBottomOfTableView:animated:
   CGPoint contentOffset = tableView.contentOffset;
-  if ([self hasUserScrolledToBottomOfTableView:tableView]) {
+  if ([self isLastMessageVisible:tableView]) {
     contentOffset.y = tableView.contentSize.height - tableView.frame.size.height + kbHeight;
   }
 
@@ -371,8 +371,15 @@
 
 - (BOOL)hasUserScrolledToBottomOfTableView:(UITableView *)tableView {
   CGFloat contentHeight = tableView.contentSize.height + tableView.contentInset.bottom;
-  if((contentHeight > tableView.frame.size.height) &&
-     ((tableView.contentOffset.y + tableView.frame.size.height) >= contentHeight)) {
+  if ((contentHeight > tableView.frame.size.height) &&
+      ((tableView.contentOffset.y + tableView.frame.size.height) >= contentHeight)) {
+    return YES;
+  }
+  return NO;
+}
+
+- (BOOL)isLastMessageVisible:(UITableView *)tableView {
+  if ((tableView.contentOffset.y + tableView.frame.size.height) >= tableView.contentSize.height) {
     return YES;
   }
   return NO;

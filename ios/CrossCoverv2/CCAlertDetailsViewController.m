@@ -16,7 +16,7 @@
 @interface CCAlertDetailsViewController () <CCProviderDelegate>
 
 @property (strong, nonatomic) CCAlert *alert;
-@property (strong, nonatomic) NSArray *messageList;
+@property (strong, nonatomic) NSArray *collatedMessageList;
 @property (strong, nonatomic) UITapGestureRecognizer *dismissKeyboardRecognizer;
 
 @end
@@ -76,7 +76,20 @@
   NSComparator sortMessageList = ^(CCAlertMessage *msg1, CCAlertMessage *msg2) {
     return [msg1.date compare:msg2.date];
   };
-  self.messageList = [self.alert.messages sortedArrayUsingComparator:sortMessageList];
+  NSArray *sortedMessageList = [self.alert.messages sortedArrayUsingComparator:sortMessageList];
+  NSMutableArray *collatedMessageList =
+      [[NSMutableArray alloc] initWithCapacity:[sortedMessageList count]];
+  for (CCAlertMessage *alertMsg in sortedMessageList) {
+    NSMutableArray *lastMessageArray = [collatedMessageList lastObject];
+    CCAlertMessage *lastAlertMsg = [lastMessageArray lastObject];
+    if (lastAlertMsg.sender.uid == alertMsg.sender.uid) {
+      // Two adjacent messages from the same uid, put them into a single array
+      [lastMessageArray addObject:alertMsg];
+    } else {
+      [collatedMessageList addObject:[@[alertMsg] mutableCopy]];
+    }
+  }
+  self.collatedMessageList = [collatedMessageList copy];
 }
 
 - (void)updateView {
@@ -167,29 +180,32 @@
                                             phone:creator.phone];
   } else if (indexPath.section == 2) {
     NSInteger row = indexPath.row;
-    NSString *message = nil, *timestamp = nil, *name = nil;
-    BOOL isAlertMessage = NO;
+    NSString *name = nil;
+    NSMutableArray *messages = [[NSMutableArray alloc] init];
+    NSMutableArray *timestamps = [[NSMutableArray alloc] init];
+    BOOL isAlertMessage = (row == 0);
     if (row == 0) {
-      message = self.alert.alertDescription;
-      timestamp = [CCUtils userVisibleDateStringFromDate:self.alert.creationDate];
+      messages = [@[self.alert.alertDescription] mutableCopy];
+      timestamps = [@[[CCUtils userVisibleDateStringFromDate:self.alert.creationDate]] mutableCopy];
       if (![self.alert.creator.uid isEqualToString:self.thisUser.uid]) {
         name = self.alert.creator.displayName;
       }
-      isAlertMessage = YES;
     } else {
-      CCAlertMessage *alertMessage = self.messageList[row-1];
-      message = alertMessage.message;
-      timestamp = [CCUtils userVisibleDateStringFromDate:alertMessage.date];
-      if (![alertMessage.sender.uid isEqualToString:self.thisUser.uid]) {
-        name = alertMessage.sender.displayName;
+      NSMutableArray *alertMessages = self.collatedMessageList[row-1];
+      for (CCAlertMessage *alertMessage in alertMessages) {
+        [messages addObject:alertMessage.message];
+        [timestamps addObject:[CCUtils userVisibleDateStringFromDate:alertMessage.date]];
+        if (name == nil && ![alertMessage.sender.uid isEqualToString:self.thisUser.uid]) {
+          name = alertMessage.sender.displayName;
+        }
       }
     }
 
     cellSize = [CCAlertDetailsConversationCell sizeThatFits:constraintSize
-                                                withName:name
-                                                 message:message
-                                               timestamp:timestamp
-                                          isAlertMessage:isAlertMessage];
+                                                   withName:name
+                                                   messages:messages
+                                                 timestamps:timestamps
+                                             isAlertMessage:isAlertMessage];
   }
   return cellSize.height;
 }
@@ -214,7 +230,7 @@
   switch(section) {
     case 0: return 1;
     case 1: return 1;
-    case 2: return 1 + [self.messageList count];
+    case 2: return 1 + [self.collatedMessageList count];
   }
   return 0;
 }
@@ -251,28 +267,40 @@
     }
 
     case 2: {
-      CCAlertDetailsConversationCell *cell =
-          [tableView dequeueReusableCellWithIdentifier:@"ConversationCell"];
       NSInteger row = indexPath.row;
-      cell.isAlertMessage = (row == 0);
-      cell.nameLabel.text = @"";
-      cell.isMyMessage = YES;
+      NSString *name = nil;
+      NSMutableArray *messages = [[NSMutableArray alloc] init];
+      NSMutableArray *timestamps = [[NSMutableArray alloc] init];
       if (row == 0) {
-        cell.messageLabel.text = self.alert.alertDescription;
-        cell.timestampLabel.text = [CCUtils userVisibleDateStringFromDate:self.alert.creationDate];
+        messages = [@[self.alert.alertDescription] mutableCopy];
+        timestamps = [@[[CCUtils userVisibleDateStringFromDate:self.alert.creationDate]] mutableCopy];
         if (![self.alert.creator.uid isEqualToString:self.thisUser.uid]) {
-          cell.nameLabel.text = self.alert.creator.displayName;
-          cell.isMyMessage = NO;
+          name = self.alert.creator.displayName;
         }
       } else {
-        CCAlertMessage *alertMessage = self.messageList[row-1];
-        if (![alertMessage.sender.uid isEqualToString:self.thisUser.uid]) {
-          cell.nameLabel.text = alertMessage.sender.displayName;
-          cell.isMyMessage = NO;
+        NSMutableArray *alertMessages = self.collatedMessageList[row-1];
+        for (CCAlertMessage *alertMessage in alertMessages) {
+          [messages addObject:alertMessage.message];
+          [timestamps addObject:[CCUtils userVisibleDateStringFromDate:alertMessage.date]];
+          if (name == nil && ![alertMessage.sender.uid isEqualToString:self.thisUser.uid]) {
+            name = alertMessage.sender.displayName;
+          }
         }
-        cell.messageLabel.text = alertMessage.message;
-        cell.timestampLabel.text = [CCUtils userVisibleDateStringFromDate:alertMessage.date];
       }
+
+      CCAlertDetailsConversationCell *cell =
+          [tableView dequeueReusableCellWithIdentifier:@"ConversationCell"];
+      cell.isAlertMessage = (row == 0);
+      cell.messages = messages;
+      cell.timestamps = timestamps;
+      if (name == nil || [name isEqualToString:@""]) {
+        cell.nameLabel.text = @"";
+        cell.isMyMessage = YES;
+      } else {
+        cell.nameLabel.text = name;
+        cell.isMyMessage = NO;
+      }
+
       tableViewCell = cell;
       break;
     }

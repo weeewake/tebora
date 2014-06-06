@@ -222,7 +222,9 @@ static const CGFloat kConversationBubbleViewWidth = 210.f;
 
 @interface CCAlertDetailsConversationCell ()
 
-@property (nonatomic, strong) UIView *dividerView;
+@property (nonatomic, strong) NSMutableArray *messageLabels;
+@property (nonatomic, strong) NSMutableArray *timestampLabels;
+@property (nonatomic, strong) NSMutableArray *dividerViews;
 @property (nonatomic, strong) UIView *bubbleView;
 
 @end
@@ -231,9 +233,11 @@ static const CGFloat kConversationBubbleViewWidth = 210.f;
 
 @synthesize isMyMessage = isMyMessage_,
               nameLabel = nameLabel_,
-           messageLabel = messageLabel_,
-         timestampLabel = timestampLabel_,
-            dividerView = dividerView_,
+               messages = messages_,
+             timestamps = timestamps_,
+          messageLabels = messageLabels_,
+        timestampLabels = timestampLabels_,
+           dividerViews = dividerViews_,
              bubbleView = bubbleView_;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -260,28 +264,26 @@ static const CGFloat kConversationBubbleViewWidth = 210.f;
     nameLabel_.font = [UIFont systemFontOfSize:14.f];
     [bubbleView_ addSubview:nameLabel_];
 
-    messageLabel_ = [[UILabel alloc] initWithFrame:CGRectZero];
-    messageLabel_.numberOfLines = 0;
-    messageLabel_.textAlignment = NSTextAlignmentLeft;
-    messageLabel_.textColor = [UIColor blackColor];
-    messageLabel_.lineBreakMode = NSLineBreakByWordWrapping;
-    messageLabel_.font = [UIFont systemFontOfSize:16.f];
-    [bubbleView_ addSubview:messageLabel_];
-
-    timestampLabel_ = [[UILabel alloc] initWithFrame:CGRectZero];
-    timestampLabel_.numberOfLines = 0;
-    timestampLabel_.textAlignment = NSTextAlignmentRight;
-    timestampLabel_.textColor = nameLabel_.textColor;
-    timestampLabel_.lineBreakMode = NSLineBreakByWordWrapping;
-    timestampLabel_.font = [UIFont systemFontOfSize:12.f];
-    [bubbleView_ addSubview:timestampLabel_];
-
-    dividerView_ = [[UIView alloc] initWithFrame:CGRectZero];
-    [bubbleView_ addSubview:dividerView_];
-
+    messageLabels_ = [[NSMutableArray alloc] initWithCapacity:1];
+    timestampLabels_ = [[NSMutableArray alloc] initWithCapacity:1];
+    dividerViews_ = [[NSMutableArray alloc] initWithCapacity:1];
     [self.contentView addSubview:bubbleView_];
   }
   return self;
+}
+
+- (void)setTextColor:(UIColor *)textColor
+         forUILabels:(NSArray *)labels {
+  for (UILabel *label in labels) {
+    label.textColor = textColor;
+  }
+}
+
+- (void)setBackgroundColor:(UIColor *)backgroundColor
+                forUIViews:(NSArray *)views {
+  for (UIView *view in views) {
+    view.backgroundColor = backgroundColor;
+  }
 }
 
 - (void)setIsMyMessage:(BOOL)isMyMessage
@@ -292,12 +294,15 @@ static const CGFloat kConversationBubbleViewWidth = 210.f;
                                                       green:(144./255.)
                                                        blue:(226./255.)
                                                       alpha:1.f];
-    self.messageLabel.textColor = [UIColor whiteColor];
-    self.timestampLabel.textColor = [UIColor colorWithRed:(216./255.)
-                                                    green:(216./255.)
-                                                     blue:(216./255.)
-                                                    alpha:1.f];
-    self.dividerView.backgroundColor = [UIColor clearColor];
+    [self setTextColor:[UIColor whiteColor]
+           forUILabels:self.messageLabels];
+    [self setTextColor:[UIColor colorWithRed:(216./255.)
+                                       green:(216./255.)
+                                        blue:(216./255.)
+                                       alpha:1.f]
+           forUILabels:self.timestampLabels];
+    [self setBackgroundColor:[UIColor whiteColor]
+                  forUIViews:self.dividerViews];
   } else {
     self.bubbleView.backgroundColor = [UIColor colorWithRed:(246./255.)
                                                       green:(246./255.)
@@ -307,22 +312,88 @@ static const CGFloat kConversationBubbleViewWidth = 210.f;
                                                green:(155./255.)
                                                 blue:(155./255.)
                                                alpha:1.f];
-    self.messageLabel.textColor = [UIColor blackColor];
-    self.timestampLabel.textColor = self.nameLabel.textColor;
-    self.dividerView.backgroundColor = [UIColor colorWithRed:(225./255.)
-                                                       green:(225./255.)
-                                                        blue:(225./255.)
-                                                       alpha:1.f];
+    [self setTextColor:[UIColor blackColor]
+           forUILabels:self.messageLabels];
+    [self setTextColor:self.nameLabel.textColor
+           forUILabels:self.timestampLabels];
+    [self setBackgroundColor:[UIColor colorWithRed:(225./255.)
+                                             green:(225./255.)
+                                              blue:(225./255.)
+                                             alpha:1.f]
+                  forUIViews:self.dividerViews];
   }
   [self setNeedsDisplay];
 }
 
+- (void)resizeUIViewArray:(NSMutableArray *)views
+                  toCount:(NSUInteger)newCount
+            withViewClass:(Class)class {
+  NSInteger diff = (NSInteger)newCount - (NSInteger)views.count;
+  if (diff > 0) {
+    // Increase the size
+    for (NSUInteger i = 0; i < diff; i++) {
+      UIView *view = (UIView *)[[class alloc] initWithFrame:CGRectZero];
+      [views addObject:view];
+      [bubbleView_ addSubview:view];
+    }
+  } else {
+    diff = -diff;
+    // remove objects
+    for (NSUInteger i = 0; i < diff; i++) {
+      [(UIView *)[views lastObject] removeFromSuperview];
+      [views removeLastObject];
+    }
+  }
+}
+
+- (void)setMessages:(NSArray *)messages {
+  messages_ = [messages copy];
+  [self resizeUIViewArray:self.messageLabels
+                  toCount:messages.count
+            withViewClass:[UILabel class]];
+  for (NSUInteger i = 0; i < messages.count; i++) {
+    UILabel *messageLabel = self.messageLabels[i];
+    NSString *message = messages[i];
+    messageLabel.numberOfLines = 0;
+    messageLabel.textAlignment = NSTextAlignmentLeft;
+    messageLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    messageLabel.font = [UIFont systemFontOfSize:16.f];
+    messageLabel.text = message;
+  }
+  [self resizeUIViewArray:self.dividerViews
+                  toCount:messages.count
+            withViewClass:[UIView class]];
+  [self setIsMyMessage:self.isMyMessage];
+}
+
+- (void)setTimestamps:(NSArray *)timestamps {
+  timestamps_ = [timestamps copy];
+  [self resizeUIViewArray:self.timestampLabels
+                  toCount:timestamps.count
+            withViewClass:[UILabel class]];
+  for (NSUInteger i = 0; i < timestamps.count; i++) {
+    UILabel *timestampLabel = self.timestampLabels[i];
+    NSString *timestamp = timestamps[i];
+    timestampLabel.numberOfLines = 0;
+    timestampLabel.textAlignment = NSTextAlignmentRight;
+    timestampLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    timestampLabel.font = [UIFont systemFontOfSize:12.f];
+    timestampLabel.text = timestamp;
+  }
+  [self resizeUIViewArray:self.dividerViews
+                  toCount:timestamps.count
+            withViewClass:[UIView class]];
+  [self setIsMyMessage:self.isMyMessage];
+}
+
 + (CGSize)sizeThatFits:(CGSize)size
               withName:(NSString *)name
-               message:(NSString *)message
-             timestamp:(NSString *)timestamp
+              messages:(NSArray *)messages
+            timestamps:(NSArray *)timestamps
         isAlertMessage:(BOOL)isAlertMessage
 {
+  NSAssert((messages.count == timestamps.count),
+           @"Array size of messages and timestamps don't match");
   CGFloat height = kConversationTopPadding;
   CGSize constraintSize =
       CGSizeMake(MIN(size.width, kConversationBubbleViewWidth) - 2 * kConversationDefaultPadding,
@@ -335,17 +406,22 @@ static const CGFloat kConversationBubbleViewWidth = 210.f;
     height += kConversationDefaultPadding;
   }
 
-  height += ceil([message boundingRectWithSize:constraintSize
-                                       options:NSStringDrawingUsesLineFragmentOrigin
-                                    attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:16.f]}
-                                       context:nil].size.height);
-  height += kConversationDefaultPadding;
-
-  height += ceil([timestamp boundingRectWithSize:constraintSize
+  for (int i = 0; i < [messages count]; i++) {
+    NSString *message = messages[i];
+    NSString *timestamp = timestamps[i];
+    height += ceil([message boundingRectWithSize:constraintSize
                                          options:NSStringDrawingUsesLineFragmentOrigin
-                                      attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:12.f]}
+                                      attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:16.f]}
                                          context:nil].size.height);
-  height += kConversationBottomPadding;
+    height += kConversationDefaultPadding;
+
+    height += ceil([timestamp boundingRectWithSize:constraintSize
+                                           options:NSStringDrawingUsesLineFragmentOrigin
+                                        attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:12.f]}
+                                           context:nil].size.height);
+    height += kConversationDefaultPadding;
+  }
+  height += kConversationBottomPadding - kConversationDefaultPadding;
 
   // Add 2 * kConversationDefaultPadding for bubbleView padding and if it is the first message,
   // add kConversationDefaultPadding for the top.
@@ -358,13 +434,18 @@ static const CGFloat kConversationBubbleViewWidth = 210.f;
 {
   return [[self class] sizeThatFits:size
                            withName:self.nameLabel.text
-                            message:self.messageLabel.text
-                          timestamp:self.timestampLabel.text
+                           messages:self.messages
+                         timestamps:self.timestamps
                      isAlertMessage:self.isAlertMessage];
 }
 
 - (void)layoutSubviews
 {
+  NSAssert((self.messageLabels.count == self.timestampLabels.count),
+           @"Array size of messages and timestamps don't match");
+  NSAssert((self.messageLabels.count == self.dividerViews.count),
+           @"Array size of messages and divider views don't match");
+
   CGFloat bubbleViewY =
       kConversationDefaultPadding + (self.isAlertMessage ? kConversationDefaultPadding : 0);
   CGRect bubbleViewFrame = CGRectMake(kConversationBubbleViewShorterPadding,
@@ -380,6 +461,7 @@ static const CGFloat kConversationBubbleViewWidth = 210.f;
     bubbleViewFrame.origin.x = self.bounds.size.width - kConversationBubbleViewWidth
                                                       - kConversationBubbleViewShorterPadding;
     self.nameLabel.frame = CGRectZero;
+    ((UIView *)self.dividerViews[0]).frame = CGRectZero;
   } else {
     CGSize nameSize =
         [self.nameLabel.text boundingRectWithSize:constraintSize
@@ -391,35 +473,49 @@ static const CGFloat kConversationBubbleViewWidth = 210.f;
                                       constraintSize.width,
                                       ceil(nameSize.height));
     currentY += ceil(nameSize.height);
-    self.dividerView.frame = CGRectMake(kConversationDefaultPadding,
-                                        currentY + (kConversationDefaultPadding - kConversationDividerHeight) / 2.0,
-                                        nameSize.width,
-                                        kConversationDividerHeight);
+    UIView *dividerView = self.dividerViews[0];
+    dividerView.frame = CGRectMake(kConversationDefaultPadding,
+                                   currentY + (kConversationDefaultPadding - kConversationDividerHeight) / 2.0,
+                                   nameSize.width,
+                                   kConversationDividerHeight);
     currentY += kConversationDefaultPadding;
   }
 
-  CGSize messageSize =
-      [self.messageLabel.text boundingRectWithSize:constraintSize
-                                           options:NSStringDrawingUsesLineFragmentOrigin
-                                        attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:16.f]}
-                                           context:nil].size;
-  self.messageLabel.frame = CGRectMake(kConversationDefaultPadding,
-                                       currentY,
-                                       constraintSize.width,
-                                       ceil(messageSize.height));
-  currentY += ceil(messageSize.height) + kConversationDefaultPadding;
+  for (NSInteger i = 0; i < self.messageLabels.count; i++) {
+    UILabel *messageLabel = self.messageLabels[i];
+    CGSize messageSize =
+        [messageLabel.text boundingRectWithSize:constraintSize
+                                        options:NSStringDrawingUsesLineFragmentOrigin
+                                     attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:16.f]}
+                                        context:nil].size;
+    messageLabel.frame = CGRectMake(kConversationDefaultPadding,
+                                    currentY,
+                                    constraintSize.width,
+                                    ceil(messageSize.height));
+    currentY += ceil(messageSize.height) + kConversationDefaultPadding;
 
-  CGSize timestampSize =
-      [self.timestampLabel.text boundingRectWithSize:constraintSize
-                                             options:NSStringDrawingUsesLineFragmentOrigin
-                                          attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:12.f]}
-                                             context:nil].size;
-  self.timestampLabel.frame = CGRectMake(kConversationDefaultPadding,
-                                         currentY,
-                                         constraintSize.width,
-                                         ceil(timestampSize.height));
-  currentY += ceil(timestampSize.height) + kConversationBottomPadding;
+    UILabel *timestampLabel = self.timestampLabels[i];
+    CGSize timestampSize =
+        [timestampLabel.text boundingRectWithSize:constraintSize
+                                          options:NSStringDrawingUsesLineFragmentOrigin
+                                       attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:12.f]}
+                                          context:nil].size;
+    timestampLabel.frame = CGRectMake(kConversationDefaultPadding,
+                                      currentY,
+                                      constraintSize.width,
+                                      ceil(timestampSize.height));
+    currentY += ceil(timestampSize.height);
 
+    if ((i+1) < self.dividerViews.count) {
+      UIView *dividerView = self.dividerViews[i+1];
+      dividerView.frame = CGRectMake(kConversationDefaultPadding,
+                                     currentY + (kConversationDefaultPadding - kConversationDividerHeight) / 2.0,
+                                     constraintSize.width,
+                                     kConversationDividerHeight);
+    }
+    currentY += kConversationDefaultPadding;
+  }
+  currentY += kConversationBottomPadding - kConversationDefaultPadding;
   bubbleViewFrame.size.height = currentY;
   self.bubbleView.frame = bubbleViewFrame;
 }

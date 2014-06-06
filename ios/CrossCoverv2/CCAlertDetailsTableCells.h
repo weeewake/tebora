@@ -39,14 +39,14 @@
 @property (nonatomic, assign) BOOL isMyMessage;
 @property (nonatomic, assign) BOOL isAlertMessage;
 @property (nonatomic, strong) UILabel *nameLabel;
-@property (nonatomic, strong) UILabel *messageLabel;
-@property (nonatomic, strong) UILabel *timestampLabel;
+@property (nonatomic, strong) NSArray *messages;
+@property (nonatomic, strong) NSArray *timestamps;
 
 
 + (CGSize)sizeThatFits:(CGSize)size
               withName:(NSString *)name
-               message:(NSString *)message
-             timestamp:(NSString *)timestamp
+              messages:(NSArray *)messages
+            timestamps:(NSArray *)timestamps
         isAlertMessage:(BOOL)isAlertMessage;
 
 @end

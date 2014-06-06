@@ -33,7 +33,6 @@
 
 @end
 
-
 @interface CCAlertDetailsConversationCell : UITableViewCell
 
 @property (nonatomic, assign) BOOL isMyMessage;
@@ -48,5 +47,18 @@
               messages:(NSArray *)messages
             timestamps:(NSArray *)timestamps
         isAlertMessage:(BOOL)isAlertMessage;
+
+@end
+
+@interface CCAlertDetailsAlertHeader : UITableViewHeaderFooterView
+
+@property (nonatomic, strong) UILabel *messageLabel;
+@property (nonatomic, strong) UILabel *timestampLabel;
+@property (nonatomic, strong) UIImage *alertTypeImage;
+
+
++ (CGSize)sizeThatFits:(CGSize)size
+           withMessage:(NSString *)message
+             timestamp:(NSString *)timestamp;
 
 @end

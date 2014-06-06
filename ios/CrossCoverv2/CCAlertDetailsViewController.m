@@ -32,6 +32,10 @@
   [tableView registerClass:[CCAlertDetailsNurseCell class] forCellReuseIdentifier:@"NurseCell"];
   [tableView registerClass:[CCAlertDetailsConversationCell class]
     forCellReuseIdentifier:@"ConversationCell"];
+  [tableView registerClass:[CCAlertDetailsAlertHeader class]
+    forHeaderFooterViewReuseIdentifier:@"AlertMessageHeader"];
+  [tableView registerClass:[UITableViewHeaderFooterView class]
+    forHeaderFooterViewReuseIdentifier:@"HeaderView"];
   tableView.delegate = self;
   tableView.dataSource = self;
   tableView.sectionHeaderHeight = 30;
@@ -149,19 +153,45 @@
 
 #pragma mark - UITableViewDelegate
 
-- (void)tableView:(UITableView *)tableView
-    willDisplayHeaderView:(UIView *)view
-               forSection:(NSInteger)section {
-  view.tintColor = [UIColor colorWithRed:(239.f/255.)
-                                   green:(239.f/255.)
-                                    blue:(244.f/255.)
-                                   alpha:1.0];
-  UITableViewHeaderFooterView *headerView = (UITableViewHeaderFooterView *)view;
-  headerView.textLabel.textColor = [UIColor colorWithRed:(120.f/255.)
-                                                   green:(120.f/255.)
-                                                    blue:(125.f/255.)
-                                                   alpha:1.0];
-  headerView.textLabel.font = [UIFont systemFontOfSize:14.0f];
+- (CGFloat)tableView:(UITableView *)tableView
+    heightForHeaderInSection:(NSInteger)section {
+  NSLog(@"heightForHeader called for section %d", section);
+  CGFloat headerHeight = 35;
+  CGSize constraintSize = CGSizeMake(tableView.bounds.size.width, FLT_MAX);
+
+  if (section == 2) {
+    NSString *timestamp = [CCUtils userVisibleDateStringFromDate:self.alert.creationDate];
+    headerHeight = [CCAlertDetailsAlertHeader sizeThatFits:constraintSize
+                                               withMessage:self.alert.alertDescription
+                                                 timestamp:timestamp].height;
+  }
+  return headerHeight;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+  if (section == 2) {
+    CCAlertDetailsAlertHeader *headerView =
+        [tableView dequeueReusableHeaderFooterViewWithIdentifier:@"AlertMessageHeader"];
+    headerView.messageLabel.text = self.alert.alertDescription;
+    headerView.timestampLabel.text = [CCUtils userVisibleDateStringFromDate:self.alert.creationDate];
+//    if (![self.alert.creator.uid isEqualToString:self.thisUser.uid]) {
+//      name = self.alert.creator.displayName;
+//    }
+    return headerView;
+  } else {
+    UITableViewHeaderFooterView *headerView =
+        [tableView dequeueReusableHeaderFooterViewWithIdentifier:@"HeaderView"];
+    headerView.tintColor = [UIColor colorWithRed:(239.f/255.)
+                                           green:(239.f/255.)
+                                            blue:(244.f/255.)
+                                           alpha:1.0];
+    headerView.textLabel.textColor = [UIColor colorWithRed:(120.f/255.)
+                                                     green:(120.f/255.)
+                                                      blue:(125.f/255.)
+                                                     alpha:1.0];
+    headerView.textLabel.font = [UIFont systemFontOfSize:14.0f];
+    return headerView;
+  }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -217,7 +247,6 @@
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-  // The header for the section is the region name -- get this from the region at the section index.
   switch(section) {
     case 0: return @"PATIENT";
     case 1: return @"NURSE";

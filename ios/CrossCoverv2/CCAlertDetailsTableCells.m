@@ -16,6 +16,9 @@ static const CGFloat kConversationDefaultPadding = 5.f;
 static const CGFloat kConversationBubbleViewShorterPadding = 10.f;
 static const CGFloat kConversationDividerHeight = 1.f;
 static const CGFloat kConversationBubbleViewWidth = 210.f;
+static const UIEdgeInsets kAlertHeaderInsets = { 13, 10, 10, 10 };  // top, left, bottom, right
+static const CGSize kAlertHeaderImageSize = { 35, 40 };  // width, height
+static const UIEdgeInsets kAlertHeaderImageMargins = { 0, 0, 5, 10 };  // top, left, bottom, right
 
 @implementation CCAlertDetailsPatientCell
 
@@ -23,8 +26,7 @@ static const CGFloat kConversationBubbleViewWidth = 210.f;
              mrnLabel = mrnLabel_,
              bedLabel = bedLabel_;
 
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
-{
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
   self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
   if (self) {
     self.contentView.backgroundColor = [UIColor clearColor];
@@ -62,13 +64,12 @@ static const CGFloat kConversationBubbleViewWidth = 210.f;
 + (CGSize)sizeThatFits:(CGSize)size
               withName:(NSString *)name
                    mrn:(NSString *)mrn
-                   bed:(NSString *)bed
-{
+                   bed:(NSString *)bed {
   NSDictionary *fontAttributes = @{NSFontAttributeName : [UIFont systemFontOfSize:16.f]};
 
   // 1 padding for left side, 1 more for mrn.
   CGFloat widthForName = size.width/2 - 2 * kLabelPadding;
-  CGSize nameConstraintSize = CGSizeMake(widthForName, FLT_MAX);
+  CGSize nameConstraintSize = CGSizeMake(widthForName, CGFLOAT_MAX);
   CGRect nameBoundingRect = [name boundingRectWithSize:nameConstraintSize
                                                options:NSStringDrawingUsesLineFragmentOrigin
                                             attributes:fontAttributes
@@ -76,7 +77,7 @@ static const CGFloat kConversationBubbleViewWidth = 210.f;
 
   // 1 padding for the right side.
   CGFloat widthForMrn = size.width/2 - kLabelPadding;
-  CGSize mrnConstraintSize = CGSizeMake(widthForMrn, FLT_MAX);
+  CGSize mrnConstraintSize = CGSizeMake(widthForMrn, CGFLOAT_MAX);
   CGRect mrnBoundingRect = [mrn boundingRectWithSize:mrnConstraintSize
                                              options:NSStringDrawingUsesLineFragmentOrigin
                                           attributes:fontAttributes
@@ -95,16 +96,14 @@ static const CGFloat kConversationBubbleViewWidth = 210.f;
   return CGSizeMake(size.width, height);
 }
 
-- (CGSize)sizeThatFits:(CGSize)size
-{
+- (CGSize)sizeThatFits:(CGSize)size {
   return [[self class] sizeThatFits:size
                            withName:self.nameLabel.text
                                 mrn:self.mrnLabel.text
                                 bed:self.bedLabel.text];
 }
 
-- (void)layoutSubviews
-{
+- (void)layoutSubviews {
   CGSize size = self.bounds.size;
   // 1 padding for left side, 1 more for mrn.
   self.nameLabel.frame = CGRectMake(kLabelPadding,
@@ -115,7 +114,7 @@ static const CGFloat kConversationBubbleViewWidth = 210.f;
   NSDictionary *fontAttributes = @{NSFontAttributeName : [UIFont systemFontOfSize:16.f]};
   CGSize mrnSize =
       [self.mrnLabel.text boundingRectWithSize:CGSizeMake(ceil(size.width/2 - kLabelPadding),
-                                                          FLT_MAX)
+                                                          CGFLOAT_MAX)
                                        options:NSStringDrawingUsesLineFragmentOrigin
                                     attributes:fontAttributes
                                        context:nil].size;
@@ -140,8 +139,7 @@ static const CGFloat kConversationBubbleViewWidth = 210.f;
 @synthesize nameLabel = nameLabel_,
            phoneLabel = phoneLabel_;
 
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
-{
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
   self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
   if (self) {
     self.contentView.backgroundColor = [UIColor clearColor];
@@ -170,20 +168,19 @@ static const CGFloat kConversationBubbleViewWidth = 210.f;
 
 + (CGSize)sizeThatFits:(CGSize)size
               withName:(NSString *)name
-                 phone:(NSString *)phone
-{
+                 phone:(NSString *)phone {
   NSDictionary *fontAttributes = @{NSFontAttributeName : [UIFont systemFontOfSize:16.f]};
 
   // 1 padding for left side, 1 more for mrn.
   CGFloat widthForName = size.width/2 - 2 * kLabelPadding;
-  CGSize nameConstraintSize = CGSizeMake(widthForName, FLT_MAX);
+  CGSize nameConstraintSize = CGSizeMake(widthForName, CGFLOAT_MAX);
   CGRect nameBoundingRect = [name boundingRectWithSize:nameConstraintSize
                                                options:NSStringDrawingUsesLineFragmentOrigin
                                             attributes:fontAttributes
                                                context:nil];
   // 1 padding for the right side.
   CGFloat widthForPhone = size.width/2 - kLabelPadding;
-  CGSize phoneConstraintSize = CGSizeMake(widthForPhone, FLT_MAX);
+  CGSize phoneConstraintSize = CGSizeMake(widthForPhone, CGFLOAT_MAX);
   CGRect phoneBoundingRect = [phone boundingRectWithSize:phoneConstraintSize
                                                  options:NSStringDrawingUsesLineFragmentOrigin
                                               attributes:fontAttributes
@@ -194,15 +191,13 @@ static const CGFloat kConversationBubbleViewWidth = 210.f;
   return CGSizeMake(size.width, height);
 }
 
-- (CGSize)sizeThatFits:(CGSize)size
-{
+- (CGSize)sizeThatFits:(CGSize)size {
   return [[self class] sizeThatFits:size
                            withName:self.nameLabel.text
                               phone:self.phoneLabel.text];
 }
 
-- (void)layoutSubviews
-{
+- (void)layoutSubviews {
   CGSize size = self.bounds.size;
   // 1 padding for left side, 1 more for mrn.
   self.nameLabel.frame = CGRectMake(kLabelPadding,
@@ -240,8 +235,7 @@ static const CGFloat kConversationBubbleViewWidth = 210.f;
            dividerViews = dividerViews_,
              bubbleView = bubbleView_;
 
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
-{
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
   self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
   if (self) {
     self.contentView.backgroundColor = [UIColor clearColor];
@@ -286,8 +280,7 @@ static const CGFloat kConversationBubbleViewWidth = 210.f;
   }
 }
 
-- (void)setIsMyMessage:(BOOL)isMyMessage
-{
+- (void)setIsMyMessage:(BOOL)isMyMessage {
   isMyMessage_ = isMyMessage;
   if (isMyMessage) {
     self.bubbleView.backgroundColor = [UIColor colorWithRed:(74./255.)
@@ -390,14 +383,13 @@ static const CGFloat kConversationBubbleViewWidth = 210.f;
               withName:(NSString *)name
               messages:(NSArray *)messages
             timestamps:(NSArray *)timestamps
-        isAlertMessage:(BOOL)isAlertMessage
-{
+        isAlertMessage:(BOOL)isAlertMessage {
   NSAssert((messages.count == timestamps.count),
            @"Array size of messages and timestamps don't match");
   CGFloat height = kConversationTopPadding;
   CGSize constraintSize =
       CGSizeMake(MIN(size.width, kConversationBubbleViewWidth) - 2 * kConversationDefaultPadding,
-                 FLT_MAX);
+                 CGFLOAT_MAX);
   if (name != nil && ![name isEqualToString:@""]) {
     height += ceil([name boundingRectWithSize:constraintSize
                                       options:NSStringDrawingUsesLineFragmentOrigin
@@ -430,8 +422,7 @@ static const CGFloat kConversationBubbleViewWidth = 210.f;
                     + (isAlertMessage ? kConversationDefaultPadding : 0));
 }
 
-- (CGSize)sizeThatFits:(CGSize)size
-{
+- (CGSize)sizeThatFits:(CGSize)size {
   return [[self class] sizeThatFits:size
                            withName:self.nameLabel.text
                            messages:self.messages
@@ -439,8 +430,7 @@ static const CGFloat kConversationBubbleViewWidth = 210.f;
                      isAlertMessage:self.isAlertMessage];
 }
 
-- (void)layoutSubviews
-{
+- (void)layoutSubviews {
   NSAssert((self.messageLabels.count == self.timestampLabels.count),
            @"Array size of messages and timestamps don't match");
   NSAssert((self.messageLabels.count == self.dividerViews.count),
@@ -451,9 +441,9 @@ static const CGFloat kConversationBubbleViewWidth = 210.f;
   CGRect bubbleViewFrame = CGRectMake(kConversationBubbleViewShorterPadding,
                                       bubbleViewY,
                                       kConversationBubbleViewWidth,
-                                      FLT_MAX);
+                                      CGFLOAT_MAX);
   CGSize constraintSize = CGSizeMake(bubbleViewFrame.size.width - 2 * kConversationDefaultPadding,
-                                     FLT_MAX);
+                                     CGFLOAT_MAX);
   CGFloat currentY = kConversationTopPadding;
 
   if (self.isMyMessage) {
@@ -519,5 +509,151 @@ static const CGFloat kConversationBubbleViewWidth = 210.f;
   bubbleViewFrame.size.height = currentY;
   self.bubbleView.frame = bubbleViewFrame;
 }
+
+@end
+
+#pragma mark - CCAlertDetailsAlertHeader
+
+@interface CCAlertDetailsAlertHeader ()
+
+@property (nonatomic, strong) UILabel *changeLabel;
+@property (nonatomic, strong) UIImageView *alertTypeImageView;
+
+@end
+
+@implementation CCAlertDetailsAlertHeader
+
+@synthesize messageLabel = messageLabel_,
+          timestampLabel = timestampLabel_,
+          alertTypeImage = alertTypeImage_,
+             changeLabel = changeLabel_,
+      alertTypeImageView = alertTypeImageView_;
+
+- (id)initWithReuseIdentifier:(NSString *)reuseIdentifier {
+  self = [super initWithReuseIdentifier:reuseIdentifier];
+  if (self) {
+    messageLabel_ = [[UILabel alloc] initWithFrame:CGRectZero];
+    messageLabel_.numberOfLines = 0;
+    messageLabel_.textAlignment = NSTextAlignmentLeft;
+    messageLabel_.lineBreakMode = NSLineBreakByWordWrapping;
+    messageLabel_.font = [[self class] messageLabelFont];
+    [self.contentView addSubview:messageLabel_];
+
+    timestampLabel_ = [[UILabel alloc] initWithFrame:CGRectZero];
+    timestampLabel_.numberOfLines = 1;
+    timestampLabel_.textAlignment = NSTextAlignmentRight;
+    timestampLabel_.lineBreakMode = NSLineBreakByTruncatingTail;
+    timestampLabel_.font = [[self class] timestampLabelFont];
+    [self.contentView addSubview:timestampLabel_];
+
+    changeLabel_ = [[UILabel alloc] initWithFrame:CGRectZero];
+    changeLabel_.numberOfLines = 1;
+    changeLabel_.textAlignment = NSTextAlignmentLeft;
+    changeLabel_.lineBreakMode = NSLineBreakByTruncatingTail;
+    changeLabel_.font = [[self class] changeLabelFont];
+    changeLabel_.text = [[self class] changeLabelText];
+    changeLabel_.textColor = [UIColor blueColor];
+    [self.contentView addSubview:changeLabel_];
+  }
+  return self;
+}
+
+- (void)setAlertTypeImage:(UIImage *)alertTypeImage {
+  alertTypeImage_ = alertTypeImage;
+  [alertTypeImageView_ removeFromSuperview];
+  alertTypeImageView_ = [[UIImageView alloc] initWithImage:alertTypeImage_];
+  [self.contentView addSubview:alertTypeImageView_];
+}
+
++ (UIFont *)messageLabelFont {
+  return [UIFont fontWithName:@"HelveticaNeue-Light" size:17.];
+}
+
++ (UIFont *)timestampLabelFont {
+  return [UIFont systemFontOfSize:12.f];
+}
+
++ (UIFont *)changeLabelFont {
+  return [UIFont fontWithName:@"HelveticaNeue-Thin" size:12.];
+}
+
++ (NSString *)changeLabelText {
+  return @"Change";
+}
+
++ (CGSize)sizeThatFits:(CGSize)size
+           withMessage:(NSString *)message
+             timestamp:(NSString *)timestamp {
+  CGSize changeLabelSize =
+      [[self changeLabelText] boundingRectWithSize:CGSizeMake(size.width, CGFLOAT_MAX)
+                                           options:NSStringDrawingUsesLineFragmentOrigin
+                                        attributes:@{NSFontAttributeName : [self changeLabelFont]}
+                                           context:nil].size;
+  CGFloat textWidth =
+      size.width - kAlertHeaderInsets.left - kAlertHeaderInsets.right
+      - MAX(ceil(changeLabelSize.width), kAlertHeaderImageSize.width)
+      - kAlertHeaderImageMargins.right - kAlertHeaderImageMargins.left;
+  CGSize constraintSize = CGSizeMake(textWidth, CGFLOAT_MAX);
+  CGFloat height = ceil([message boundingRectWithSize:constraintSize
+                                              options:NSStringDrawingUsesLineFragmentOrigin
+                                           attributes:@{NSFontAttributeName : [self messageLabelFont]}
+                                              context:nil].size.height);
+  height += kConversationDefaultPadding;
+  height += ceil([timestamp boundingRectWithSize:constraintSize
+                                         options:NSStringDrawingUsesLineFragmentOrigin
+                                      attributes:@{NSFontAttributeName : [self timestampLabelFont]}
+                                         context:nil].size.height);
+
+  CGFloat imageAndChangeLabelHeight =
+      kAlertHeaderImageSize.height + kAlertHeaderImageMargins.top + kAlertHeaderImageMargins.bottom
+      + changeLabelSize.height;
+  height = MAX(height, imageAndChangeLabelHeight) + kAlertHeaderInsets.top + kAlertHeaderInsets.bottom;
+  return CGSizeMake(size.width, height);
+}
+
+- (CGSize)sizeThatFits:(CGSize)size {
+  return [[self class] sizeThatFits:size
+                        withMessage:self.messageLabel.text
+                          timestamp:self.timestampLabel.text];
+}
+
+- (void)layoutSubviews {
+  CGSize size = self.bounds.size;
+  // TODO: layout self.alertTypeImageView_
+  CGSize changeLabelSize =
+      [changeLabel_.text boundingRectWithSize:size
+                                      options:NSStringDrawingUsesLineFragmentOrigin
+                                   attributes:@{NSFontAttributeName : changeLabel_.font}
+                                      context:nil].size;
+  CGFloat changeLabelY =
+      kAlertHeaderInsets.top + kAlertHeaderImageMargins.top + kAlertHeaderImageSize.height
+      + kAlertHeaderImageMargins.bottom;
+  changeLabel_.frame = CGRectMake(kAlertHeaderInsets.left + kAlertHeaderImageMargins.left,
+                                  changeLabelY,
+                                  ceil(changeLabelSize.width),
+                                  ceil(changeLabelSize.height));
+  CGFloat textX = kAlertHeaderInsets.left + kAlertHeaderImageMargins.right
+      + kAlertHeaderImageMargins.left + MAX(ceil(changeLabelSize.width), kAlertHeaderImageSize.width);
+  CGFloat textWidth = size.width - textX - kAlertHeaderInsets.right;
+  CGSize constraintSize = CGSizeMake(textWidth, CGFLOAT_MAX);
+  CGSize messageSize =
+      [messageLabel_.text boundingRectWithSize:constraintSize
+                                       options:NSStringDrawingUsesLineFragmentOrigin
+                                    attributes:@{NSFontAttributeName : messageLabel_.font}
+                                       context:nil].size;
+  CGFloat currentY = kAlertHeaderInsets.top;
+  messageLabel_.frame =
+      CGRectMake(textX, currentY, ceil(messageSize.width), ceil(messageSize.height));
+  currentY += ceil(messageSize.height) + kConversationDefaultPadding;
+
+  CGSize timestampSize =
+      [timestampLabel_.text boundingRectWithSize:constraintSize
+                                         options:NSStringDrawingUsesLineFragmentOrigin
+                                      attributes:@{NSFontAttributeName : timestampLabel_.font}
+                                         context:nil].size;
+  timestampLabel_.frame =
+      CGRectMake(textX, currentY, ceil(timestampSize.width), ceil(timestampSize.height));
+}
+
 
 @end

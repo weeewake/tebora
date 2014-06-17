@@ -1,0 +1,7 @@
+Finally, lets look at the hospitalist use case.
+
+The hospitalist logs in and sees her patient list. While doing the rounds she can click on a patient to quickly review recently opened pages about that patient.
+
+She can also easily create a task for a doctor on the next shift. She clicks on the Page button, selects a task type and enters a quick description. She then schedules it for the correct time.
+
+At the scheduled time, the currently responsible doctor will receive a reminder about this task.

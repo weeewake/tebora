@@ -1,0 +1,8 @@
+Now lets take a look at the Nocturnist use case.
+
+The Nocturnist logs in and sees a list of open pages. The colorful descriptive icons make it easy to infer the type of issue.
+
+She can take quick actions on a page by swiping on it. As an example, she can resolve the third page without leaving the screen.
+
+Clicking on a page takes her to the details page. From this page, she can send quick pre-defined messages with just a couple of clicks.
+

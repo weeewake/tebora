@@ -1,0 +1,11 @@
+When the nurse logs in, she sees her patient list. Any changes in doctor assignment are immediately reflected in the list.
+
+She initiates a page by clicking on the page button. She selects the type of issue, enters a brief description and clicks on the Send button.
+
+On her Home screen she can see a list of recent pages she has opened and the status of each.
+
+She sees that the doctor has responded to her earlier prescription request.
+
+She clicks on the page to see the details. The doctor has filled the prescription she requested.
+
+She returns to the home screen, and sets her status as busy for 15 minutes, thus ensuring that she is not interrupted while administering the medication.

@@ -18,6 +18,8 @@
 @interface CCOncallViewController () <CCProviderDelegate, UIActionSheetDelegate>
 
 @property (strong, nonatomic) NSArray *statusBusyDurationsInSecs;
+@property (strong, nonatomic) NSTimer *statusTimer;
+
 @end
 
 @implementation CCOncallViewController
@@ -45,6 +47,7 @@
   [super viewWillAppear:animated];
   [self alertListChangedTo:self.thisUser.alerts];
   self.thisUser.delegate = self;
+  [self updateStatus];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -52,6 +55,7 @@
   if (self.thisUser.delegate == self) {
     self.thisUser.delegate = nil;
   }
+  [self clearStatusTimer];
 }
 
 - (void)alertListChangedTo:(NSArray *)newAlertList {
@@ -81,16 +85,35 @@
   }
 }
 
+- (void)clearStatusTimer {
+  if (self.statusTimer) {
+    [self.statusTimer invalidate];
+    self.statusTimer = nil;
+  }
+}
+
 - (void)updateStatus {
   if (self.thisUser != nil &&
       self.thisUser.status == CCProviderStatusBusy) {
     NSString *statusTimeRemaining = [self.thisUser statusTimeRemaining];
-    if (![statusTimeRemaining isEqualToString:@""]) {
+    if ([statusTimeRemaining isEqualToString:@""]) {
+      [self.thisUser setStatus:CCProviderStatusAvailable forDuration:0];
+    } else {
+      if (self.statusTimer == nil) {
+        self.statusTimer = [NSTimer scheduledTimerWithTimeInterval:1
+                                                            target:self
+                                                          selector:@selector(updateStatus)
+                                                          userInfo:nil
+                                                           repeats:YES];
+      }
       NSString *statusText = [NSString stringWithFormat:@"Busy %@  \u25be", statusTimeRemaining];
+      [self.statusButton setImage:[UIImage imageNamed:@"StatusBusy"] forState:UIControlStateNormal];
       [self.statusButton setTitle:statusText forState:UIControlStateNormal];
       return;
     }
   }
+  [self clearStatusTimer];
+  [self.statusButton setImage:[UIImage imageNamed:@"StatusAvailable"] forState:UIControlStateNormal];
   [self.statusButton setTitle:@"Available  \u25be" forState:UIControlStateNormal];
 }
 
@@ -261,6 +284,15 @@
     self.thisUser = nil;
     [CCProvider clearAllCachedProviders];
     [self performSegueWithIdentifier:@"UnwindToLogin" sender:nil];
+  } else if (buttonIndex != actionSheet.cancelButtonIndex) {
+    [self clearStatusTimer];
+    if (buttonIndex == 0) {
+      [self.thisUser setStatus:CCProviderStatusAvailable forDuration:0];
+    } else {
+      NSTimeInterval duration = [self.statusBusyDurationsInSecs[buttonIndex - 1] intValue];
+      [self.thisUser setStatus:CCProviderStatusBusy forDuration:duration];
+    }
+    [self updateStatus];
   }
 }
 

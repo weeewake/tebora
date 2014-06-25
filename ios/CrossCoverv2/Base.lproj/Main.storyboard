@@ -69,9 +69,11 @@
                     <navigationItem key="navigationItem" id="FVh-lG-xut">
                         <nil key="title"/>
                         <button key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="tailTruncation" id="YEa-zp-TQv">
-                            <rect key="frame" x="102" y="-1" width="117" height="45"/>
+                            <rect key="frame" x="69" y="-14" width="183" height="72"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <state key="normal" title="Available">
+                            <fontDescription key="fontDescription" type="system" pointSize="19"/>
+                            <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="15" maxY="0.0"/>
+                            <state key="normal" title="Available" image="StatusAvailable">
                                 <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="titleShadowColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </state>
@@ -324,6 +326,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="StatusAvailable" width="14" height="14"/>
         <image name="TransparentAppIcon" width="43" height="28"/>
     </resources>
     <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>

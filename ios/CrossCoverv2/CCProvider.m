@@ -17,6 +17,7 @@ static NSMutableDictionary *g_userId2ProviderMap = nil;
 
 @interface CCProvider () <CCAlertDelegate>
 
+@property (strong, nonatomic) Firebase *baseFirebaseRef;
 @property (strong, nonatomic) NSMutableArray *firebaseRefs;
 @property (strong, nonatomic) NSMutableDictionary *allAlertsDict;
 @property (strong, nonatomic) NSMutableDictionary *queuesAlertsDict;
@@ -42,21 +43,20 @@ static NSMutableDictionary *g_userId2ProviderMap = nil;
 }
 
 - (void)updateProviderInfo {
-  Firebase *providerRef = [CCUtils firebaseForPathComponents:@[@"user", self.uid]];
-  [self.firebaseRefs addObject:providerRef];
-  [providerRef observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
+  self.baseFirebaseRef = [CCUtils firebaseForPathComponents:@[@"user", self.uid]];
+  [self.baseFirebaseRef observeSingleEventOfType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
     NSDictionary *value = snapshot.value;
     if (![value isKindOfClass:[NSNull class]]) {
       [self updateDetails:value[@"details"]];
       [self addAlerts:value[@"channels"]];
     }
-    Firebase *detailsRef = [providerRef childByAppendingPath:@"details"];
+    Firebase *detailsRef = [self.baseFirebaseRef childByAppendingPath:@"details"];
     [self.firebaseRefs insertObject:detailsRef atIndex:0];
     [detailsRef observeEventType:FEventTypeValue withBlock:^(FDataSnapshot *snapshot) {
       [self updateDetails:snapshot.value];
     }];
 
-    Firebase *channelsRef = [providerRef childByAppendingPath:@"channels"];
+    Firebase *channelsRef = [self.baseFirebaseRef childByAppendingPath:@"channels"];
     [self.firebaseRefs insertObject:channelsRef atIndex:0];
     [channelsRef observeEventType:FEventTypeChildAdded withBlock:^(FDataSnapshot *snapshot) {
       [self addSingleAlert:snapshot.value];
@@ -125,7 +125,7 @@ static NSMutableDictionary *g_userId2ProviderMap = nil;
     self.statusExpirationDate = nil;
   } else if ([statusText isEqualToString:@"busy"]) {
     NSDate *statusExpirationDate =
-        [[NSDate dateWithTimeIntervalSince1970:[details[@"creation_timestamp"] doubleValue]]
+        [[NSDate dateWithTimeIntervalSince1970:[details[@"timestamp"] doubleValue]]
             dateByAddingTimeInterval:[details[@"duration"] doubleValue]];
     if ([statusExpirationDate timeIntervalSinceNow] > 0) {
       status = CCProviderStatusBusy;
@@ -232,11 +232,33 @@ static NSMutableDictionary *g_userId2ProviderMap = nil;
   return @"";
 }
 
+- (void)setStatus:(CCProviderStatus)status forDuration:(NSTimeInterval)duration {
+  NSTimeInterval currentTime = [[NSDate date] timeIntervalSince1970];
+  self.status = status;
+  self.statusExpirationDate = nil;
+  if (status == CCProviderStatusBusy) {
+    self.statusExpirationDate = [NSDate dateWithTimeIntervalSince1970:(currentTime + duration)];
+  }
+
+  NSString *timestamp =
+      [NSString stringWithFormat:@"%lld", (long long)currentTime];
+  NSString *durationStr = @"0";
+  if (status == CCProviderStatusBusy) {
+    durationStr = [NSString stringWithFormat:@"%lld", (long long)duration];
+  }
+  NSDictionary *newStatus =
+      @{ @"text"      : ((status == CCProviderStatusBusy) ? @"busy" : @"available"),
+         @"timestamp" : timestamp,
+         @"duration"  : durationStr };
+  [[self.baseFirebaseRef childByAppendingPath:@"details/status"] setValue:newStatus];
+}
+
 - (void)dealloc {
   for (Firebase *fbRef in self.firebaseRefs) {
     [fbRef removeAllObservers];
   }
   [self.firebaseRefs removeAllObjects];
+  [self.baseFirebaseRef removeAllObservers];
   [self.queuesAlertsDict removeAllObjects];
   [self.allAlertsDict removeAllObjects];
 }

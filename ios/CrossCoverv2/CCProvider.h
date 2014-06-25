@@ -59,4 +59,6 @@ typedef enum {
 // Returns the time remaining as minutes:seconds. Valid only for busy status.
 - (NSString *)statusTimeRemaining;
 
+- (void)setStatus:(CCProviderStatus)status forDuration:(NSTimeInterval)duration;
+
 @end

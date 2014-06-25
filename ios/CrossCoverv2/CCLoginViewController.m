@@ -174,9 +174,16 @@
 
 - (void)logInWithFAUser:(FAUser *)faUser {
   // There is a logged in user
+  self.usernameTextField.text = @"";
+  self.passwordTextField.text = @"";
+
   CCProvider *provider = [CCProvider providerWithUserId:faUser.userId];
   [CCProvider setLoggedInProvider:provider];
   provider.delegate = self;  // Do the transition in delegate callback.
+}
+
+- (IBAction)unwindToLoginViewController:(UIStoryboardSegue *)sender {
+
 }
 
 @end

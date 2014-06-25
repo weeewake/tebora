@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13D65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="3o3-2A-9ds">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="14A261i" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="3o3-2A-9ds">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
@@ -13,7 +13,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="78" sectionHeaderHeight="22" sectionFooterHeight="22" id="eHB-d3-Zcp">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="504"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="454"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
@@ -43,19 +43,56 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
+                            <view appearanceType="aqua" contentMode="scaleToFill" id="q7z-ei-imm">
+                                <rect key="frame" x="0.0" y="454" width="320" height="50"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <segmentedControl appearanceType="aqua" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" segmentControlStyle="plain" selectedSegmentIndex="0" id="6l3-cU-JA0">
+                                        <rect key="frame" x="60" y="11" width="199" height="29"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <segments>
+                                            <segment title="Open"/>
+                                            <segment title="Resolved"/>
+                                        </segments>
+                                        <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <connections>
+                                            <action selector="segmentedControlValueChanged:" destination="vXZ-lx-hvc" eventType="valueChanged" id="h1J-ot-OoL"/>
+                                        </connections>
+                                    </segmentedControl>
+                                </subviews>
+                                <color key="backgroundColor" red="0.4719650447" green="0.68504214289999998" blue="0.99785900120000004" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="tintColor" red="0.4719650447" green="0.68504214289999998" blue="0.99785900120000004" alpha="1" colorSpace="calibratedRGB"/>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" id="FVh-lG-xut"/>
+                    <navigationItem key="navigationItem" id="FVh-lG-xut">
+                        <nil key="title"/>
+                        <button key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="tailTruncation" id="YEa-zp-TQv">
+                            <rect key="frame" x="102" y="-1" width="117" height="45"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <state key="normal" title="Available">
+                                <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="titleShadowColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="statusButtonClicked:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="WIX-l6-EcX"/>
+                            </connections>
+                        </button>
+                    </navigationItem>
                     <connections>
+                        <outlet property="segmentedControl" destination="6l3-cU-JA0" id="vfQ-Mv-uhR"/>
+                        <outlet property="statusButton" destination="YEa-zp-TQv" id="QMg-mW-jc7"/>
                         <outlet property="tableView" destination="eHB-d3-Zcp" id="O4w-JB-xKE"/>
                         <segue destination="QRl-in-YZU" kind="push" identifier="HomeToAlertDetails" id="299-QQ-Q9Y"/>
                         <segue destination="mQ9-u3-639" kind="push" identifier="HomeToAlertTypeFilter" id="ypH-yo-YOT"/>
+                        <segue destination="HeH-8g-VPz" kind="unwind" identifier="UnwindToLogin" unwindAction="unwindToLoginViewController:" id="T3e-a0-Nth"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
+                <exit id="HeH-8g-VPz" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="-864" y="168"/>
+            <point key="canvasLocation" x="-992" y="-146"/>
         </scene>
         <!--Alert Details View Controller-->
         <scene sceneID="QRn-tw-XyM">
@@ -192,6 +229,7 @@
                         </subviews>
                         <color key="backgroundColor" red="0.29019609093666077" green="0.56470590829849243" blue="0.88627457618713379" alpha="1" colorSpace="deviceRGB"/>
                     </view>
+                    <navigationItem key="navigationItem" id="OXg-Ow-zww"/>
                     <connections>
                         <outlet property="backgroundView" destination="u4J-1b-YcN" id="Dec-1M-Pg2"/>
                         <outlet property="overlayView" destination="RSW-Tr-CLI" id="sbr-LH-2rg"/>
@@ -204,7 +242,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="JEg-de-PXe" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1815" y="168"/>
+            <point key="canvasLocation" x="-1853" y="-138"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="15k-j3-wKR">
@@ -230,7 +268,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wIe-S5-i6J" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1282" y="160"/>
+            <point key="canvasLocation" x="-1340" y="600"/>
         </scene>
         <!--Oncall View Controller-->
         <scene sceneID="sBx-6A-Q1p">
@@ -295,6 +333,6 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="f4a-zw-Bcd"/>
+        <segue reference="299-QQ-Q9Y"/>
     </inferredMetricsTieBreakers>
 </document>

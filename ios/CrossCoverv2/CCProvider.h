@@ -13,6 +13,12 @@ typedef enum {
   CCProviderTypeMD
 } CCProviderType;
 
+typedef enum {
+  CCProviderStatusUnknown = 0,
+  CCProviderStatusAvailable,
+  CCProviderStatusBusy
+} CCProviderStatus;
+
 @class CCProvider;
 @protocol CCProviderDelegate <NSObject>
 
@@ -39,6 +45,7 @@ typedef enum {
 @property (strong, nonatomic) NSString *displayName;
 @property (strong, nonatomic) NSString *phone;
 @property (assign, nonatomic) CCProviderType type;
+@property (assign, nonatomic) CCProviderStatus status;
 @property (strong, nonatomic) NSArray *alerts;  // array of CCAlert
 @property (assign, nonatomic, getter = isOnCall) BOOL oncall;
 
@@ -47,5 +54,9 @@ typedef enum {
 + (CCProvider *)providerWithUserId:(NSString *)uid;
 + (CCProvider *)loggedInProvider;
 + (void)setLoggedInProvider:(CCProvider *)provider;
++ (void)clearAllCachedProviders;
+
+// Returns the time remaining as minutes:seconds. Valid only for busy status.
+- (NSString *)statusTimeRemaining;
 
 @end

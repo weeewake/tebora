@@ -8,12 +8,16 @@
 
 #import "CCAlertDetailsViewController.h"
 
+#import <FirebaseSimpleLogin/FirebaseSimpleLogin.h>
+
 #import "CCAlert.h"
 #import "CCSettings.h"
 #import "CCOncallViewController.h"
 #import "CCUtils.h"
 
-@interface CCOncallViewController () <CCProviderDelegate>
+@interface CCOncallViewController () <CCProviderDelegate, UIActionSheetDelegate>
+
+@property (strong, nonatomic) NSArray *statusBusyDurationsInSecs;
 @end
 
 @implementation CCOncallViewController
@@ -22,6 +26,7 @@
 
 - (void)viewDidLoad {
   [super viewDidLoad];
+  self.statusBusyDurationsInSecs = @[@10, @900, @1800, @2700];
   self.navigationController.navigationBar.barTintColor = [CCSettings tintColor];
   self.title = nil;
 
@@ -30,16 +35,9 @@
   self.alertList = @[];
   self.tableView.dataSource = self;
   self.tableView.delegate = self;
+
   // Remove extra separators at the end of the table view.
   self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
-  self.segmentedControl = [[UISegmentedControl alloc] initWithItems:
-                               [NSArray arrayWithObjects:@"Open", @"Resolved", nil]];
-  [self.segmentedControl setSelectedSegmentIndex:0];
-  [self.segmentedControl addTarget:self
-                            action:@selector(segmentedControlValueChanged:)
-                  forControlEvents: UIControlEventValueChanged];
-  [self.segmentedControl setTintColor:[UIColor whiteColor]];
-  self.navigationItem.titleView = self.segmentedControl;
   [self alertListChangedTo:self.thisUser.alerts];
 }
 
@@ -83,6 +81,19 @@
   }
 }
 
+- (void)updateStatus {
+  if (self.thisUser != nil &&
+      self.thisUser.status == CCProviderStatusBusy) {
+    NSString *statusTimeRemaining = [self.thisUser statusTimeRemaining];
+    if (![statusTimeRemaining isEqualToString:@""]) {
+      NSString *statusText = [NSString stringWithFormat:@"Busy %@  \u25be", statusTimeRemaining];
+      [self.statusButton setTitle:statusText forState:UIControlStateNormal];
+      return;
+    }
+  }
+  [self.statusButton setTitle:@"Available  \u25be" forState:UIControlStateNormal];
+}
+
 - (void)updateView {
   __block int openAlertCount = 0, resolvedAlertCount = 0;
   self.indexesOfCurrentlyDisplayedAlerts =
@@ -106,6 +117,7 @@
   [self.segmentedControl setTitle:[NSString stringWithFormat:@"%d Resolved", resolvedAlertCount]
                 forSegmentAtIndex:1];
 
+  [self updateStatus];
   [self.tableView reloadData];
 }
 
@@ -197,6 +209,59 @@
     self.currentStatusFilter = CCAlertStatusResolved;
   }
   [self updateView];
+}
+
+- (void)statusButtonClicked:(UIButton *)sender {
+  UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                           delegate:self
+                                                  cancelButtonTitle:nil
+                                             destructiveButtonTitle:nil
+                                                  otherButtonTitles:nil];
+  [actionSheet addButtonWithTitle:@"Available"];
+  for (NSNumber *durationNumber in self.statusBusyDurationsInSecs) {
+    int duration = [durationNumber intValue];
+    NSString *statusText = nil;
+    int hrs = (int)(duration / 3600);
+    int mins = (int)((duration - hrs * 3600) / 60);
+    int secs = (int)(duration - mins * 60 - hrs * 3600);
+    if (duration > 3600) {
+      statusText = [NSString stringWithFormat:@"Busy for %d hours, %d minutes", hrs, mins];
+    } else if (duration > 60) {
+      if (duration == 3600) {
+        hrs = 0;
+        mins = 60;
+      }
+      statusText = [NSString stringWithFormat:@"Busy for %d minutes", mins];
+    } else {
+      if (duration == 60) {
+        mins = 0;
+        secs = 60;
+      }
+      statusText = [NSString stringWithFormat:@"Busy for %d seconds", secs];
+    }
+    [actionSheet addButtonWithTitle:statusText];
+  }
+  [actionSheet addButtonWithTitle:@"Sign Out"];
+  actionSheet.destructiveButtonIndex = [self.statusBusyDurationsInSecs count] + 1;
+  [actionSheet addButtonWithTitle:@"Cancel"];
+  actionSheet.cancelButtonIndex = actionSheet.destructiveButtonIndex + 1;
+  [actionSheet showInView:self.view];
+}
+
+# pragma mark - UIActionSheetDelegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+  if (buttonIndex == actionSheet.destructiveButtonIndex) {
+    Firebase* ref = [CCUtils firebaseForPathComponents:@[]];
+    FirebaseSimpleLogin* authClient = [[FirebaseSimpleLogin alloc] initWithRef:ref];
+    [authClient logout];
+    [ref unauth];
+    [ref removeAllObservers];
+    self.thisUser.delegate = nil;
+    self.thisUser = nil;
+    [CCProvider clearAllCachedProviders];
+    [self performSegueWithIdentifier:@"UnwindToLogin" sender:nil];
+  }
 }
 
 #pragma mark - CCProviderDelegate

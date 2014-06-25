@@ -22,16 +22,18 @@
 		4766551118FB02E700D994B1 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4766550F18FB02E700D994B1 /* InfoPlist.strings */; };
 		4766551318FB02E700D994B1 /* CrossCoverv2Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4766551218FB02E700D994B1 /* CrossCoverv2Tests.m */; };
 		4766552318FB321000D994B1 /* CCAlertDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4766552218FB321000D994B1 /* CCAlertDetailsViewController.m */; };
-		47A9E71F191067E100348E41 /* Firebase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47A9E71E191067E100348E41 /* Firebase.framework */; };
 		47A9E7211910682C00348E41 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 47A9E7201910682C00348E41 /* libicucore.dylib */; };
 		47A9E7231910683A00348E41 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 47A9E7221910683A00348E41 /* libc++.dylib */; };
 		47A9E7251910684600348E41 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47A9E7241910684600348E41 /* CFNetwork.framework */; };
 		47A9E7271910685200348E41 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47A9E7261910685200348E41 /* Security.framework */; };
 		47A9E7291910686000348E41 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47A9E7281910686000348E41 /* SystemConfiguration.framework */; };
-		47EC8114191C05B300E74CFA /* FirebaseSimpleLogin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47EC8113191C05B300E74CFA /* FirebaseSimpleLogin.framework */; };
 		47EC8116191C05F000E74CFA /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47EC8115191C05F000E74CFA /* Accounts.framework */; };
 		47EC8118191C05F800E74CFA /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47EC8117191C05F800E74CFA /* Social.framework */; };
 		47EC811B191C066200E74CFA /* CCLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 47EC811A191C066200E74CFA /* CCLoginViewController.m */; };
+		71159230195A523800A235C6 /* Firebase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7115922E195A523800A235C6 /* Firebase.framework */; };
+		71159231195A523800A235C6 /* Firebase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7115922E195A523800A235C6 /* Firebase.framework */; };
+		71159232195A523800A235C6 /* FirebaseSimpleLogin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7115922F195A523800A235C6 /* FirebaseSimpleLogin.framework */; };
+		71159233195A523800A235C6 /* FirebaseSimpleLogin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7115922F195A523800A235C6 /* FirebaseSimpleLogin.framework */; };
 		7140221D1924260700685482 /* CCSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 7140221C1924260700685482 /* CCSettings.m */; };
 		7140221E1924260700685482 /* CCSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 7140221C1924260700685482 /* CCSettings.m */; };
 		714176511939D5280060CEE3 /* CCUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 714176501939D5280060CEE3 /* CCUtils.m */; };
@@ -77,17 +79,17 @@
 		4766551218FB02E700D994B1 /* CrossCoverv2Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CrossCoverv2Tests.m; sourceTree = "<group>"; };
 		4766552118FB321000D994B1 /* CCAlertDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAlertDetailsViewController.h; sourceTree = "<group>"; };
 		4766552218FB321000D994B1 /* CCAlertDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCAlertDetailsViewController.m; sourceTree = "<group>"; };
-		47A9E71E191067E100348E41 /* Firebase.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Firebase.framework; sourceTree = "<group>"; };
 		47A9E7201910682C00348E41 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
 		47A9E7221910683A00348E41 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
 		47A9E7241910684600348E41 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		47A9E7261910685200348E41 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		47A9E7281910686000348E41 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
-		47EC8113191C05B300E74CFA /* FirebaseSimpleLogin.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FirebaseSimpleLogin.framework; sourceTree = "<group>"; };
 		47EC8115191C05F000E74CFA /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		47EC8117191C05F800E74CFA /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		47EC8119191C066200E74CFA /* CCLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCLoginViewController.h; sourceTree = "<group>"; };
 		47EC811A191C066200E74CFA /* CCLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCLoginViewController.m; sourceTree = "<group>"; };
+		7115922E195A523800A235C6 /* Firebase.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Firebase.framework; path = deps/Firebase.framework; sourceTree = "<group>"; };
+		7115922F195A523800A235C6 /* FirebaseSimpleLogin.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseSimpleLogin.framework; path = deps/FirebaseSimpleLogin.framework; sourceTree = "<group>"; };
 		7140221B1924260700685482 /* CCSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSettings.h; sourceTree = "<group>"; };
 		7140221C1924260700685482 /* CCSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCSettings.m; sourceTree = "<group>"; };
 		7141764F1939D5280060CEE3 /* CCUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCUtils.h; sourceTree = "<group>"; };
@@ -108,17 +110,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				47EC8118191C05F800E74CFA /* Social.framework in Frameworks */,
+				71159232195A523800A235C6 /* FirebaseSimpleLogin.framework in Frameworks */,
 				47EC8116191C05F000E74CFA /* Accounts.framework in Frameworks */,
 				47A9E7291910686000348E41 /* SystemConfiguration.framework in Frameworks */,
 				47A9E7271910685200348E41 /* Security.framework in Frameworks */,
+				71159230195A523800A235C6 /* Firebase.framework in Frameworks */,
 				47A9E7251910684600348E41 /* CFNetwork.framework in Frameworks */,
 				47A9E7231910683A00348E41 /* libc++.dylib in Frameworks */,
 				47A9E7211910682C00348E41 /* libicucore.dylib in Frameworks */,
 				476654EA18FB02E700D994B1 /* CoreGraphics.framework in Frameworks */,
 				476654EC18FB02E700D994B1 /* UIKit.framework in Frameworks */,
 				476654E818FB02E700D994B1 /* Foundation.framework in Frameworks */,
-				47A9E71F191067E100348E41 /* Firebase.framework in Frameworks */,
-				47EC8114191C05B300E74CFA /* FirebaseSimpleLogin.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -129,6 +131,8 @@
 				4766550718FB02E700D994B1 /* XCTest.framework in Frameworks */,
 				4766550918FB02E700D994B1 /* UIKit.framework in Frameworks */,
 				4766550818FB02E700D994B1 /* Foundation.framework in Frameworks */,
+				71159231195A523800A235C6 /* Firebase.framework in Frameworks */,
+				71159233195A523800A235C6 /* FirebaseSimpleLogin.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -157,15 +161,15 @@
 		476654E618FB02E700D994B1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7115922E195A523800A235C6 /* Firebase.framework */,
+				7115922F195A523800A235C6 /* FirebaseSimpleLogin.framework */,
 				47EC8117191C05F800E74CFA /* Social.framework */,
 				47EC8115191C05F000E74CFA /* Accounts.framework */,
-				47EC8113191C05B300E74CFA /* FirebaseSimpleLogin.framework */,
 				47A9E7281910686000348E41 /* SystemConfiguration.framework */,
 				47A9E7261910685200348E41 /* Security.framework */,
 				47A9E7241910684600348E41 /* CFNetwork.framework */,
 				47A9E7221910683A00348E41 /* libc++.dylib */,
 				47A9E7201910682C00348E41 /* libicucore.dylib */,
-				47A9E71E191067E100348E41 /* Firebase.framework */,
 				476654E718FB02E700D994B1 /* Foundation.framework */,
 				476654E918FB02E700D994B1 /* CoreGraphics.framework */,
 				476654EB18FB02E700D994B1 /* UIKit.framework */,
@@ -479,6 +483,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/deps",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				INFOPLIST_FILE = "CrossCoverv2/PageMD-Info.plist";
@@ -499,6 +504,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/deps",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				INFOPLIST_FILE = "CrossCoverv2/PageMD-Info.plist";
@@ -517,6 +523,7 @@
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(PROJECT_DIR)/deps",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "CrossCoverv2/CrossCoverv2-Prefix.pch";
@@ -539,6 +546,7 @@
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(PROJECT_DIR)/deps",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "CrossCoverv2/CrossCoverv2-Prefix.pch";

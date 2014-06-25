@@ -80,5 +80,6 @@ typedef enum {
 
 + (CCAlert *)alertWithId:(NSString *)alertId;
 + (NSString *)alertTypeStringForType:(CCAlertType)type;
++ (void)clearAllCachedAlerts;
 
 @end

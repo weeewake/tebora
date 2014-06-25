@@ -13,12 +13,15 @@
 #import "CCUtils.h"
 
 static CCProvider *g_loggedInProvider = nil;
+static NSMutableDictionary *g_userId2ProviderMap = nil;
 
 @interface CCProvider () <CCAlertDelegate>
 
 @property (strong, nonatomic) NSMutableArray *firebaseRefs;
 @property (strong, nonatomic) NSMutableDictionary *allAlertsDict;
 @property (strong, nonatomic) NSMutableDictionary *queuesAlertsDict;
+
+@property (strong, nonatomic) NSDate *statusExpirationDate;
 
 - (CCProvider *)initWithUserId:(NSString *)uid;
 
@@ -100,9 +103,44 @@ static CCProvider *g_loggedInProvider = nil;
     self.oncall = isOncall;
     detailsChanged = YES;
   }
+  if ([self updateStatus:details[@"status"]]) {
+    detailsChanged = YES;
+  }
   if (detailsChanged && [self.delegate respondsToSelector:@selector(providerDetailsChanged:)]) {
     [self.delegate providerDetailsChanged:self];
   }
+}
+
+- (BOOL)updateStatus:(NSDictionary *)details {
+  BOOL statusChanged = NO;
+  if ([details isKindOfClass:[NSNull class]]) {
+    return statusChanged;
+  }
+  CCProviderStatus status = CCProviderStatusUnknown;
+  NSString *statusText = [details[@"text"] lowercaseString];
+  if ([statusText isEqualToString:@"available"]) {
+    status = CCProviderStatusAvailable;
+    statusChanged = (self.status != status);
+    self.status = status;
+    self.statusExpirationDate = nil;
+  } else if ([statusText isEqualToString:@"busy"]) {
+    NSDate *statusExpirationDate =
+        [[NSDate dateWithTimeIntervalSince1970:[details[@"creation_timestamp"] doubleValue]]
+            dateByAddingTimeInterval:[details[@"duration"] doubleValue]];
+    if ([statusExpirationDate timeIntervalSinceNow] > 0) {
+      status = CCProviderStatusBusy;
+      statusChanged = ((self.status != status) ||
+                       (![self.statusExpirationDate isEqualToDate:statusExpirationDate]));
+      self.status = status;
+      self.statusExpirationDate = statusExpirationDate;
+    } else {
+      status = CCProviderStatusAvailable;
+      statusChanged = (self.status != status);
+      self.status = status;
+      self.statusExpirationDate = nil;
+    }
+  }
+  return statusChanged;
 }
 
 - (void) addAlerts:(NSDictionary *)channels {
@@ -175,6 +213,25 @@ static CCProvider *g_loggedInProvider = nil;
   return [self.allAlertsDict allValues];
 }
 
+- (NSString *)statusTimeRemaining {
+  if (self.status == CCProviderStatusBusy) {
+    NSTimeInterval timeRemaining = [self.statusExpirationDate timeIntervalSinceNow];
+    if (timeRemaining > 0) {
+      if (timeRemaining < 3600) {
+        int mins = (int)(timeRemaining / 60);
+        int secs = (int)(timeRemaining - mins * 60);
+        return [NSString stringWithFormat:@"%02d:%02d", mins, secs];
+      } else {
+        int hrs = (int)(timeRemaining / 3600);
+        int mins = (int)((timeRemaining - hrs * 3600) / 60);
+        int secs = (int)(timeRemaining - mins * 60 - hrs * 3600);
+        return [NSString stringWithFormat:@"%02d:%02d:%02d", hrs, mins, secs];
+      }
+    }
+  }
+  return @"";
+}
+
 - (void)dealloc {
   for (Firebase *fbRef in self.firebaseRefs) {
     [fbRef removeAllObservers];
@@ -195,15 +252,14 @@ static CCProvider *g_loggedInProvider = nil;
 }
 
 + (CCProvider *)providerWithUserId:(NSString *)uid {
-  static NSMutableDictionary *userId2ProviderMap = nil;
-  if (userId2ProviderMap == nil) {
-    userId2ProviderMap = [[NSMutableDictionary alloc] init];
+  if (g_userId2ProviderMap == nil) {
+    g_userId2ProviderMap = [[NSMutableDictionary alloc] init];
   }
 
-  CCProvider *provider = [userId2ProviderMap objectForKey:uid];
+  CCProvider *provider = [g_userId2ProviderMap objectForKey:uid];
   if (provider == nil) {
     provider = [[CCProvider alloc] initWithUserId:uid];
-    [userId2ProviderMap setObject:provider forKey:uid];
+    [g_userId2ProviderMap setObject:provider forKey:uid];
   }
   return provider;
 }
@@ -214,6 +270,12 @@ static CCProvider *g_loggedInProvider = nil;
 
 + (void)setLoggedInProvider:(CCProvider *)provider {
   g_loggedInProvider = provider;
+}
+
++ (void)clearAllCachedProviders {
+  g_loggedInProvider = nil;
+  g_userId2ProviderMap = nil;
+  [CCAlert clearAllCachedAlerts];
 }
 
 @end

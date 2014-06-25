@@ -28,10 +28,12 @@
 
 // Views
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
-@property (strong, nonatomic) UISegmentedControl *segmentedControl;
+@property (strong, nonatomic) IBOutlet UISegmentedControl *segmentedControl;
+@property (strong, nonatomic) IBOutlet UIButton *statusButton;
 
 // Actions
-- (void)segmentedControlValueChanged:(UISegmentedControl *)sender;
+- (IBAction)segmentedControlValueChanged:(UISegmentedControl *)sender;
+- (IBAction)statusButtonClicked:(UIButton *)sender;
 - (void)alertImageClicked:(id)sender;
 
 @end

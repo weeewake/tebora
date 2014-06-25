@@ -17,6 +17,7 @@
 @property (strong, nonatomic) IBOutlet UIView *overlayView;
 @property (strong, nonatomic) IBOutlet UIActivityIndicatorView *signInActivityView;
 
--(IBAction)signInButtonClicked:(id)sender;
+- (IBAction)signInButtonClicked:(id)sender;
+- (IBAction)unwindToLoginViewController:(UIStoryboardSegue *)sender;
 
 @end

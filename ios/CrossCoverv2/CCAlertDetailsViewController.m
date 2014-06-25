@@ -155,7 +155,6 @@
 
 - (CGFloat)tableView:(UITableView *)tableView
     heightForHeaderInSection:(NSInteger)section {
-  NSLog(@"heightForHeader called for section %d", section);
   CGFloat headerHeight = 35;
   CGSize constraintSize = CGSizeMake(tableView.bounds.size.width, FLT_MAX);
 

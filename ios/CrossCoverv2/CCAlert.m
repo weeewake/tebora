@@ -12,6 +12,8 @@
 
 #import "CCUtils.h"
 
+static NSMutableDictionary *g_id2AlertMap = nil;
+
 @implementation CCPatient
 @end
 
@@ -310,17 +312,20 @@
 }
 
 + (CCAlert *)alertWithId:(NSString *)alertId {
-  static NSMutableDictionary *id2AlertMap = nil;
-  if (id2AlertMap == nil) {
-    id2AlertMap = [[NSMutableDictionary alloc] init];
+  if (g_id2AlertMap == nil) {
+    g_id2AlertMap = [[NSMutableDictionary alloc] init];
   }
 
-  CCAlert *alert = [id2AlertMap objectForKey:alertId];
+  CCAlert *alert = [g_id2AlertMap objectForKey:alertId];
   if (alert == nil) {
     alert = [[CCAlert alloc] initWithAlertId:alertId];
-    [id2AlertMap setObject:alert forKey:alertId];
+    [g_id2AlertMap setObject:alert forKey:alertId];
   }
   return alert;
+}
+
++ (void)clearAllCachedAlerts {
+  g_id2AlertMap = nil;
 }
 
 @end

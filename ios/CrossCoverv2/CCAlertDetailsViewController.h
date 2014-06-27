@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
+#import "CCSendMessageView.h"
 #import "CCProvider.h"
 
 @interface CCAlertDetailsViewController : UIViewController<UITableViewDataSource,
@@ -16,8 +17,7 @@
 // Views
 @property (strong, nonatomic) IBOutlet UITableView *alertDetailsTableView;
 @property (strong, nonatomic) IBOutlet UIButton *toggleStatusButton;
-@property (strong, nonatomic) IBOutlet UITextField *messageTextField;
-@property (strong, nonatomic) IBOutlet UIView *enterMessageView;
+@property (strong, nonatomic) IBOutlet CCSendMessageView *enterMessageView;
 
 // View State
 @property (strong, nonatomic) UITextField *activeField;

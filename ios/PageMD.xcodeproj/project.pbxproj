@@ -38,6 +38,8 @@
 		7140221E1924260700685482 /* CCSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 7140221C1924260700685482 /* CCSettings.m */; };
 		714176511939D5280060CEE3 /* CCUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 714176501939D5280060CEE3 /* CCUtils.m */; };
 		714176521939D5280060CEE3 /* CCUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 714176501939D5280060CEE3 /* CCUtils.m */; };
+		716F1155195D4DA30024A415 /* CCSendMessageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 716F1154195D4DA30024A415 /* CCSendMessageView.m */; };
+		716F1156195D4DA30024A415 /* CCSendMessageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 716F1154195D4DA30024A415 /* CCSendMessageView.m */; };
 		71AD70F8193078880058A928 /* CCProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 71AD70F7193078880058A928 /* CCProvider.m */; };
 		71AD70F9193078880058A928 /* CCProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 71AD70F7193078880058A928 /* CCProvider.m */; };
 		71E96B09192B2BFE00DBA9E0 /* CCAlertDetailsTableCells.m in Sources */ = {isa = PBXBuildFile; fileRef = 71E96B08192B2BFE00DBA9E0 /* CCAlertDetailsTableCells.m */; };
@@ -94,6 +96,8 @@
 		7140221C1924260700685482 /* CCSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCSettings.m; sourceTree = "<group>"; };
 		7141764F1939D5280060CEE3 /* CCUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCUtils.h; sourceTree = "<group>"; };
 		714176501939D5280060CEE3 /* CCUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCUtils.m; sourceTree = "<group>"; };
+		716F1153195D4DA30024A415 /* CCSendMessageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSendMessageView.h; sourceTree = "<group>"; };
+		716F1154195D4DA30024A415 /* CCSendMessageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCSendMessageView.m; sourceTree = "<group>"; };
 		71AD70F6193078880058A928 /* CCProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCProvider.h; sourceTree = "<group>"; };
 		71AD70F7193078880058A928 /* CCProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCProvider.m; sourceTree = "<group>"; };
 		71E96B07192B2BC800DBA9E0 /* CCAlertDetailsTableCells.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAlertDetailsTableCells.h; sourceTree = "<group>"; };
@@ -198,6 +202,8 @@
 				71EA925119369F7700E6DFBA /* CCAlertTableCells.m */,
 				71AD70F6193078880058A928 /* CCProvider.h */,
 				71AD70F7193078880058A928 /* CCProvider.m */,
+				716F1153195D4DA30024A415 /* CCSendMessageView.h */,
+				716F1154195D4DA30024A415 /* CCSendMessageView.m */,
 				7141764F1939D5280060CEE3 /* CCUtils.h */,
 				714176501939D5280060CEE3 /* CCUtils.m */,
 				476654FF18FB02E700D994B1 /* Images.xcassets */,
@@ -347,6 +353,7 @@
 				476654F418FB02E700D994B1 /* main.m in Sources */,
 				714176511939D5280060CEE3 /* CCUtils.m in Sources */,
 				476654FE18FB02E700D994B1 /* CCOncallViewController.m in Sources */,
+				716F1155195D4DA30024A415 /* CCSendMessageView.m in Sources */,
 				4766552318FB321000D994B1 /* CCAlertDetailsViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -361,6 +368,7 @@
 				71EA925319369F7700E6DFBA /* CCAlertTableCells.m in Sources */,
 				7140221E1924260700685482 /* CCSettings.m in Sources */,
 				71E96B0A192B2BFE00DBA9E0 /* CCAlertDetailsTableCells.m in Sources */,
+				716F1156195D4DA30024A415 /* CCSendMessageView.m in Sources */,
 				4766551318FB02E700D994B1 /* CrossCoverv2Tests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

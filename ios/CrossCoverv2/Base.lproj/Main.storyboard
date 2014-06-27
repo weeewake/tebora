@@ -88,20 +88,10 @@
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <inset key="separatorInset" minX="10" minY="0.0" maxX="10" maxY="0.0"/>
                             </tableView>
-                            <view contentMode="scaleToFill" id="Uah-jt-dML">
+                            <view contentMode="scaleToFill" id="Uah-jt-dML" customClass="CCSendMessageView">
                                 <rect key="frame" x="0.0" y="518" width="320" height="50"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <subviews>
-                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter your message" adjustsFontSizeToFit="NO" minimumFontSize="16" clearButtonMode="whileEditing" id="6up-li-iqt">
-                                        <rect key="frame" x="10" y="10" width="300" height="30"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                                        <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences" returnKeyType="send" enablesReturnKeyAutomatically="YES"/>
-                                    </textField>
-                                </subviews>
-                                <color key="backgroundColor" red="0.96470588235294119" green="0.96470588235294119" blue="0.96470588235294119" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
@@ -124,7 +114,6 @@
                     <connections>
                         <outlet property="alertDetailsTableView" destination="b9E-Ym-ePK" id="Q97-Ah-aNW"/>
                         <outlet property="enterMessageView" destination="Uah-jt-dML" id="aHb-7A-FT3"/>
-                        <outlet property="messageTextField" destination="6up-li-iqt" id="iiJ-fj-fBa"/>
                         <outlet property="toggleStatusButton" destination="szr-j5-5dN" id="UUk-bV-9BV"/>
                     </connections>
                 </viewController>

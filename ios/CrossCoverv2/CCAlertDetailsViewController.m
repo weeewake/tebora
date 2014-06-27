@@ -13,11 +13,12 @@
 #import "CCProvider.h"
 #import "CCUtils.h"
 
-@interface CCAlertDetailsViewController () <CCProviderDelegate>
+@interface CCAlertDetailsViewController () <CCProviderDelegate, UIActionSheetDelegate>
 
 @property (strong, nonatomic) CCAlert *alert;
 @property (strong, nonatomic) NSArray *collatedMessageList;
 @property (strong, nonatomic) UITapGestureRecognizer *dismissKeyboardRecognizer;
+@property (strong, nonatomic) NSArray *quickActionTextArray;
 
 @end
 
@@ -25,7 +26,17 @@
 
 - (void)viewDidLoad {
   [super viewDidLoad];
-  self.messageTextField.delegate = self;
+  self.enterMessageView.messageTextField.delegate = self;
+  [self.enterMessageView.quickActionButton addTarget:self
+                                              action:@selector(quickActionButtonClicked:)
+                                    forControlEvents:UIControlEventTouchUpInside];
+  self.quickActionTextArray =
+      @[
+        @"Sorry, I can't talk right now.",
+        @"I'm on my way.",
+        @"I'll get back to you later.",
+        @"I'll ping you in a few minutes."
+      ];
 
   UITableView *tableView = self.alertDetailsTableView;
   [tableView registerClass:[CCAlertDetailsPatientCell class] forCellReuseIdentifier:@"PatientCell"];
@@ -69,7 +80,7 @@
 - (void)viewWillLayoutSubviews {
   // Keep the message frame at the bottom.
   CGRect bounds = self.view.bounds;
-  CGFloat messageViewHeight = 50.;
+  CGFloat messageViewHeight = 40.;
   CGRect messageViewFrame = CGRectMake(0,
                                        CGRectGetHeight(bounds) - messageViewHeight,
                                        CGRectGetWidth(bounds),
@@ -130,6 +141,22 @@
   }
 }
 
+#pragma mark - Action handlers
+
+- (void)quickActionButtonClicked:(UIButton *)sender {
+  UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Respond with:"
+                                                           delegate:self
+                                                  cancelButtonTitle:nil
+                                             destructiveButtonTitle:nil
+                                                  otherButtonTitles:nil];
+  for (NSString *quickActionText in self.quickActionTextArray) {
+    [actionSheet addButtonWithTitle:quickActionText];
+  }
+  [actionSheet addButtonWithTitle:@"Cancel"];
+  actionSheet.cancelButtonIndex = [self.quickActionTextArray count];
+  [actionSheet showInView:self.view];
+}
+
 - (void)callNursePressed:(UIGestureRecognizer *)gestureRecognizer {
   NSString *phoneCallURL =
       [NSString stringWithFormat:@"tel:%@", self.alert.creator.phone];
@@ -152,7 +179,15 @@
   CGRect enterMessageViewFrame = [self.enterMessageView convertRect:self.enterMessageView.bounds
                                                              toView:nil];
   if (!CGRectContainsPoint(enterMessageViewFrame, touchPoint)) {
-    [self.messageTextField resignFirstResponder];
+    [self.enterMessageView.messageTextField resignFirstResponder];
+  }
+}
+
+# pragma mark - UIActionSheetDelegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+  if (buttonIndex != actionSheet.cancelButtonIndex) {
+    [self.alert sendMessage:self.quickActionTextArray[buttonIndex] fromProvider:self.thisUser];
   }
 }
 
@@ -361,8 +396,8 @@
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
-  [self.alert sendMessage:self.messageTextField.text fromProvider:self.thisUser];
-  self.messageTextField.text = @"";
+  [self.alert sendMessage:self.enterMessageView.messageTextField.text fromProvider:self.thisUser];
+  self.enterMessageView.messageTextField.text = @"";
   return NO;
 }
 

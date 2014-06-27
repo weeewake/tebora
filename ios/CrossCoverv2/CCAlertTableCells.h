@@ -13,6 +13,10 @@
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UILabel *descriptionLabel;
 @property (nonatomic, strong) UILabel *timestampLabel;
+@property (nonatomic, strong) UILabel *markAsReadLabel;
+@property (nonatomic, strong) UILabel *resolveLabel;
+
+@property (nonatomic, assign) BOOL showQuickActions;
 
 + (CGSize)sizeThatFits:(CGSize)size
              withTitle:(NSString *)title

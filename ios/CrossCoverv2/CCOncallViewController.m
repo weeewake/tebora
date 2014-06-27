@@ -22,6 +22,8 @@
 @property (strong, nonatomic) UIView *headerViewBorder;
 @property (strong, nonatomic) UISegmentedControl *segmentedControl;
 
+@property (assign, nonatomic) NSInteger quickActionCellIndex;
+
 @property (strong, nonatomic) NSArray *statusBusyDurationsInSecs;
 @property (strong, nonatomic) NSTimer *statusTimer;
 
@@ -58,6 +60,7 @@
   [super viewWillAppear:animated];
   [self alertListChangedTo:self.thisUser.alerts];
   self.thisUser.delegate = self;
+  self.quickActionCellIndex = -1;
   [self updateStatus];
 }
 
@@ -66,6 +69,7 @@
   if (self.thisUser.delegate == self) {
     self.thisUser.delegate = nil;
   }
+  self.quickActionCellIndex = -1;
   [self clearStatusTimer];
 }
 
@@ -85,6 +89,19 @@
   if (self.statusTimer) {
     [self.statusTimer invalidate];
     self.statusTimer = nil;
+  }
+}
+
+- (void)clearAlertQuickActionsAnimated:(BOOL)animated {
+  if (self.quickActionCellIndex != -1) {
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.quickActionCellIndex inSection:0];
+    self.quickActionCellIndex = -1;
+    CCAlertCell *cell = (CCAlertCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+    if (animated) {
+      [UIView animateWithDuration:0.1 animations:^{ cell.showQuickActions = NO; }];
+    } else {
+      cell.showQuickActions = NO;
+    }
   }
 }
 
@@ -114,6 +131,7 @@
 }
 
 - (void)updateView {
+  [self clearAlertQuickActionsAnimated:YES];
   self.indexesOfCurrentlyDisplayedAlerts =
       [self.alertList indexesOfObjectsPassingTest:^BOOL(CCAlert *thisAlert,
                                                         NSUInteger idx,
@@ -206,10 +224,31 @@
 
   cell.timestampLabel.text =  [CCUtils userVisibleDateStringFromDate:thisAlert.lastUpdatedDate];
 
-  UISwipeGestureRecognizer *swipeGr =
-      [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(cellSwiped:)];
-  swipeGr.direction = UISwipeGestureRecognizerDirectionLeft;
-  [cell addGestureRecognizer:swipeGr];
+  if (self.currentStatusFilter == CCAlertStatusOpen) {
+    UISwipeGestureRecognizer *leftSwipeGr =
+        [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showAlertQuickActions:)];
+    leftSwipeGr.direction = UISwipeGestureRecognizerDirectionLeft;
+    [cell addGestureRecognizer:leftSwipeGr];
+
+    UISwipeGestureRecognizer *rightSwipeGr =
+        [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(hideAlertQuickActions:)];
+    rightSwipeGr.direction = UISwipeGestureRecognizerDirectionRight;
+    [cell addGestureRecognizer:rightSwipeGr];
+
+    UITapGestureRecognizer *resolveTapped =
+        [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(resolveLabelClicked:)];
+    resolveTapped.numberOfTapsRequired = 1;
+    cell.resolveLabel.userInteractionEnabled = YES;
+    [cell.resolveLabel addGestureRecognizer:resolveTapped];
+
+    UITapGestureRecognizer *markReadTapped =
+        [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(markAsReadLabelClicked:)];
+    markReadTapped.numberOfTapsRequired = 1;
+    cell.markAsReadLabel.userInteractionEnabled = YES;
+    [cell.markAsReadLabel addGestureRecognizer:markReadTapped];
+
+    cell.showQuickActions = ([indexPath row] == self.quickActionCellIndex);
+  }
   return cell;
 }
 
@@ -276,18 +315,66 @@
   if (sender.selectedSegmentIndex != 0) {
     self.currentStatusFilter = CCAlertStatusResolved;
   }
+  [self clearAlertQuickActionsAnimated:NO];
   [self updateView];
 }
 
-- (void)cellSwiped:(UISwipeGestureRecognizer *)gr {
+- (void)showAlertQuickActions:(UISwipeGestureRecognizer *)gr {
   if (gr.state == UIGestureRecognizerStateEnded) {
-    [UIView animateWithDuration:0.5
-                     animations:^{
-                     }];
+    CCAlertCell *cell = (CCAlertCell *)gr.view;
+    CCAlertCell *oldCell = nil;
+
+    if (self.quickActionCellIndex != -1) {
+      NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.quickActionCellIndex inSection:0];
+      oldCell = (CCAlertCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+    }
+    self.quickActionCellIndex = [[self.tableView indexPathForCell:cell] row];
+    if (oldCell != cell) {
+      [UIView animateWithDuration:0.1 animations:^{
+          oldCell.showQuickActions = NO;
+          cell.showQuickActions = YES;
+      }];
+    }
   }
 }
 
+- (void)hideAlertQuickActions:(UISwipeGestureRecognizer *)gr {
+  if (gr.state == UIGestureRecognizerStateEnded) {
+    CCAlertCell *cell = (CCAlertCell *)gr.view;
+    if (self.quickActionCellIndex == [[self.tableView indexPathForCell:cell] row]) {
+      self.quickActionCellIndex = -1;
+    }
+    [UIView animateWithDuration:0.1 animations:^{ cell.showQuickActions = NO; }];
+  }
+}
+
+- (void)resolveLabelClicked:(UITapGestureRecognizer *)tapGr {
+  if (self.quickActionCellIndex == -1) {
+    return;
+  }
+  NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.quickActionCellIndex inSection:0];
+  NSUInteger alertIndex = [self indexInAlertListForTableViewIndexPath:indexPath];
+  CCAlert *alert = (CCAlert *)self.alertList[alertIndex];
+  [alert toggleAlertStatus];
+  [self clearAlertQuickActionsAnimated:NO];
+  [self updateView];
+}
+
+- (void)markAsReadLabelClicked:(UITapGestureRecognizer *)tapGr {
+  if (self.quickActionCellIndex == -1) {
+    return;
+  }
+  NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.quickActionCellIndex inSection:0];
+  NSUInteger alertIndex = [self indexInAlertListForTableViewIndexPath:indexPath];
+  CCAlert *alert = (CCAlert *)self.alertList[alertIndex];
+  [alert sendMessage:@"Read" fromProvider:self.thisUser];
+  [self clearAlertQuickActionsAnimated:YES];
+  [self updateView];
+}
+
 - (void)statusButtonClicked:(UIButton *)sender {
+  [self clearAlertQuickActionsAnimated:YES];
+
   UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
                                                            delegate:self
                                                   cancelButtonTitle:nil

@@ -15,6 +15,7 @@ static const CGFloat kImageWidth = 45.;
 static const CGFloat kImageHeight = 45.;
 static const CGFloat kTimestampWidth = 50.;
 static const CGFloat kTitleDescriptionPadding = 5.;
+static const CGFloat kQuickActionWidth = 70;
 
 @interface CCAlertCell ()
 
@@ -27,7 +28,10 @@ static const CGFloat kTitleDescriptionPadding = 5.;
 @synthesize titleLabel = titleLabel_,
             descriptionLabel = descriptionLabel_,
             timestampLabel = timestampLabel_,
-            separator = separator_;
+            separator = separator_,
+            markAsReadLabel = markAsReadLabel_,
+            resolveLabel = resolveLabel_,
+            showQuickActions = showQuickActions_;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
   self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
@@ -35,23 +39,23 @@ static const CGFloat kTitleDescriptionPadding = 5.;
     self.contentView.backgroundColor = [UIColor clearColor];
     titleLabel_ = [[UILabel alloc] initWithFrame:CGRectZero];
     titleLabel_.numberOfLines = 0;
-    titleLabel_.textColor = [UIColor colorWithWhite:0.5 alpha:1.];
+    titleLabel_.textColor = [UIColor colorWithWhite:(151./255.) alpha:1.];
     titleLabel_.textAlignment = NSTextAlignmentLeft;
     titleLabel_.lineBreakMode = NSLineBreakByWordWrapping;
-    titleLabel_.font = [UIFont boldSystemFontOfSize:14.f];
+    titleLabel_.font = [UIFont boldSystemFontOfSize:16.f];
     [self.contentView addSubview:titleLabel_];
 
     descriptionLabel_ = [[UILabel alloc] initWithFrame:CGRectZero];
     descriptionLabel_.numberOfLines = 0;
-    descriptionLabel_.textColor = [UIColor colorWithWhite:0.1 alpha:1.];
+    descriptionLabel_.textColor = [UIColor colorWithWhite:(74./255.) alpha:1.];
     descriptionLabel_.textAlignment = NSTextAlignmentLeft;
     descriptionLabel_.lineBreakMode = NSLineBreakByWordWrapping;
-    descriptionLabel_.font = [UIFont systemFontOfSize:16.f];
+    descriptionLabel_.font = [UIFont systemFontOfSize:14.f];
     [self.contentView addSubview:descriptionLabel_];
 
     timestampLabel_ = [[UILabel alloc] initWithFrame:CGRectZero];
     timestampLabel_.numberOfLines = 1;
-    timestampLabel_.textColor = [UIColor lightGrayColor];
+    timestampLabel_.textColor = [UIColor colorWithWhite:(190./255.) alpha:1.];
     timestampLabel_.textAlignment = NSTextAlignmentRight;
     timestampLabel_.lineBreakMode = NSLineBreakByTruncatingTail;
     timestampLabel_.font = [UIFont systemFontOfSize:12.f];
@@ -62,6 +66,28 @@ static const CGFloat kTitleDescriptionPadding = 5.;
     [self.contentView addSubview:separator_];
 
     self.imageView.contentMode = UIViewContentModeCenter;
+
+    markAsReadLabel_ = [[UILabel alloc] initWithFrame:CGRectZero];
+    markAsReadLabel_.numberOfLines = 2;
+    markAsReadLabel_.textColor = [UIColor whiteColor];
+    markAsReadLabel_.text = @"Mark\nRead";
+    markAsReadLabel_.textAlignment = NSTextAlignmentCenter;
+    markAsReadLabel_.lineBreakMode = NSLineBreakByWordWrapping;
+    markAsReadLabel_.font = [UIFont systemFontOfSize:14.f];
+    markAsReadLabel_.backgroundColor = [CCSettings tintColor];
+    [self.contentView addSubview:markAsReadLabel_];
+
+    resolveLabel_ = [[UILabel alloc] initWithFrame:CGRectZero];
+    resolveLabel_.numberOfLines = 1;
+    resolveLabel_.textColor = [UIColor whiteColor];
+    resolveLabel_.text = @"Resolve";
+    resolveLabel_.textAlignment = NSTextAlignmentCenter;
+    resolveLabel_.lineBreakMode = NSLineBreakByWordWrapping;
+    resolveLabel_.font = [UIFont systemFontOfSize:14.f];
+    resolveLabel_.backgroundColor = [UIColor colorWithRed:(200./255.) green:0 blue:0 alpha:1.];
+    [self.contentView addSubview:resolveLabel_];
+
+    showQuickActions_ = NO;
   }
   return self;
 }
@@ -103,9 +129,28 @@ static const CGFloat kTitleDescriptionPadding = 5.;
                           timestamp:self.timestampLabel.text];
 }
 
+- (void)setShowQuickActions:(BOOL)showQuickActions {
+  showQuickActions_ = showQuickActions;
+  [self layoutSubviews];
+}
+
+- (void)prepareForReuse {
+  [super prepareForReuse];
+  showQuickActions_ = NO;
+  for (UIView *view in @[self, self.imageView, self.resolveLabel, self.markAsReadLabel]) {
+    for (UIGestureRecognizer *gr in [view gestureRecognizers]) {
+      [view removeGestureRecognizer:gr];
+    }
+  }
+}
+
 - (void)layoutSubviews {
   CGSize size = self.bounds.size;
-  self.imageView.frame = CGRectMake(0, 0, kImageWidth + 2 * kLabelPadding, size.height);
+  CGFloat xOffset = 0;
+  if (showQuickActions_) {
+    xOffset = -2 * kQuickActionWidth;
+  }
+  self.imageView.frame = CGRectMake(xOffset, 0, kImageWidth + 2 * kLabelPadding, size.height);
 
   NSDictionary *titleFontAttributes = @{NSFontAttributeName : [UIFont boldSystemFontOfSize:14.f]};
   NSDictionary *descFontAttributes = @{NSFontAttributeName : [UIFont systemFontOfSize:16.f]};
@@ -116,10 +161,11 @@ static const CGFloat kTitleDescriptionPadding = 5.;
                                              options:NSStringDrawingTruncatesLastVisibleLine
                                           attributes:tsFontAttributes
                                              context:nil];
-  self.timestampLabel.frame = CGRectMake(CGRectGetMaxX(self.bounds) - kTimestampWidth - kLabelPadding,
-                                         kLabelPadding,
-                                         kTimestampWidth,
-                                         tsBoundingRect.size.height);
+  self.timestampLabel.frame =
+      CGRectMake(CGRectGetMaxX(self.bounds) - kTimestampWidth - kLabelPadding + xOffset,
+                 kLabelPadding,
+                 kTimestampWidth,
+                 tsBoundingRect.size.height);
 
   // 2 paddings for left/right edge, 1 for image, 1 for timestamp.
   CGSize titleConstraintSize =
@@ -128,7 +174,7 @@ static const CGFloat kTitleDescriptionPadding = 5.;
                                                                 options:NSStringDrawingUsesLineFragmentOrigin
                                                              attributes:titleFontAttributes
                                                                 context:nil];
-  self.titleLabel.frame = CGRectMake(2 * kLabelPadding + kImageWidth,
+  self.titleLabel.frame = CGRectMake(2 * kLabelPadding + kImageWidth + xOffset,
                                      kLabelPadding,
                                      titleConstraintSize.width,
                                      titleBoundingRect.size.height);
@@ -140,16 +186,25 @@ static const CGFloat kTitleDescriptionPadding = 5.;
                                                                   attributes:descFontAttributes
                                                                      context:nil];
   self.descriptionLabel.frame =
-      CGRectMake(2 * kLabelPadding + kImageWidth,
+      CGRectMake(2 * kLabelPadding + kImageWidth + xOffset,
                  kLabelPadding + titleBoundingRect.size.height + kTitleDescriptionPadding,
                  descConstraintSize.width,
                  descBoundingRect.size.height);
 
   CGFloat separatorStartX = CGRectGetMaxX(self.imageView.frame);
-  self.separator.frame = CGRectMake(separatorStartX,
+  self.separator.frame = CGRectMake(separatorStartX + xOffset,
                                     size.height - 1,
-                                    size.width - separatorStartX - kLabelPadding,
+                                    size.width - separatorStartX - kLabelPadding - xOffset,
                                     1);
+
+  markAsReadLabel_.frame = CGRectMake(size.width + kQuickActionWidth + xOffset,
+                                      0,
+                                      kQuickActionWidth,
+                                      size.height);
+  resolveLabel_.frame = CGRectMake(size.width + xOffset,
+                                   0,
+                                   kQuickActionWidth,
+                                   size.height);
 }
 
 @end

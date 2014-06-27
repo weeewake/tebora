@@ -11,6 +11,7 @@
 #import <FirebaseSimpleLogin/FirebaseSimpleLogin.h>
 
 #import "CCAlert.h"
+#import "CCAlertTableCells.h"
 #import "CCSettings.h"
 #import "CCOncallViewController.h"
 #import "CCUtils.h"
@@ -18,7 +19,9 @@
 @interface CCOncallViewController () <CCProviderDelegate, UIActionSheetDelegate>
 
 @property (strong, nonatomic) UIView *headerView;
+@property (strong, nonatomic) UIView *headerViewBorder;
 @property (strong, nonatomic) UISegmentedControl *segmentedControl;
+
 @property (strong, nonatomic) NSArray *statusBusyDurationsInSecs;
 @property (strong, nonatomic) NSTimer *statusTimer;
 
@@ -39,8 +42,12 @@
   // Initialize View
   self.currentStatusFilter = CCAlertStatusOpen;
   self.alertList = @[];
+
+  [self.tableView registerClass:[CCAlertCell class] forCellReuseIdentifier:@"AlertCell"];
   self.tableView.dataSource = self;
   self.tableView.delegate = self;
+  self.tableView.estimatedRowHeight = 65;
+  self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 
   // Remove extra separators at the end of the table view.
   self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
@@ -136,10 +143,11 @@
   }
   [self.segmentedControl setTitle:[NSString stringWithFormat:@"%d Open", openAlertCount]
                 forSegmentAtIndex:0];
-  [self.segmentedControl setTitle:[NSString stringWithFormat:@"%d Resolved", resolvedAlertCount]
+  [self.segmentedControl setTitle:[NSString stringWithFormat:@"%d Resolved    ", resolvedAlertCount]
                 forSegmentAtIndex:1];
-  self.segmentedControl.center = CGPointMake(CGRectGetMidX(self.headerView.bounds),
-                                             CGRectGetMidY(self.headerView.bounds));
+  CGRect bounds = self.headerView.bounds;
+  self.segmentedControl.center = CGPointMake(CGRectGetMidX(bounds), CGRectGetMidY(bounds));
+  self.headerViewBorder.frame = CGRectMake(0, bounds.size.height - 1, bounds.size.width, 1);
   [self.segmentedControl setNeedsLayout];
 }
 
@@ -161,18 +169,31 @@
   return thisIndex;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+  CGSize constraintSize = CGSizeMake(tableView.bounds.size.width, FLT_MAX);
+  NSUInteger thisIndex = [self indexInAlertListForTableViewIndexPath:indexPath];
+  CCAlert *thisAlert = self.alertList[thisIndex];
+  NSString *title = [NSString stringWithFormat:@"%@ - %@", thisAlert.patient.bed, thisAlert.patient.shortName];
+  NSString *timestamp = [CCUtils userVisibleDateStringFromDate:thisAlert.lastUpdatedDate];
+  CGSize cellSize = [CCAlertCell sizeThatFits:constraintSize
+                                    withTitle:title
+                                  description:thisAlert.alertDescription
+                                    timestamp:timestamp];
+  return cellSize.height;
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-  UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"AlertCell"
-                                                          forIndexPath:indexPath];
+  CCAlertCell *cell = [tableView dequeueReusableCellWithIdentifier:@"AlertCell"
+                                                      forIndexPath:indexPath];
 
   NSUInteger thisIndex = [self indexInAlertListForTableViewIndexPath:indexPath];
   CCAlert *thisAlert = self.alertList[thisIndex];
 
-  cell.textLabel.text = [NSString stringWithFormat:@"%@ - %@",
-                         thisAlert.patient.bed,
-                         thisAlert.patient.shortName];
-  cell.detailTextLabel.text = thisAlert.alertDescription;
+  cell.titleLabel.text = [NSString stringWithFormat:@"%@ - %@",
+                          thisAlert.patient.bed,
+                          thisAlert.patient.shortName];
+  cell.descriptionLabel.text = thisAlert.alertDescription;
 
   NSString *imageName = [CCAlert alertTypeStringForType:thisAlert.type];
   cell.imageView.image = [UIImage imageNamed:imageName];
@@ -183,18 +204,12 @@
   tapped.numberOfTapsRequired = 1;
   [cell.imageView addGestureRecognizer:tapped];
 
-  UILabel *timestampLabel;
-  if ([[cell.contentView subviews] count] < 4) {
-    timestampLabel = [[UILabel alloc] initWithFrame:CGRectMake(250, 20, 50, 20)];
-    [cell.contentView addSubview:timestampLabel];
+  cell.timestampLabel.text =  [CCUtils userVisibleDateStringFromDate:thisAlert.lastUpdatedDate];
 
-    timestampLabel.font = [UIFont systemFontOfSize:12.0];
-    timestampLabel.textAlignment = NSTextAlignmentRight;
-    timestampLabel.textColor = [UIColor lightGrayColor];
-  } else {
-    timestampLabel = [cell.contentView subviews][3];
-  }
-  timestampLabel.text =  [CCUtils userVisibleDateStringFromDate:thisAlert.lastUpdatedDate];
+  UISwipeGestureRecognizer *swipeGr =
+      [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(cellSwiped:)];
+  swipeGr.direction = UISwipeGestureRecognizerDirectionLeft;
+  [cell addGestureRecognizer:swipeGr];
   return cell;
 }
 
@@ -211,9 +226,10 @@
   CGRect frame = CGRectMake(0, 0, tableView.bounds.size.width, 50);
   self.headerView = [[UIView alloc] initWithFrame:frame];
   self.headerView.backgroundColor = [UIColor whiteColor];
-  self.headerView.tintColor = [CCSettings tintColor];
-  self.headerView.layer.borderColor = [UIColor colorWithWhite:(214./255.) alpha:1.].CGColor;
-  self.headerView.layer.borderWidth = 1.;
+
+  self.headerViewBorder = [[UIView alloc] initWithFrame:CGRectZero];
+  self.headerViewBorder.backgroundColor = [UIColor colorWithWhite:(214./255.) alpha:1.];
+  [self.headerView addSubview:self.headerViewBorder];
 
   self.segmentedControl = [[UISegmentedControl alloc] initWithItems:@[@"Open", @"Resolved"]];
   self.segmentedControl.selectedSegmentIndex = 0;
@@ -261,6 +277,14 @@
     self.currentStatusFilter = CCAlertStatusResolved;
   }
   [self updateView];
+}
+
+- (void)cellSwiped:(UISwipeGestureRecognizer *)gr {
+  if (gr.state == UIGestureRecognizerStateEnded) {
+    [UIView animateWithDuration:0.5
+                     animations:^{
+                     }];
+  }
 }
 
 - (void)statusButtonClicked:(UIButton *)sender {

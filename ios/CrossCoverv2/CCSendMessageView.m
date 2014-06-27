@@ -81,9 +81,9 @@
                                        _verticalBar.bounds.size.width,
                                        self.bounds.size.height - 10);
   _verticalBar.frame = verticalBarFrame;
-  CGRect textFieldFrame = CGRectMake(8,
+  CGRect textFieldFrame = CGRectMake(15,
                                      8,
-                                     verticalBarFrame.origin.x - 16,
+                                     verticalBarFrame.origin.x - 30,
                                      self.bounds.size.height - 16);
   _messageTextField.frame = textFieldFrame;
 

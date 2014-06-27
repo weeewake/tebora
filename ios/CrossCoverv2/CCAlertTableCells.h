@@ -6,8 +6,17 @@
 //  Copyright (c) 2014 Tebora. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
-@interface CCAlertCell : NSObject
+@interface CCAlertCell : UITableViewCell
+
+@property (nonatomic, strong) UILabel *titleLabel;
+@property (nonatomic, strong) UILabel *descriptionLabel;
+@property (nonatomic, strong) UILabel *timestampLabel;
+
++ (CGSize)sizeThatFits:(CGSize)size
+             withTitle:(NSString *)title
+           description:(NSString *)description
+             timestamp:(NSString *)timestamp;
 
 @end

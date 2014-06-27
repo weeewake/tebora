@@ -13,5 +13,6 @@
 + (UIColor *)alertTextColor;
 + (UIColor *)lightTintColor;
 + (UIColor *)tintColor;
++ (UIColor *)separatorColor;
 
 @end

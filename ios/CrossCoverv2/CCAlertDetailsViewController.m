@@ -49,7 +49,6 @@
     forHeaderFooterViewReuseIdentifier:@"HeaderView"];
   tableView.delegate = self;
   tableView.dataSource = self;
-  tableView.sectionHeaderHeight = 30;
   // Warning: Don't set the estimatedRowHeight. The perf improvement is negligible for us
   // but it messes with scrollToRowAtIndexPath:atScrollPosition:animated:
   // so we can't automatically scroll the last message!

@@ -11,6 +11,7 @@
 static UIColor *alertTextColor;
 static UIColor *lightTintColor;
 static UIColor *tintColor;
+static UIColor *separatorColor;
 
 @implementation CCSettings
 
@@ -33,6 +34,13 @@ static UIColor *tintColor;
     lightTintColor = [UIColor colorWithRed:74.0/255 green:144.0/255 blue:226.0/255 alpha:0.1];
   }
   return lightTintColor;
+}
+
++ (UIColor *)separatorColor {
+  if (separatorColor == nil) {
+    separatorColor = [UIColor colorWithWhite:(214./255.) alpha:1.];
+  }
+  return separatorColor;
 }
 
 @end

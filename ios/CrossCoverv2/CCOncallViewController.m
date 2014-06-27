@@ -17,8 +17,12 @@
 
 @interface CCOncallViewController () <CCProviderDelegate, UIActionSheetDelegate>
 
+@property (strong, nonatomic) UIView *headerView;
+@property (strong, nonatomic) UISegmentedControl *segmentedControl;
 @property (strong, nonatomic) NSArray *statusBusyDurationsInSecs;
 @property (strong, nonatomic) NSTimer *statusTimer;
+
+- (void)segmentedControlValueChanged:(UISegmentedControl *)sender;
 
 @end
 
@@ -103,30 +107,40 @@
 }
 
 - (void)updateView {
-  __block int openAlertCount = 0, resolvedAlertCount = 0;
   self.indexesOfCurrentlyDisplayedAlerts =
       [self.alertList indexesOfObjectsPassingTest:^BOOL(CCAlert *thisAlert,
                                                         NSUInteger idx,
                                                         BOOL *stop) {
           if ((self.currentTypeFilter == CCAlertTypeUnknown) ||
               (thisAlert.type == self.currentTypeFilter)) {
-            if (thisAlert.status == CCAlertStatusOpen) {
-              openAlertCount++;
-            } else {
-              resolvedAlertCount++;
-            }
             return (thisAlert.status == self.currentStatusFilter);
           }
           return NO;
       }];
+  [self updateSegmentedControl];
+  [self updateStatus];
+  [self.tableView reloadData];
+}
 
+- (void)updateSegmentedControl {
+  int openAlertCount = 0, resolvedAlertCount = 0;
+  for (CCAlert *thisAlert in self.alertList) {
+    if ((self.currentTypeFilter == CCAlertTypeUnknown) ||
+        (thisAlert.type == self.currentTypeFilter)) {
+      if (thisAlert.status == CCAlertStatusOpen) {
+        openAlertCount++;
+      } else {
+        resolvedAlertCount++;
+      }
+    }
+  }
   [self.segmentedControl setTitle:[NSString stringWithFormat:@"%d Open", openAlertCount]
                 forSegmentAtIndex:0];
   [self.segmentedControl setTitle:[NSString stringWithFormat:@"%d Resolved", resolvedAlertCount]
                 forSegmentAtIndex:1];
-
-  [self updateStatus];
-  [self.tableView reloadData];
+  self.segmentedControl.center = CGPointMake(CGRectGetMidX(self.headerView.bounds),
+                                             CGRectGetMidY(self.headerView.bounds));
+  [self.segmentedControl setNeedsLayout];
 }
 
 #pragma mark - UITableViewDataSource
@@ -185,6 +199,33 @@
 }
 
 #pragma mark - UITableViewDelegate
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+  return 50;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+  if (self.headerView) {
+    return self.headerView;
+  }
+  CGRect frame = CGRectMake(0, 0, tableView.bounds.size.width, 50);
+  self.headerView = [[UIView alloc] initWithFrame:frame];
+  self.headerView.backgroundColor = [UIColor whiteColor];
+  self.headerView.tintColor = [CCSettings tintColor];
+  self.headerView.layer.borderColor = [UIColor colorWithWhite:(214./255.) alpha:1.].CGColor;
+  self.headerView.layer.borderWidth = 1.;
+
+  self.segmentedControl = [[UISegmentedControl alloc] initWithItems:@[@"Open", @"Resolved"]];
+  self.segmentedControl.selectedSegmentIndex = 0;
+  self.segmentedControl.backgroundColor = [UIColor whiteColor];
+  self.segmentedControl.tintColor = [CCSettings tintColor];
+  [self.segmentedControl addTarget:self
+                            action:@selector(segmentedControlValueChanged:)
+                  forControlEvents:UIControlEventValueChanged];
+  [self.headerView addSubview:self.segmentedControl];
+  [self updateSegmentedControl];
+  return self.headerView;
+}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
   [tableView deselectRowAtIndexPath:indexPath animated:YES];

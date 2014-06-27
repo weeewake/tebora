@@ -66,6 +66,23 @@
   [self.navigationController.view removeGestureRecognizer:self.dismissKeyboardRecognizer];
 }
 
+- (void)viewWillLayoutSubviews {
+  // Keep the message frame at the bottom.
+  CGRect bounds = self.view.bounds;
+  CGFloat messageViewHeight = 50.;
+  CGRect messageViewFrame = CGRectMake(0,
+                                       CGRectGetHeight(bounds) - messageViewHeight,
+                                       CGRectGetWidth(bounds),
+                                       messageViewHeight);
+  self.enterMessageView.frame = messageViewFrame;
+
+  // Adjust the tableview to be above the enter message view.
+  CGRect tableFrame = self.alertDetailsTableView.frame;
+  CGFloat diff = CGRectGetMaxY(tableFrame) - messageViewFrame.origin.y;
+  tableFrame.size.height -= diff;
+  self.alertDetailsTableView.frame = tableFrame;
+}
+
 - (void)registerForKeyboardNotifications {
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(keyboardWillShow:)

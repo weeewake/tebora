@@ -70,21 +70,6 @@
   [self updateView];
 }
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-  self.thisUser.delegate = nil;
-  if ([segue.destinationViewController isKindOfClass:[CCAlertDetailsViewController class]]) {
-    self.title = nil;
-    CCAlertDetailsViewController *alertDetailsVC = segue.destinationViewController;
-    alertDetailsVC.alertId = (NSString *)sender;
-    alertDetailsVC.thisUser = self.thisUser;
-  } else if ([segue.destinationViewController isKindOfClass:[self class]]) {
-    self.title = @"All";
-    CCOncallViewController *oncallVc = segue.destinationViewController;
-    oncallVc.currentTypeFilter = (CCAlertType)[(NSNumber *)sender intValue];
-    oncallVc.thisUser = self.thisUser;
-  }
-}
-
 - (void)clearStatusTimer {
   if (self.statusTimer) {
     [self.statusTimer invalidate];
@@ -202,15 +187,14 @@
 #pragma mark - UITableViewDelegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-  NSUInteger thisIndex = [self indexInAlertListForTableViewIndexPath:indexPath];
-  CCAlert *alert = self.alertList[thisIndex];
-  NSString *segueIdentifier = @"HomeToAlertDetails";
-  if (self.currentTypeFilter != CCAlertTypeUnknown) {
-    // We're in the filter view, run the right segue.
-    segueIdentifier = @"AlertTypeToAlertDetails";
-  }
-  [self performSegueWithIdentifier:segueIdentifier sender:alert.alertId];
   [tableView deselectRowAtIndexPath:indexPath animated:YES];
+  self.title = nil;
+  CCAlertDetailsViewController *alertDetailsVC =
+      [self.storyboard instantiateViewControllerWithIdentifier:@"alertdetailsvc"];
+  NSUInteger thisIndex = [self indexInAlertListForTableViewIndexPath:indexPath];
+  alertDetailsVC.alertId = ((CCAlert *)self.alertList[thisIndex]).alertId;
+  alertDetailsVC.thisUser = self.thisUser;
+  [self.navigationController pushViewController:alertDetailsVC animated:YES];
 }
 
 #pragma mark - Action Handlers
@@ -220,10 +204,14 @@
     // We're already in the filter view, nothing to filter again.
     return;
   }
-  UITapGestureRecognizer *gesture = (UITapGestureRecognizer *)sender;
-  CCAlert *alert = self.alertList[gesture.view.tag];
-  [self performSegueWithIdentifier:@"HomeToAlertTypeFilter"
-                            sender:[NSNumber numberWithInt:(int)alert.type]];
+  self.title = @"All";
+  self.thisUser.delegate = nil;
+  CCOncallViewController *alertTypeVC =
+      [self.storyboard instantiateViewControllerWithIdentifier:@"oncallvc"];
+  CCAlert *alert = self.alertList[((UITapGestureRecognizer *)sender).view.tag];
+  alertTypeVC.currentTypeFilter = alert.type;
+  alertTypeVC.thisUser = self.thisUser;
+  [self.navigationController pushViewController:alertTypeVC animated:YES];
 }
 
 - (void)segmentedControlValueChanged:(UISegmentedControl *)sender {

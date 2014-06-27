@@ -7,7 +7,7 @@
         <!--Oncall View Controller-->
         <scene sceneID="ufC-wZ-h7g">
             <objects>
-                <viewController id="vXZ-lx-hvc" customClass="CCOncallViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="oncallvc" id="vXZ-lx-hvc" customClass="CCOncallViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="kh9-bI-dsS">
                         <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -86,8 +86,6 @@
                         <outlet property="segmentedControl" destination="6l3-cU-JA0" id="vfQ-Mv-uhR"/>
                         <outlet property="statusButton" destination="YEa-zp-TQv" id="QMg-mW-jc7"/>
                         <outlet property="tableView" destination="eHB-d3-Zcp" id="O4w-JB-xKE"/>
-                        <segue destination="QRl-in-YZU" kind="push" identifier="HomeToAlertDetails" id="299-QQ-Q9Y"/>
-                        <segue destination="mQ9-u3-639" kind="push" identifier="HomeToAlertTypeFilter" id="ypH-yo-YOT"/>
                         <segue destination="HeH-8g-VPz" kind="unwind" identifier="UnwindToLogin" unwindAction="unwindToLoginViewController:" id="T3e-a0-Nth"/>
                     </connections>
                 </viewController>
@@ -99,13 +97,13 @@
         <!--Alert Details View Controller-->
         <scene sceneID="QRn-tw-XyM">
             <objects>
-                <viewController id="QRl-in-YZU" customClass="CCAlertDetailsViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="alertdetailsvc" id="QRl-in-YZU" customClass="CCAlertDetailsViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="nOR-nn-vyL">
-                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" keyboardDismissMode="onDrag" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="65" sectionHeaderHeight="30" sectionFooterHeight="1" id="b9E-Ym-ePK">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="454"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="518"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <inset key="separatorInset" minX="10" minY="0.0" maxX="10" maxY="0.0"/>
@@ -169,7 +167,7 @@
                                 <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                <textInputTraits key="textInputTraits" returnKeyType="next"/>
+                                <textInputTraits key="textInputTraits" autocorrectionType="no" keyboardType="emailAddress" returnKeyType="next" enablesReturnKeyAutomatically="YES"/>
                                 <connections>
                                     <outlet property="delegate" destination="3o3-2A-9ds" id="68W-BX-gv3"/>
                                 </connections>
@@ -181,7 +179,7 @@
                                 <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
+                                <textInputTraits key="textInputTraits" autocorrectionType="no" returnKeyType="done" enablesReturnKeyAutomatically="YES" secureTextEntry="YES"/>
                                 <connections>
                                     <outlet property="delegate" destination="3o3-2A-9ds" id="SAV-JW-OUJ"/>
                                 </connections>
@@ -272,58 +270,6 @@
             </objects>
             <point key="canvasLocation" x="-1340" y="600"/>
         </scene>
-        <!--Oncall View Controller-->
-        <scene sceneID="sBx-6A-Q1p">
-            <objects>
-                <viewController id="mQ9-u3-639" customClass="CCOncallViewController" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="4JK-9G-mZI">
-                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="78" sectionHeaderHeight="22" sectionFooterHeight="22" id="gDQ-xo-p0t">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="504"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <prototypes>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="AlertCell" textLabel="L8l-Ic-euo" detailTextLabel="BX3-Qk-HTx" rowHeight="78" style="IBUITableViewCellStyleSubtitle" id="bld-I6-gjp">
-                                        <rect key="frame" x="0.0" y="22" width="320" height="78"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="bld-I6-gjp" id="Lpf-m4-33Y">
-                                            <rect key="frame" x="0.0" y="0.0" width="320" height="77"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Bed + Patient Name" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" id="L8l-Ic-euo">
-                                                    <rect key="frame" x="15" y="23" width="114" height="15"/>
-                                                    <autoresizingMask key="autoresizingMask"/>
-                                                    <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="12"/>
-                                                    <color key="textColor" red="0.56862745100000001" green="0.56862745100000001" blue="0.56862745100000001" alpha="1" colorSpace="calibratedRGB"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Alert timestamp" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="BX3-Qk-HTx">
-                                                    <rect key="frame" x="15" y="38" width="99" height="17"/>
-                                                    <autoresizingMask key="autoresizingMask"/>
-                                                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="14"/>
-                                                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                            </subviews>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
-                                </prototypes>
-                            </tableView>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                    </view>
-                    <navigationItem key="navigationItem" id="tIO-Ru-hlL"/>
-                    <connections>
-                        <outlet property="tableView" destination="gDQ-xo-p0t" id="qBk-jK-i52"/>
-                        <segue destination="QRl-in-YZU" kind="push" identifier="AlertTypeToAlertDetails" id="f4a-zw-Bcd"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="3ed-zR-BfA" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-368" y="-206"/>
-        </scene>
     </scenes>
     <resources>
         <image name="StatusAvailable" width="14" height="14"/>
@@ -335,7 +281,4 @@
         <simulatedOrientationMetrics key="orientation"/>
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
-    <inferredMetricsTieBreakers>
-        <segue reference="299-QQ-Q9Y"/>
-    </inferredMetricsTieBreakers>
 </document>

@@ -226,9 +226,7 @@
         [tableView dequeueReusableHeaderFooterViewWithIdentifier:@"AlertMessageHeader"];
     headerView.messageLabel.text = self.alert.alertDescription;
     headerView.timestampLabel.text = [CCUtils userVisibleDateStringFromDate:self.alert.creationDate];
-//    if (![self.alert.creator.uid isEqualToString:self.thisUser.uid]) {
-//      name = self.alert.creator.displayName;
-//    }
+    headerView.alertTypeString = [CCAlert alertTypeStringForType:self.alert.type];
     return headerView;
   } else {
     UITableViewHeaderFooterView *headerView =

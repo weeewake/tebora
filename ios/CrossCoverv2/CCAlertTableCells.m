@@ -187,10 +187,9 @@ static const CGFloat kQuickActionWidth = 70;
                  constraintSize.width,
                  descBoundingRect.size.height);
 
-  CGFloat separatorStartX = CGRectGetMaxX(self.imageView.frame);
-  self.separator.frame = CGRectMake(separatorStartX + xOffset,
+  self.separator.frame = CGRectMake(kLabelPadding + xOffset,
                                     size.height - 1,
-                                    size.width - separatorStartX - kLabelPadding - xOffset,
+                                    size.width - 2 * kLabelPadding - xOffset,
                                     1);
 
   markAsReadLabel_.frame = CGRectMake(size.width + kQuickActionWidth + xOffset,

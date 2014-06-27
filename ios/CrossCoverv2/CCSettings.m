@@ -38,7 +38,7 @@ static UIColor *separatorColor;
 
 + (UIColor *)separatorColor {
   if (separatorColor == nil) {
-    separatorColor = [UIColor colorWithWhite:(214./255.) alpha:1.];
+    separatorColor = [UIColor colorWithWhite:(230./255.) alpha:1.];
   }
   return separatorColor;
 }

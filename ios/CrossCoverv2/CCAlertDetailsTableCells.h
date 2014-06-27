@@ -54,8 +54,7 @@
 
 @property (nonatomic, strong) UILabel *messageLabel;
 @property (nonatomic, strong) UILabel *timestampLabel;
-@property (nonatomic, strong) UIImage *alertTypeImage;
-
+@property (nonatomic, strong) NSString *alertTypeString;
 
 + (CGSize)sizeThatFits:(CGSize)size
            withMessage:(NSString *)message

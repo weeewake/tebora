@@ -17,7 +17,7 @@ static const CGFloat kConversationBubbleViewShorterPadding = 10.f;
 static const CGFloat kConversationDividerHeight = 1.f;
 static const CGFloat kConversationBubbleViewWidth = 210.f;
 static const UIEdgeInsets kAlertHeaderInsets = { 13, 10, 10, 10 };  // top, left, bottom, right
-static const CGSize kAlertHeaderImageSize = { 35, 40 };  // width, height
+static const CGSize kAlertHeaderImageSize = { 45, 45 };  // width, height
 static const UIEdgeInsets kAlertHeaderImageMargins = { 0, 0, 5, 10 };  // top, left, bottom, right
 
 @implementation CCAlertDetailsPatientCell
@@ -523,20 +523,23 @@ static const UIEdgeInsets kAlertHeaderImageMargins = { 0, 0, 5, 10 };  // top, l
 
 @implementation CCAlertDetailsAlertHeader
 
-@synthesize messageLabel = messageLabel_,
-          timestampLabel = timestampLabel_,
-          alertTypeImage = alertTypeImage_,
-             changeLabel = changeLabel_,
-      alertTypeImageView = alertTypeImageView_;
+@synthesize messageLabel  = messageLabel_,
+          timestampLabel  = timestampLabel_,
+          alertTypeString = alertTypeString_,
+             changeLabel  = changeLabel_,
+      alertTypeImageView  = alertTypeImageView_;
 
 - (id)initWithReuseIdentifier:(NSString *)reuseIdentifier {
   self = [super initWithReuseIdentifier:reuseIdentifier];
   if (self) {
+    self.contentView.backgroundColor = [UIColor colorWithWhite:(144./255.) alpha:0.1];
+
     messageLabel_ = [[UILabel alloc] initWithFrame:CGRectZero];
     messageLabel_.numberOfLines = 0;
     messageLabel_.textAlignment = NSTextAlignmentLeft;
     messageLabel_.lineBreakMode = NSLineBreakByWordWrapping;
     messageLabel_.font = [[self class] messageLabelFont];
+    messageLabel_.textColor = [UIColor colorWithWhite:(100./255.) alpha:1.];
     [self.contentView addSubview:messageLabel_];
 
     timestampLabel_ = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -544,6 +547,7 @@ static const UIEdgeInsets kAlertHeaderImageMargins = { 0, 0, 5, 10 };  // top, l
     timestampLabel_.textAlignment = NSTextAlignmentRight;
     timestampLabel_.lineBreakMode = NSLineBreakByTruncatingTail;
     timestampLabel_.font = [[self class] timestampLabelFont];
+    timestampLabel_.textColor = [UIColor colorWithWhite:(155./255.) alpha:1.];
     [self.contentView addSubview:timestampLabel_];
 
     changeLabel_ = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -552,29 +556,30 @@ static const UIEdgeInsets kAlertHeaderImageMargins = { 0, 0, 5, 10 };  // top, l
     changeLabel_.lineBreakMode = NSLineBreakByTruncatingTail;
     changeLabel_.font = [[self class] changeLabelFont];
     changeLabel_.text = [[self class] changeLabelText];
-    changeLabel_.textColor = [UIColor blueColor];
+    changeLabel_.textColor = [UIColor colorWithRed:0 green:(124./255.) blue:(255./255.) alpha:1.];
     [self.contentView addSubview:changeLabel_];
   }
   return self;
 }
 
-- (void)setAlertTypeImage:(UIImage *)alertTypeImage {
-  alertTypeImage_ = alertTypeImage;
+- (void)setAlertTypeString:(NSString *)alertTypeString {
+  alertTypeString_ = alertTypeString;
+  UIImage *image = [UIImage imageNamed:alertTypeString];
   [alertTypeImageView_ removeFromSuperview];
-  alertTypeImageView_ = [[UIImageView alloc] initWithImage:alertTypeImage_];
+  alertTypeImageView_ = [[UIImageView alloc] initWithImage:image];
   [self.contentView addSubview:alertTypeImageView_];
 }
 
 + (UIFont *)messageLabelFont {
-  return [UIFont fontWithName:@"HelveticaNeue-Light" size:17.];
+  return [UIFont fontWithName:@"HelveticaNeue" size:17.];
 }
 
 + (UIFont *)timestampLabelFont {
-  return [UIFont systemFontOfSize:12.f];
+  return [UIFont fontWithName:@"HelveticaNeue-Light" size:12.];
 }
 
 + (UIFont *)changeLabelFont {
-  return [UIFont fontWithName:@"HelveticaNeue-Thin" size:12.];
+  return [UIFont fontWithName:@"HelveticaNeue" size:11.];
 }
 
 + (NSString *)changeLabelText {
@@ -619,7 +624,10 @@ static const UIEdgeInsets kAlertHeaderImageMargins = { 0, 0, 5, 10 };  // top, l
 
 - (void)layoutSubviews {
   CGSize size = self.bounds.size;
-  // TODO: layout self.alertTypeImageView_
+  alertTypeImageView_.frame = CGRectMake(kAlertHeaderInsets.left + kAlertHeaderImageMargins.left,
+                                         kAlertHeaderInsets.top + kAlertHeaderImageMargins.top,
+                                         kAlertHeaderImageSize.width,
+                                         kAlertHeaderImageSize.height);
   CGSize changeLabelSize =
       [changeLabel_.text boundingRectWithSize:size
                                       options:NSStringDrawingUsesLineFragmentOrigin
@@ -632,6 +640,11 @@ static const UIEdgeInsets kAlertHeaderImageMargins = { 0, 0, 5, 10 };  // top, l
                                   changeLabelY,
                                   ceil(changeLabelSize.width),
                                   ceil(changeLabelSize.height));
+  // Center align image and change label.
+  CGPoint changeLabelCenter = changeLabel_.center;
+  changeLabelCenter.x = alertTypeImageView_.center.x;
+  changeLabel_.center = changeLabelCenter;
+
   CGFloat textX = kAlertHeaderInsets.left + kAlertHeaderImageMargins.right
       + kAlertHeaderImageMargins.left + MAX(ceil(changeLabelSize.width), kAlertHeaderImageSize.width);
   CGFloat textWidth = size.width - textX - kAlertHeaderInsets.right;

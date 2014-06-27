@@ -19,6 +19,7 @@
 @property (strong, nonatomic) NSArray *collatedMessageList;
 @property (strong, nonatomic) UITapGestureRecognizer *dismissKeyboardRecognizer;
 @property (strong, nonatomic) NSArray *quickActionTextArray;
+@property (assign, nonatomic) NSInteger kbHeight;
 
 @end
 
@@ -26,6 +27,7 @@
 
 - (void)viewDidLoad {
   [super viewDidLoad];
+  self.kbHeight = 0;
   self.enterMessageView.messageTextField.delegate = self;
   [self.enterMessageView.quickActionButton addTarget:self
                                               action:@selector(quickActionButtonClicked:)
@@ -43,6 +45,7 @@
   [tableView registerClass:[CCAlertDetailsNurseCell class] forCellReuseIdentifier:@"NurseCell"];
   [tableView registerClass:[CCAlertDetailsConversationCell class]
     forCellReuseIdentifier:@"ConversationCell"];
+  [tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"DummyCell"];
   [tableView registerClass:[CCAlertDetailsAlertHeader class]
     forHeaderFooterViewReuseIdentifier:@"AlertMessageHeader"];
   [tableView registerClass:[UITableViewHeaderFooterView class]
@@ -81,15 +84,14 @@
   CGRect bounds = self.view.bounds;
   CGFloat messageViewHeight = 40.;
   CGRect messageViewFrame = CGRectMake(0,
-                                       CGRectGetHeight(bounds) - messageViewHeight,
+                                       CGRectGetMaxY(bounds) - messageViewHeight - self.kbHeight,
                                        CGRectGetWidth(bounds),
                                        messageViewHeight);
   self.enterMessageView.frame = messageViewFrame;
 
   // Adjust the tableview to be above the enter message view.
   CGRect tableFrame = self.alertDetailsTableView.frame;
-  CGFloat diff = CGRectGetMaxY(tableFrame) - messageViewFrame.origin.y;
-  tableFrame.size.height -= diff;
+  tableFrame.size.height = CGRectGetMinY(messageViewFrame) - CGRectGetMinY(tableFrame);
   self.alertDetailsTableView.frame = tableFrame;
 }
 
@@ -264,15 +266,10 @@
     NSMutableArray *messages = [[NSMutableArray alloc] init];
     NSMutableArray *timestamps = [[NSMutableArray alloc] init];
     BOOL isAlertMessage = (row == 0);
-    if (row == 0) {
-      messages = [@[self.alert.alertDescription] mutableCopy];
-      timestamps = [@[[CCUtils userVisibleDateStringFromDate:self.alert.creationDate]] mutableCopy];
-      if (![self.alert.creator.uid isEqualToString:self.thisUser.uid]) {
-        name = self.alert.creator.displayName;
-      }
+    if (row == [self.collatedMessageList count]) {
+      cellSize = CGSizeMake(constraintSize.width, 1);  // This is the dummy view at the end.
     } else {
-      NSMutableArray *alertMessages = self.collatedMessageList[row-1];
-      for (CCAlertMessage *alertMessage in alertMessages) {
+      for (CCAlertMessage *alertMessage in self.collatedMessageList[row]) {
         [messages addObject:alertMessage.message];
         [timestamps addObject:[CCUtils userVisibleDateStringFromDate:alertMessage.date]];
         if (name == nil && ![alertMessage.sender.uid isEqualToString:self.thisUser.uid]) {
@@ -309,7 +306,7 @@
   switch(section) {
     case 0: return 1;
     case 1: return 1;
-    case 2: return 1 + [self.collatedMessageList count];
+    case 2: return 1 + [self.collatedMessageList count];  // +1 is for the dummy cell at the end.
   }
   return 0;
 }
@@ -347,40 +344,36 @@
 
     case 2: {
       NSInteger row = indexPath.row;
-      NSString *name = nil;
-      NSMutableArray *messages = [[NSMutableArray alloc] init];
-      NSMutableArray *timestamps = [[NSMutableArray alloc] init];
-      if (row == 0) {
-        messages = [@[self.alert.alertDescription] mutableCopy];
-        timestamps = [@[[CCUtils userVisibleDateStringFromDate:self.alert.creationDate]] mutableCopy];
-        if (![self.alert.creator.uid isEqualToString:self.thisUser.uid]) {
-          name = self.alert.creator.displayName;
-        }
+      if (row == [self.collatedMessageList count]) {
+        tableViewCell = [tableView dequeueReusableCellWithIdentifier:@"DummyCell"];
+        tableViewCell.backgroundColor = [UIColor clearColor];
+        tableViewCell.frame = CGRectMake(0, 0, tableView.bounds.size.width, 1);
       } else {
-        NSMutableArray *alertMessages = self.collatedMessageList[row-1];
-        for (CCAlertMessage *alertMessage in alertMessages) {
+        NSString *name = nil;
+        NSMutableArray *messages = [[NSMutableArray alloc] init];
+        NSMutableArray *timestamps = [[NSMutableArray alloc] init];
+        for (CCAlertMessage *alertMessage in self.collatedMessageList[row]) {
           [messages addObject:alertMessage.message];
           [timestamps addObject:[CCUtils userVisibleDateStringFromDate:alertMessage.date]];
           if (name == nil && ![alertMessage.sender.uid isEqualToString:self.thisUser.uid]) {
             name = alertMessage.sender.displayName;
           }
         }
-      }
+        CCAlertDetailsConversationCell *cell =
+            [tableView dequeueReusableCellWithIdentifier:@"ConversationCell"];
+        cell.isAlertMessage = (row == 0);
+        cell.messages = messages;
+        cell.timestamps = timestamps;
+        if (name == nil || [name isEqualToString:@""]) {
+          cell.nameLabel.text = @"";
+          cell.isMyMessage = YES;
+        } else {
+          cell.nameLabel.text = name;
+          cell.isMyMessage = NO;
+        }
 
-      CCAlertDetailsConversationCell *cell =
-          [tableView dequeueReusableCellWithIdentifier:@"ConversationCell"];
-      cell.isAlertMessage = (row == 0);
-      cell.messages = messages;
-      cell.timestamps = timestamps;
-      if (name == nil || [name isEqualToString:@""]) {
-        cell.nameLabel.text = @"";
-        cell.isMyMessage = YES;
-      } else {
-        cell.nameLabel.text = name;
-        cell.isMyMessage = NO;
+        tableViewCell = cell;
       }
-
-      tableViewCell = cell;
       break;
     }
   }
@@ -404,48 +397,37 @@
   [self.navigationController.view addGestureRecognizer:self.dismissKeyboardRecognizer];
 
   NSDictionary* info = [aNotification userInfo];
-  CGFloat kbHeight = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size.height;
+  self.kbHeight = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size.height;
   NSTimeInterval duration = [[info objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
   UIViewAnimationCurve curve = [[info objectForKey:UIKeyboardAnimationCurveUserInfoKey] integerValue];
   UIViewAnimationOptions options = (curve << 16) | UIViewAnimationOptionBeginFromCurrentState;
 
   // Adjust the text entry field, tableview
   CGRect enterMessageViewFrame = self.enterMessageView.frame;
-  enterMessageViewFrame.origin.y -= kbHeight;
+  enterMessageViewFrame.origin.y =
+      CGRectGetMaxY(self.view.bounds) - enterMessageViewFrame.size.height - self.kbHeight;
 
-  UITableView *tableView = self.alertDetailsTableView;
-  UIEdgeInsets contentInsets = tableView.contentInset;
-  contentInsets.bottom += kbHeight;
-  UIEdgeInsets scrollIndicatorInsets = tableView.scrollIndicatorInsets;
-  scrollIndicatorInsets.bottom += kbHeight;
-
-  // Change the contentOffset only when the user is at bottom.
-  // In that case, the animation is nice as if the keyboard is pushing the tableview up.
-  // If the user is not at bottom, we depend on scrollToBottomOfTableView:animated:
-  CGPoint contentOffset = tableView.contentOffset;
-  if ([self isLastMessageVisible:tableView]) {
-    contentOffset.y = tableView.contentSize.height - tableView.frame.size.height + kbHeight;
-  }
+  // Adjust the tableview to be above the enter message view.
+  CGRect tableFrame = self.alertDetailsTableView.frame;
+  tableFrame.size.height = CGRectGetMinY(enterMessageViewFrame) - CGRectGetMinY(tableFrame);
 
   [UIView animateWithDuration:duration
                         delay:0.
                       options:options
                    animations:^{
                      self.enterMessageView.frame = enterMessageViewFrame;
-                     tableView.contentOffset = contentOffset;
-                     tableView.contentInset = contentInsets;
-                     tableView.scrollIndicatorInsets = scrollIndicatorInsets;
+                     self.alertDetailsTableView.frame = tableFrame;
                    }
                    completion:^(BOOL finished) {
-                     [self scrollToBottomOfTableView:tableView animated:YES];
+                     [self scrollToBottomOfTableView:self.alertDetailsTableView animated:YES];
                    }];
 }
 
 - (void)keyboardWillHide:(NSNotification*)aNotification {
   [self.navigationController.view removeGestureRecognizer:self.dismissKeyboardRecognizer];
+  self.kbHeight = 0;
 
   NSDictionary* info = [aNotification userInfo];
-  CGFloat kbHeight = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size.height;
   NSTimeInterval duration = [[info objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
   UIViewAnimationCurve curve = [[info objectForKey:UIKeyboardAnimationCurveUserInfoKey] integerValue];
   UIViewAnimationOptions options = (curve << 16) | UIViewAnimationOptionBeginFromCurrentState;
@@ -454,39 +436,25 @@
   CGRect enterMessageViewFrame = self.enterMessageView.frame;
   enterMessageViewFrame.origin.y =
       CGRectGetMaxY(self.view.bounds) - enterMessageViewFrame.size.height;
-  UITableView *tableView = self.alertDetailsTableView;
-  UIEdgeInsets contentInsets = tableView.contentInset;
-  contentInsets.bottom = 0;
-  UIEdgeInsets scrollIndicatorInsets = tableView.scrollIndicatorInsets;
-  scrollIndicatorInsets.bottom = 0;
 
-  CGPoint contentOffset = tableView.contentOffset;
-  contentOffset.y -= kbHeight;
-  if (contentOffset.y < 0) contentOffset.y = 0;
+  // Adjust the tableview to be above the enter message view.
+  CGRect tableFrame = self.alertDetailsTableView.frame;
+  tableFrame.size.height = CGRectGetMinY(enterMessageViewFrame) - CGRectGetMinY(tableFrame);
 
   [UIView animateWithDuration:duration
                         delay:0.
                       options:options
                    animations:^{
                      self.enterMessageView.frame = enterMessageViewFrame;
-                     tableView.contentOffset = contentOffset;
-                     tableView.contentInset = contentInsets;
-                     tableView.scrollIndicatorInsets = scrollIndicatorInsets;
+                     self.alertDetailsTableView.frame = tableFrame;
                    }
                    completion:nil];
 }
 
 - (BOOL)hasUserScrolledToBottomOfTableView:(UITableView *)tableView {
-  CGFloat contentHeight = tableView.contentSize.height + tableView.contentInset.bottom;
+  CGFloat contentHeight = floor(tableView.contentSize.height + tableView.contentInset.bottom);
   if ((contentHeight > tableView.frame.size.height) &&
       ((tableView.contentOffset.y + tableView.frame.size.height) >= contentHeight)) {
-    return YES;
-  }
-  return NO;
-}
-
-- (BOOL)isLastMessageVisible:(UITableView *)tableView {
-  if ((tableView.contentOffset.y + tableView.frame.size.height) >= tableView.contentSize.height) {
     return YES;
   }
   return NO;
@@ -497,7 +465,7 @@
   NSInteger maxSection = [self numberOfSectionsInTableView:tableView] - 1;
   NSInteger maxRow = [self tableView:tableView numberOfRowsInSection:maxSection] - 1;
   [tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:maxRow inSection:maxSection]
-                   atScrollPosition:UITableViewScrollPositionTop
+                   atScrollPosition:UITableViewScrollPositionBottom
                            animated:animated];
 }
 

@@ -100,16 +100,14 @@ static const CGFloat kQuickActionWidth = 70;
   NSDictionary *descFontAttributes = @{NSFontAttributeName : [UIFont systemFontOfSize:16.f]};
 
   // 2 paddings for left/right edge, 1 for image, 1 for timestamp.
-  CGSize titleConstraintSize =
+  CGSize constraintSize =
       CGSizeMake(size.width - kImageWidth - 4 * kLabelPadding - kTimestampWidth, CGFLOAT_MAX);
-  CGRect titleBoundingRect = [title boundingRectWithSize:titleConstraintSize
+  CGRect titleBoundingRect = [title boundingRectWithSize:constraintSize
                                                  options:NSStringDrawingUsesLineFragmentOrigin
                                               attributes:titleFontAttributes
                                                  context:nil];
 
-  // 2 paddings for left/right edge, 1 for image. Timestamp is aligned with title.
-  CGSize descConstraintSize = CGSizeMake(size.width - kImageWidth - 3 * kLabelPadding, CGFLOAT_MAX);
-  CGRect descBoundingRect = [description boundingRectWithSize:descConstraintSize
+  CGRect descBoundingRect = [description boundingRectWithSize:constraintSize
                                                       options:NSStringDrawingUsesLineFragmentOrigin
                                                    attributes:descFontAttributes
                                                       context:nil];
@@ -168,27 +166,25 @@ static const CGFloat kQuickActionWidth = 70;
                  tsBoundingRect.size.height);
 
   // 2 paddings for left/right edge, 1 for image, 1 for timestamp.
-  CGSize titleConstraintSize =
+  CGSize constraintSize =
       CGSizeMake(size.width - kImageWidth - 4 * kLabelPadding - kTimestampWidth, CGFLOAT_MAX);
-  CGRect titleBoundingRect = [self.titleLabel.text boundingRectWithSize:titleConstraintSize
+  CGRect titleBoundingRect = [self.titleLabel.text boundingRectWithSize:constraintSize
                                                                 options:NSStringDrawingUsesLineFragmentOrigin
                                                              attributes:titleFontAttributes
                                                                 context:nil];
   self.titleLabel.frame = CGRectMake(2 * kLabelPadding + kImageWidth + xOffset,
                                      kLabelPadding,
-                                     titleConstraintSize.width,
+                                     constraintSize.width,
                                      titleBoundingRect.size.height);
 
-  // 2 paddings for left/right edge, 1 for image. Timestamp is aligned with title.
-  CGSize descConstraintSize = CGSizeMake(size.width - kImageWidth - 3 * kLabelPadding, CGFLOAT_MAX);
-  CGRect descBoundingRect = [self.descriptionLabel.text boundingRectWithSize:descConstraintSize
+  CGRect descBoundingRect = [self.descriptionLabel.text boundingRectWithSize:constraintSize
                                                                      options:NSStringDrawingUsesLineFragmentOrigin
                                                                   attributes:descFontAttributes
                                                                      context:nil];
   self.descriptionLabel.frame =
       CGRectMake(2 * kLabelPadding + kImageWidth + xOffset,
-                 kLabelPadding + titleBoundingRect.size.height + kTitleDescriptionPadding,
-                 descConstraintSize.width,
+                 kLabelPadding + ceil(titleBoundingRect.size.height) + kTitleDescriptionPadding,
+                 constraintSize.width,
                  descBoundingRect.size.height);
 
   CGFloat separatorStartX = CGRectGetMaxX(self.imageView.frame);
